@@ -6,287 +6,287 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" >
    <rdf:Description rdf:about="http://dbpedia.org/resource/Alabama">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Alabama</rdfs:label>
+      <rdfs:label>Alabama</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Alaska">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Alaska</rdfs:label>
+      <rdfs:label>Alaska</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/American_Samoa">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">American Samoa</rdfs:label>
+      <rdfs:label>American Samoa</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Arizona">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Arizona</rdfs:label>
+      <rdfs:label>Arizona</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Arkansas">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Arkansas</rdfs:label>
+      <rdfs:label>Arkansas</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/California">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">California</rdfs:label>
+      <rdfs:label>California</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Colorado">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Colorado</rdfs:label>
+      <rdfs:label>Colorado</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Connecticut">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Connecticut</rdfs:label>
+      <rdfs:label>Connecticut</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Delaware">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Delaware</rdfs:label>
+      <rdfs:label>Delaware</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Washington,_D.C.">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">District of Columbia</rdfs:label>
+      <rdfs:label>District of Columbia</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Florida">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Florida</rdfs:label>
+      <rdfs:label>Florida</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Georgia">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Georgia</rdfs:label>
+      <rdfs:label>Georgia</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Guam">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Guam</rdfs:label>
+      <rdfs:label>Guam</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Hawaii">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Hawaii</rdfs:label>
+      <rdfs:label>Hawaii</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Idaho">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Idaho</rdfs:label>
+      <rdfs:label>Idaho</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Illinois">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Illinois</rdfs:label>
+      <rdfs:label>Illinois</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Indiana">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Indiana</rdfs:label>
+      <rdfs:label>Indiana</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Iowa">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Iowa</rdfs:label>
+      <rdfs:label>Iowa</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Kansas">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Kansas</rdfs:label>
+      <rdfs:label>Kansas</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Kentucky">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Kentucky</rdfs:label>
+      <rdfs:label>Kentucky</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Louisiana">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Louisiana</rdfs:label>
+      <rdfs:label>Louisiana</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Maine">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Maine</rdfs:label>
+      <rdfs:label>Maine</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Maryland">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Maryland</rdfs:label>
+      <rdfs:label>Maryland</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Massachusetts">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Massachusetts</rdfs:label>
+      <rdfs:label>Massachusetts</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Michigan">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Michigan</rdfs:label>
+      <rdfs:label>Michigan</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Minnesota">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Minnesota</rdfs:label>
+      <rdfs:label>Minnesota</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Mississipi">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Mississippi</rdfs:label>
+      <rdfs:label>Mississippi</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Missouri">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Missouri</rdfs:label>
+      <rdfs:label>Missouri</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Montana">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Montana</rdfs:label>
+      <rdfs:label>Montana</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Nebraska">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Nebraska</rdfs:label>
+      <rdfs:label>Nebraska</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Nevada">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Nevada</rdfs:label>
+      <rdfs:label>Nevada</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/New_Hampshire">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">New Hampshire</rdfs:label>
+      <rdfs:label>New Hampshire</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/New_Jersey">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">New Jersey</rdfs:label>
+      <rdfs:label>New Jersey</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/New_Mexico">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">New Mexico</rdfs:label>
+      <rdfs:label>New Mexico</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/New_York">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">New York</rdfs:label>
+      <rdfs:label>New York</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/North_Carolina">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">North Carolina</rdfs:label>
+      <rdfs:label>North Carolina</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/North_Dakota">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">North Dakota</rdfs:label>
+      <rdfs:label>North Dakota</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Northern_Mariana_Islands">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Northern Mariana Islands</rdfs:label>
+      <rdfs:label>Northern Mariana Islands</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Ohio">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Ohio</rdfs:label>
+      <rdfs:label>Ohio</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Oklahoma">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Oklahoma</rdfs:label>
+      <rdfs:label>Oklahoma</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Oregon">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Oregon</rdfs:label>
+      <rdfs:label>Oregon</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Pennsylvania">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Pennsylvania</rdfs:label>
+      <rdfs:label>Pennsylvania</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Puerto_Rico">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Puerto Rico</rdfs:label>
+      <rdfs:label>Puerto Rico</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Rhode_Island">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Rhode Island</rdfs:label>
+      <rdfs:label>Rhode Island</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/South_Carolina">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">South Carolina</rdfs:label>
+      <rdfs:label>South Carolina</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/South_Dakota">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">South Dakota</rdfs:label>
+      <rdfs:label>South Dakota</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Tennessee">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Tennessee</rdfs:label>
+      <rdfs:label>Tennessee</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Texas">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Texas</rdfs:label>
+      <rdfs:label>Texas</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/United_States_Virgin_Islands">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">US Virgin Islands</rdfs:label>
+      <rdfs:label>US Virgin Islands</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Utah">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Utah</rdfs:label>
+      <rdfs:label>Utah</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Vermont">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Vermont</rdfs:label>
+      <rdfs:label>Vermont</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Virginia">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Virginia</rdfs:label>
+      <rdfs:label>Virginia</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Wake_Island">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Wake Island</rdfs:label>
+      <rdfs:label>Wake Island</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Washington">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Washington</rdfs:label>
+      <rdfs:label>Washington</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/West_Virginia">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">West Virginia</rdfs:label>
+      <rdfs:label>West Virginia</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Wisconsin">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Wisconsin</rdfs:label>
+      <rdfs:label>Wisconsin</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://dbpedia.org/resource/Wyoming">
       <rdf:type rdf:resource="http://vivoweb.org/ontology/core#StateOrProvince"/>
-      <rdfs:label xml:lang="en">Wyoming</rdfs:label>
+      <rdfs:label>Wyoming</rdfs:label>
       <obo:BFO_0000050 rdf:resource="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America"/>
    </rdf:Description>
    <rdf:Description rdf:about="http://aims.fao.org/aos/geopolitical.owl#United_States_of_America">
