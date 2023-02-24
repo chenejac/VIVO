@@ -2,12 +2,12 @@
 
 package edu.cornell.mannlib.vitro.webapp.visualization.visutils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.cornell.mannlib.vitro.webapp.visualization.collaborationutils.CollaborationData;
 import edu.cornell.mannlib.vitro.webapp.visualization.valueobjects.Collaboration;
 import edu.cornell.mannlib.vitro.webapp.visualization.valueobjects.Collaborator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CollaborationDataViewHelper {
     private static final int MAX_COLLABORATORS = 35;
@@ -67,7 +67,8 @@ public class CollaborationDataViewHelper {
                     int insert = collaborators.size();
                     while (insert > 0) {
                         insert--;
-                        if (collaborators.get(insert).getNumOfActivities() > collaborator.getNumOfActivities()) {
+                        if (collaborators.get(insert).getNumOfActivities() >
+                            collaborator.getNumOfActivities()) {
                             insert++;
                             break;
                         }
@@ -123,7 +124,8 @@ public class CollaborationDataViewHelper {
                 Collaborator target = collaboration.getTargetCollaborator();
 
                 // If the collaborator for this row is involved in the collaboration, add it to the list of possibles
-                if (source.getCollaboratorID() == collaboratorX.getCollaboratorID() || target.getCollaboratorID() == collaboratorX.getCollaboratorID()) {
+                if (source.getCollaboratorID() == collaboratorX.getCollaboratorID() ||
+                    target.getCollaboratorID() == collaboratorX.getCollaboratorID()) {
                     possibleCollaborations.add(collaboration);
                 }
             }
@@ -142,14 +144,16 @@ public class CollaborationDataViewHelper {
                         Collaborator target = collaboration.getTargetCollaborator();
 
                         // If the source is the row collaborator and the target is the column collaborator
-                        if (source.getCollaboratorID() == collaboratorX.getCollaboratorID() && target.getCollaboratorID() == collaboratorY.getCollaboratorID()) {
+                        if (source.getCollaboratorID() == collaboratorX.getCollaboratorID() &&
+                            target.getCollaboratorID() == collaboratorY.getCollaboratorID()) {
                             // Add the number of collaborations to the matrix, and stop processing collaborations
                             collaborationMatrix[x][y] = collaboration.getNumOfCollaborations();
                             break;
                         }
 
                         // If the source is the column collaborator and the target is the row collaborator
-                        if (source.getCollaboratorID() == collaboratorY.getCollaboratorID() && target.getCollaboratorID() == collaboratorX.getCollaboratorID()) {
+                        if (source.getCollaboratorID() == collaboratorY.getCollaboratorID() &&
+                            target.getCollaboratorID() == collaboratorX.getCollaboratorID()) {
                             // Add the number of collaborations to the matrix, and stop processing collaborations
                             collaborationMatrix[x][y] = collaboration.getNumOfCollaborations();
                             break;

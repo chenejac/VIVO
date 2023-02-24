@@ -2,6 +2,11 @@
 
 package org.vivoweb.webapp.createandlink.crossref;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -22,11 +27,6 @@ import org.vivoweb.webapp.createandlink.ResourceModel;
 import org.vivoweb.webapp.createandlink.utils.HttpReader;
 import org.vivoweb.webapp.createandlink.utils.StringArrayDeserializer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Interface to CrossRef's native API
  */
@@ -35,7 +35,7 @@ public class CrossrefNativeAPI {
     private static final Log log = LogFactory.getLog(CrossrefNativeAPI.class);
 
     // API endpoint address
-    private static final String CROSSREF_API      = "http://api.crossref.org/works/";
+    private static final String CROSSREF_API = "http://api.crossref.org/works/";
 
     /**
      * Find the DOI in CrossRef, filling the citation object
@@ -91,7 +91,8 @@ public class CrossrefNativeAPI {
             List<Citation.Name> authors = new ArrayList<>();
             for (CrossrefResponse.ResponseModel.Author author : response.message.author) {
                 Citation.Name citationAuthor = new Citation.Name();
-                citationAuthor.name = CreateAndLinkUtils.formatAuthorString(author.family, author.given);
+                citationAuthor.name =
+                    CreateAndLinkUtils.formatAuthorString(author.family, author.given);
                 authors.add(citationAuthor);
             }
             citation.authors = authors.toArray(new Citation.Name[authors.size()]);
@@ -132,6 +133,7 @@ public class CrossrefNativeAPI {
 
     /**
      * Create a full resource model from the external resource (JSON)
+     *
      * @param externalResource
      * @return
      */
@@ -246,10 +248,12 @@ public class CrossrefNativeAPI {
      * @param dateField
      * @return
      */
-    private ResourceModel.DateField convertDateField(CrossrefResponse.ResponseModel.DateField dateField) {
+    private ResourceModel.DateField convertDateField(
+        CrossrefResponse.ResponseModel.DateField dateField) {
         if (dateField != null) {
             ResourceModel.DateField resourceDate = new ResourceModel.DateField();
-            if (dateField.dateParts != null && dateField.dateParts.length > 0 && dateField.dateParts[0].length > 0) {
+            if (dateField.dateParts != null && dateField.dateParts.length > 0 &&
+                dateField.dateParts[0].length > 0) {
                 if (dateField.dateParts.length == 1) {
                     resourceDate.year = dateField.dateParts[0][0];
                 } else if (dateField.dateParts.length == 2) {

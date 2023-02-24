@@ -25,7 +25,7 @@ events.
 
 (function ($) {
     var options = {
-        series: { threshold: null } // or { below: number, color: color spec}
+        series: {threshold: null} // or { below: number, color: color spec}
     };
 
     function init(plot) {
@@ -36,7 +36,7 @@ events.
             var ps = datapoints.pointsize, i, x, y, p, prevp,
                 thresholded = $.extend({}, s); // note: shallow copy
 
-            thresholded.datapoints = { points: [], pointsize: ps };
+            thresholded.datapoints = {points: [], pointsize: ps};
             thresholded.label = null;
             thresholded.color = s.threshold.color;
             thresholded.threshold = null;

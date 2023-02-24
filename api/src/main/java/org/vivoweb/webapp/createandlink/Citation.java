@@ -23,30 +23,54 @@ public class Citation {
     public boolean alreadyClaimed = false;
     public boolean showError = false;
 
-    public String getExternalId() { return externalId; }
-    public String getExternalProvider() { return externalProvider; }
-    public String getExternalResource() { return externalResource; }
+    public String getExternalId() {
+        return externalId;
+    }
 
-    public String getVivoUri() { return vivoUri; }
+    public String getExternalProvider() {
+        return externalProvider;
+    }
 
-    public String getType() { return type; }
-    public String getTypeUri() { return typeUri; }
-    public String getTitle() { return title; }
+    public String getExternalResource() {
+        return externalResource;
+    }
+
+    public String getVivoUri() {
+        return vivoUri;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTypeUri() {
+        return typeUri;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
     public Name[] getAuthors() {
         return authors;
     }
+
     public String getJournal() {
         return journal;
     }
+
     public String getVolume() {
         return volume;
     }
+
     public String getIssue() {
         return issue;
     }
+
     public String getPagination() {
         return pagination;
     }
+
     public Integer getPublicationYear() {
         return publicationYear;
     }
@@ -55,9 +79,13 @@ public class Citation {
         return DOI;
     }
 
-    public boolean getAlreadyClaimed() { return alreadyClaimed; }
+    public boolean getAlreadyClaimed() {
+        return alreadyClaimed;
+    }
 
-    public boolean getShowError() { return showError; }
+    public boolean getShowError() {
+        return showError;
+    }
 
     public static class Name {
         public String name;
@@ -72,6 +100,7 @@ public class Citation {
         public boolean getLinked() {
             return linked;
         }
+
         public boolean getProposed() {
             return proposed;
         }

@@ -9,13 +9,14 @@ import edu.cornell.mannlib.vitro.webapp.visualization.valueobjects.Collaborator;
 
 /**
  * This Comparator is used to sort the nodes based on their IDs in ascending order.
+ *
  * @author cdtank
  */
 public class CollaboratorComparator implements Comparator<Collaborator> {
 
-	@Override
-	public int compare(Collaborator arg0, Collaborator arg1) {
-		return arg0.getCollaboratorID() - arg1.getCollaboratorID();
-	}
+    @Override
+    public int compare(Collaborator arg0, Collaborator arg1) {
+        return arg0.getCollaboratorID() - arg1.getCollaboratorID();
+    }
 
 }

@@ -2,6 +2,8 @@
 
 package org.vivoweb.webapp.createandlink.pubmed;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -23,13 +25,12 @@ import org.vivoweb.webapp.createandlink.ResourceModel;
 import org.vivoweb.webapp.createandlink.utils.HttpReader;
 import org.vivoweb.webapp.createandlink.utils.StringArrayDeserializer;
 
-import java.io.IOException;
-
 public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourceProvider {
+    public final static String PUBMED_ID_API =
+        "http://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?format=json&ids=";
+    public final static String PUBMED_SUMMARY_API =
+        "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&tool=my_tool&email=my_email@example.com&id=";
     protected final Log logger = LogFactory.getLog(getClass());
-
-    public final static String PUBMED_ID_API = "http://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?format=json&ids=";
-    public final static String PUBMED_SUMMARY_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&tool=my_tool&email=my_email@example.com&id=";
 
     @Override
     public String normalize(String id) {
@@ -74,7 +75,7 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
             }
 
             JsonFactory factory = new JsonFactory();
-            JsonParser parser  = factory.createParser(json);
+            JsonParser parser = factory.createParser(json);
             if (parser != null) {
                 while (!parser.isClosed() && !id.equals(parser.getCurrentName())) {
                     JsonToken token = parser.nextToken();
@@ -84,21 +85,26 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
                     // We have reached the field for our ID, but we need to be on the next token for the mapper to work
                     JsonToken token = parser.nextToken();
                     ObjectMapper objectMapper = new ObjectMapper();
-                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    PubMedSummaryResponse response = objectMapper.readValue(parser, PubMedSummaryResponse.class);
+                    objectMapper
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    PubMedSummaryResponse response =
+                        objectMapper.readValue(parser, PubMedSummaryResponse.class);
                     if (response != null) {
                         citation.title = response.title;
                         citation.authors = new Citation.Name[response.authors.length];
                         for (int idx = 0; idx < response.authors.length; idx++) {
                             citation.authors[idx] = new Citation.Name();
-                            citation.authors[idx].name = normalizeAuthorName(response.authors[idx].name);
+                            citation.authors[idx].name =
+                                normalizeAuthorName(response.authors[idx].name);
                         }
                         citation.journal = response.fulljournalname;
                         citation.volume = response.volume;
                         citation.issue = response.issue;
                         citation.pagination = response.pages;
-                        if (!StringUtils.isEmpty(response.pubdate) && response.pubdate.length() >= 4) {
-                            citation.publicationYear = Integer.parseInt(response.pubdate.substring(0, 4), 10);
+                        if (!StringUtils.isEmpty(response.pubdate) &&
+                            response.pubdate.length() >= 4) {
+                            citation.publicationYear =
+                                Integer.parseInt(response.pubdate.substring(0, 4), 10);
                         }
 
                         citation.type = getCiteprocTypeForPubType(response.pubtype);
@@ -110,7 +116,7 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
 
             return null;
         } catch (Exception e) {
-            logger.error("[PMID] Error resolving PMID " + id + ", cause "+ e.getMessage());
+            logger.error("[PMID] Error resolving PMID " + id + ", cause " + e.getMessage());
             return null;
         }
     }
@@ -129,8 +135,10 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
                     // We have reached the field for our ID, but we need to be on the next token for the mapper to work
                     JsonToken token = parser.nextToken();
                     ObjectMapper objectMapper = new ObjectMapper();
-                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    PubMedSummaryResponse response = objectMapper.readValue(parser, PubMedSummaryResponse.class);
+                    objectMapper
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    PubMedSummaryResponse response =
+                        objectMapper.readValue(parser, PubMedSummaryResponse.class);
                     if (response != null) {
                         ResourceModel resourceModel = new ResourceModel();
                         resourceModel.PubMedID = externalId;
@@ -139,8 +147,10 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
                         for (int idx = 0; idx < response.authors.length; idx++) {
                             resourceModel.author[idx] = new ResourceModel.NameField();
                             if (response.authors[idx].name.lastIndexOf(' ') > 0) {
-                                resourceModel.author[idx].family = response.authors[idx].name.substring(0, response.authors[idx].name.lastIndexOf(' '));
-                                resourceModel.author[idx].given = response.authors[idx].name.substring(response.authors[idx].name.lastIndexOf(' ') + 1);
+                                resourceModel.author[idx].family = response.authors[idx].name
+                                    .substring(0, response.authors[idx].name.lastIndexOf(' '));
+                                resourceModel.author[idx].given = response.authors[idx].name
+                                    .substring(response.authors[idx].name.lastIndexOf(' ') + 1);
                             } else {
                                 resourceModel.author[idx].family = response.authors[idx].name;
                             }
@@ -165,9 +175,11 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
                             resourceModel.pageStart = response.pages;
                         }
 
-                        if (!StringUtils.isEmpty(response.pubdate) && response.pubdate.length() >= 4) {
+                        if (!StringUtils.isEmpty(response.pubdate) &&
+                            response.pubdate.length() >= 4) {
                             resourceModel.publicationDate = new ResourceModel.DateField();
-                            resourceModel.publicationDate.year = Integer.parseInt(response.pubdate.substring(0, 4), 10);
+                            resourceModel.publicationDate.year =
+                                Integer.parseInt(response.pubdate.substring(0, 4), 10);
                         }
 
                         if (response.articleids != null) {
@@ -179,7 +191,8 @@ public class PubMedCreateAndLinkResourceProvider implements CreateAndLinkResourc
                                         resourceModel.PubMedCentralID = articleID.value.trim();
                                     } else if ("pmcid".equalsIgnoreCase(articleID.idtype)) {
                                         if (StringUtils.isEmpty(resourceModel.PubMedCentralID)) {
-                                            String id = articleID.value.replaceAll(".*(PMC[0-9]+).*", "$1");
+                                            String id =
+                                                articleID.value.replaceAll(".*(PMC[0-9]+).*", "$1");
                                             if (!StringUtils.isEmpty(id)) {
                                                 resourceModel.PubMedCentralID = id;
                                             }

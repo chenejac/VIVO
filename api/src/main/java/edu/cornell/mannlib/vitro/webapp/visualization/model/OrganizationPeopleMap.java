@@ -8,5 +8,6 @@ import java.util.Set;
 
 public class OrganizationPeopleMap {
     public final Map<String, Set<String>> organizationToPeople = new HashMap<String, Set<String>>();
-    public final Map<String, Set<String>> personToOrganizations = new HashMap<String, Set<String>>();
+    public final Map<String, Set<String>> personToOrganizations =
+        new HashMap<String, Set<String>>();
 }

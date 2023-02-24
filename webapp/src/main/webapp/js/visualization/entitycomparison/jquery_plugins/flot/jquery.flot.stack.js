@@ -27,7 +27,7 @@ also adjusted.
 
 (function ($) {
     var options = {
-        series: { stack: null } // or number/string
+        series: {stack: null} // or number/string
     };
 
     function init(plot) {
@@ -75,8 +75,7 @@ also adjusted.
                     for (m = 0; m < ps; ++m)
                         newpoints.push(points[i + m]);
                     i += ps;
-                }
-                else {
+                } else {
                     // cases where we actually got two points
                     px = points[i];
                     py = points[i + 1];
@@ -93,8 +92,7 @@ also adjusted.
 
                         i += ps;
                         j += otherps;
-                    }
-                    else if (px > qx) {
+                    } else if (px > qx) {
                         // we got past point below, might need to
                         // insert interpolated extra point
                         if (withlines && i > 0 && points[i - ps] != null) {
@@ -107,8 +105,7 @@ also adjusted.
                         }
 
                         j += otherps;
-                    }
-                    else {
+                    } else {
                         for (m = 0; m < ps; ++m)
                             newpoints.push(points[i + m]);
 

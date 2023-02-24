@@ -37,11 +37,11 @@ import org.vivoweb.harvester.util.XPathTool;
 
 /**
  * *** NOTE: This is currently completely commented-out until we (all VIVO developers) decide on a policy for
- *           integrating the Harvester with the rest of VIVO.  If Harvester is added to the classpath of VIVO,
- *           this can be uncommented and will work fine. ***
-
+ * integrating the Harvester with the rest of VIVO.  If Harvester is added to the classpath of VIVO,
+ * this can be uncommented and will work fine. ***
+ * <p>
  * Interface to the Harvester.
- *
+ * <p>
  * The best approach for doing this is probably a bunch of static methods that call the Harvester main classes.
  * At first I tried to call the execute() methods, using the object parameters rather than the raw string args,
  * but that was troublesome for a few reasons, the most important being related to the simple fact that the
@@ -50,7 +50,6 @@ import org.vivoweb.harvester.util.XPathTool;
  * pass in a string to be parsed, which would defeat the purpose.
  *
  * @author mbarbieri
- *
  */
 class Harvester {
 /*
@@ -153,25 +152,25 @@ class Harvester {
     /**
      * Convenience method to expand the ability to use Java's "..." arg list.  Harvester scripts frequently declare sub-macros,
      * so for example you might have:
-     *
+     * <p>
      * SCOREINPUT="-i $H2MODEL -ImodelName=$MODELNAME -IdbUrl=$MODELDBURL -IcheckEmpty=$CHECKEMPTY"
      * SCOREDATA="-s $H2MODEL -SmodelName=$SCOREDATANAME -SdbUrl=$SCOREDATADBURL -ScheckEmpty=$CHECKEMPTY"
      * SCOREMODELS="$SCOREINPUT -v $VIVOCONFIG -VcheckEmpty=$CHECKEMPTY $SCOREDATA -t $TEMPCOPYDIR -b $SCOREBATCHSIZE"
      * $Score $SCOREMODELS -AGrantNumber=$EQTEST -WGrantNumber=1.0 -FGrantNumber=$GRANTIDNUM -PGrantNumber=$GRANTIDNUM -n ${BASEURI}grant/
-     *
+     * <p>
      * In order to mimic this functionality for easy use in Java, this method has been created.  It takes a "..." arg list of Object
      * objects, and returns an array of Strings.  For each object, if it's an array of Strings, each String is added to the output
      * array.  Otherwise, its toString() method is called and that value is added to the output array.
-     *
+     * <p>
      * It is intended to be used with a combination of String and String[] values, in any arbitrary order.
-     *
+     * <p>
      * All static Harvester methods in this class take an Object arg list rather than a String arg list, and automatically call
      * this method.
      *
      * @param args an array of objects, which ought to be a combination of String and String[] values, in any arbitrary order
      * @return all the strings put together as one array
      */
-    public static String[] stringsToArray(Object ... args) {
+    public static String[] stringsToArray(Object... args) {
         ArrayList<String> allData = new ArrayList<String>();
         for (Object arg : args) {
             if (arg instanceof String[]) {

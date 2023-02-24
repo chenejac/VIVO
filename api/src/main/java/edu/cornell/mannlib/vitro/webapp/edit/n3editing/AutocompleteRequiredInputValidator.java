@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.rdf.model.Literal;
-
-import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.N3ValidatorVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.EditConfigurationVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.MultiValueEditSubmission;
+import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.N3ValidatorVTwo;
+import org.apache.jena.rdf.model.Literal;
 
 public class AutocompleteRequiredInputValidator implements N3ValidatorVTwo {
 
-    private static String MISSING_LABEL_ERROR = "Please select an existing value or enter a new value in the Name field.";
+    private static String MISSING_LABEL_ERROR =
+        "Please select an existing value or enter a new value in the Name field.";
 
     private String uriReceiver;
     private String labelInput;
@@ -26,28 +26,27 @@ public class AutocompleteRequiredInputValidator implements N3ValidatorVTwo {
 
     @Override
     public Map<String, String> validate(EditConfigurationVTwo editConfig,
-            MultiValueEditSubmission editSub) {
-        Map<String,List<String>> urisFromForm = editSub.getUrisFromForm();
-        Map<String,List<Literal>> literalsFromForm = editSub.getLiteralsFromForm();
+                                        MultiValueEditSubmission editSub) {
+        Map<String, List<String>> urisFromForm = editSub.getUrisFromForm();
+        Map<String, List<Literal>> literalsFromForm = editSub.getLiteralsFromForm();
 
-        Map<String,String> errors = new HashMap<String,String>();
+        Map<String, String> errors = new HashMap<String, String>();
 
         List<String> selectedUri = urisFromForm.get(uriReceiver);
 
         // If there's a presentationUri, then we're done. If not, check to see if the label exists.
         // If that's null, too, it's an error.
-        if (allListElementsEmpty(selectedUri) || selectedUri.contains(">SUBMITTED VALUE WAS BLANK<")) {
+        if (allListElementsEmpty(selectedUri) ||
+            selectedUri.contains(">SUBMITTED VALUE WAS BLANK<")) {
             selectedUri = null;
         }
         if (selectedUri != null) {
             return null;
-        }
-        else {
+        } else {
             List<Literal> specifiedLabel = literalsFromForm.get(labelInput);
             if (specifiedLabel != null && specifiedLabel.size() > 0) {
                 return null;
-            }
-            else {
+            } else {
                 errors.put(labelInput, MISSING_LABEL_ERROR);
             }
         }
@@ -56,19 +55,20 @@ public class AutocompleteRequiredInputValidator implements N3ValidatorVTwo {
     }
 
     private boolean allListElementsEmpty(List<String> checkList) {
-    	if(checkList == null)
-    		return true;
-    	if(checkList.isEmpty()) {
-    		return true;
-    	}
-    	boolean allEmpty = true;
-    	for(String s: checkList) {
-    		if(s.length() != 0){
-    			allEmpty = false;
-    			break;
-    		}
-    	}
-    	return allEmpty;
+        if (checkList == null) {
+            return true;
+        }
+        if (checkList.isEmpty()) {
+            return true;
+        }
+        boolean allEmpty = true;
+        for (String s : checkList) {
+            if (s.length() != 0) {
+                allEmpty = false;
+                break;
+            }
+        }
+        return allEmpty;
     }
 
 }

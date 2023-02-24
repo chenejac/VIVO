@@ -1,29 +1,24 @@
 /* $This file is distributed under the terms of the license in LICENSE$ */
 package edu.cornell.mannlib.vitro.webapp.controller.ajax;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-
 import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
 import edu.cornell.mannlib.vitro.webapp.controller.freemarker.UrlBuilder;
 import edu.cornell.mannlib.vitro.webapp.dao.jena.QueryUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 
 public class GeoFocusMapLocations extends AbstractAjaxResponder {
 
     private static final Log log = LogFactory.getLog(GeoFocusMapLocations.class.getName());
-    private List<Map<String,String>>  geoLocations;
     private static String GEO_FOCUS_QUERY = ""
         + "PREFIX geo: <http://aims.fao.org/aos/geopolitical.owl#> \n"
         + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \n"
@@ -31,7 +26,8 @@ public class GeoFocusMapLocations extends AbstractAjaxResponder {
         + "PREFIX core: <http://vivoweb.org/ontology/core#>  \n"
         + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>  \n"
         + "PREFIX vivoc: <http://vivo.library.cornell.edu/ns/0.1#>  \n"
-        + "SELECT DISTINCT ?label ?location (REPLACE(STR(?location),\"^.*(#)(.*)$\", \"$2\") AS ?localName) (COUNT(DISTINCT ?person) AS ?count)  \n"
+        +
+        "SELECT DISTINCT ?label ?location (REPLACE(STR(?location),\"^.*(#)(.*)$\", \"$2\") AS ?localName) (COUNT(DISTINCT ?person) AS ?count)  \n"
         + "WHERE { { \n"
         + "    ?location rdf:type core:GeographicRegion .  \n"
         + "    ?location rdfs:label ?label .   \n"
@@ -52,15 +48,16 @@ public class GeoFocusMapLocations extends AbstractAjaxResponder {
         + "    ?person rdf:type foaf:Person   \n"
         + "} }  \n"
         + "GROUP BY ?label ?location  \n";
+    private List<Map<String, String>> geoLocations;
 
-	public GeoFocusMapLocations(HttpServlet parent, VitroRequest vreq,
-			HttpServletResponse resp) {
-		super(parent, vreq, resp);
+    public GeoFocusMapLocations(HttpServlet parent, VitroRequest vreq,
+                                HttpServletResponse resp) {
+        super(parent, vreq, resp);
     }
 
-	@Override
-	public String prepareResponse() throws IOException {
-		try {
+    @Override
+    public String prepareResponse() throws IOException {
+        try {
             geoLocations = getGeoLocations(vreq);
 
             StringBuilder response = new StringBuilder("[");
@@ -68,67 +65,64 @@ public class GeoFocusMapLocations extends AbstractAjaxResponder {
             String typeProps = "\"type\": \"Feature\",\"properties\": {\"mapType\": \"\",";
             String previousLabel = "";
 
-            for (Map<String, String> map: geoLocations) {
+            for (Map<String, String> map : geoLocations) {
                 String label = map.get("label");
-                String html  = map.get("count");
+                String html = map.get("count");
                 String uri = map.get("location");
                 String local = map.get("localName");
-                if ( uri != null ) {
+                if (uri != null) {
                     uri = UrlBuilder.urlEncode(uri);
                 }
-                Integer count    = Integer.parseInt(map.get("count"));
-                String radius   = String.valueOf(calculateRadius(count));
+                Integer count = Integer.parseInt(map.get("count"));
+                String radius = String.valueOf(calculateRadius(count));
                 String name = "";
 
-                if ( label != null && !label.equals(previousLabel) ) {
-                    if ( label.contains("Ivoire") ) {
+                if (label != null && !label.equals(previousLabel)) {
+                    if (label.contains("Ivoire")) {
                         name = "Ivory Coast";
-                    }
-                    else if ( label.contains("United States of America") ) {
+                    } else if (label.contains("United States of America")) {
                         name = "United States of America";
-                    }
-                    else if ( label.contains("United Kingdom") ) {
+                    } else if (label.contains("United Kingdom")) {
                         name = "United Kingdom";
-                    }
-                    else {
+                    } else {
                         name = label;
                     }
                     String tempStr = geometry; //+label
                     tempStr += typeProps //+ label
-                                        + "\"popupContent\": \""
-                                        + name
-                                        + "\",\"html\":"
-                                        + html
-                                        + ",\"radius\":"
-                                        + radius
-                                        + ",\"uri\": \""
-                                        + uri
-                                        + "\",\"local\": \""
-                                        + local
-                                        + "\"}},";
+                        + "\"popupContent\": \""
+                        + name
+                        + "\",\"html\":"
+                        + html
+                        + ",\"radius\":"
+                        + radius
+                        + ",\"uri\": \""
+                        + uri
+                        + "\",\"local\": \""
+                        + local
+                        + "\"}},";
                     response.append(tempStr);
                     previousLabel = label;
                 }
             }
-			if ( response.lastIndexOf(",") > 0 ) {
-			    response = new StringBuilder(response.substring(0, response.lastIndexOf(",")));
-			}
-			response.append(" ]");
-			if ( log.isDebugEnabled() ) {
-				log.debug(response.toString());
-			}
-			return response.toString();
-		} catch (Exception e) {
-			log.error("Failed geographic focus locations", e);
-			return EMPTY_RESPONSE;
-		}
-	}
+            if (response.lastIndexOf(",") > 0) {
+                response = new StringBuilder(response.substring(0, response.lastIndexOf(",")));
+            }
+            response.append(" ]");
+            if (log.isDebugEnabled()) {
+                log.debug(response.toString());
+            }
+            return response.toString();
+        } catch (Exception e) {
+            log.error("Failed geographic focus locations", e);
+            return EMPTY_RESPONSE;
+        }
+    }
 
-    private List<Map<String,String>>  getGeoLocations(VitroRequest vreq) {
+    private List<Map<String, String>> getGeoLocations(VitroRequest vreq) {
 
         String queryStr = GEO_FOCUS_QUERY;
         log.debug("queryStr = " + queryStr);
-        List<Map<String,String>>  locations = new ArrayList<Map<String,String>>();
+        List<Map<String, String>> locations = new ArrayList<Map<String, String>>();
         try {
             ResultSet results = QueryUtils.getQueryResults(queryStr, vreq);
             while (results.hasNext()) {
@@ -141,29 +135,24 @@ public class GeoFocusMapLocations extends AbstractAjaxResponder {
 
         return locations;
     }
+
     private Integer calculateRadius(Integer count) {
 
         int radius = 8;
-        if ( count != null ) {
-            if ( count < 4 ) {
+        if (count != null) {
+            if (count < 4) {
                 radius = 8;
-            }
-            else if ( count < 7 ) {
+            } else if (count < 7) {
                 radius = 10;
-            }
-            else if ( count < 10 ) {
+            } else if (count < 10) {
                 radius = 12;
-            }
-            else if ( count < 16 ) {
+            } else if (count < 16) {
                 radius = 14;
-            }
-            else if ( count < 21 ) {
+            } else if (count < 21) {
                 radius = 16;
-            }
-            else if ( count < 26 ) {
+            } else if (count < 26) {
                 radius = 18;
-            }
-            else {
+            } else {
                 radius = 20;
             }
         }

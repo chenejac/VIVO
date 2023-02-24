@@ -2,19 +2,20 @@
 
 package org.vivoweb.webapp.createandlink.utils;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class StringArrayDeserializer extends JsonDeserializer<String[]> {
     @Override
-    public String[] deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException, JsonProcessingException {
+    public String[] deserialize(JsonParser jsonParser, DeserializationContext context)
+        throws IOException, JsonProcessingException {
         if (JsonToken.VALUE_NULL.equals(jsonParser.getCurrentToken())) {
             jsonParser.nextToken();
             return null;
@@ -27,7 +28,7 @@ public class StringArrayDeserializer extends JsonDeserializer<String[]> {
             }
             return list.toArray(new String[list.size()]);
         } else if (JsonToken.VALUE_STRING.equals(jsonParser.getCurrentToken())) {
-            return new String[] { jsonParser.getText() };
+            return new String[] {jsonParser.getText()};
         }
 
         return null;

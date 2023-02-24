@@ -4,261 +4,261 @@ $.extend(this, i18nStringsPersonLvl);
 
 function getWellFormedURLs(given_uri, type) {
 
-	if (!given_uri || given_uri == "") {
-		return;
-	}
+    if (!given_uri || given_uri == "") {
+        return;
+    }
 
-	// general best practice is to put javascript code inside document.ready
-	// but in this case when i do that the function does not get called
-	// properly.
-	// so removing it for now.
+    // general best practice is to put javascript code inside document.ready
+    // but in this case when i do that the function does not get called
+    // properly.
+    // so removing it for now.
 
-	// $(document).ready(function() {
+    // $(document).ready(function() {
 
-	var finalURL;
+    var finalURL;
 
-	if (type == "coauthorship") {
+    if (type == "coauthorship") {
 
-		finalURL = $.ajax({
-			url: contextPath + "/visualizationAjax",
-			data: ({vis: "utilities", vis_mode: "COAUTHORSHIP_URL", uri: given_uri}),
-			dataType: "text",
-			async: false,
-			success:function(data){
-		}
-		}).responseText;
+        finalURL = $.ajax({
+            url: contextPath + "/visualizationAjax",
+            data: ({vis: "utilities", vis_mode: "COAUTHORSHIP_URL", uri: given_uri}),
+            dataType: "text",
+            async: false,
+            success: function (data) {
+            }
+        }).responseText;
 
-		return finalURL;
+        return finalURL;
 
-	} else 	if (type == "coinvestigation") {
+    } else if (type == "coinvestigation") {
 
-		finalURL = $.ajax({
-			url: contextPath + "/visualizationAjax",
-			data: ({vis: "utilities", vis_mode: "COPI_URL", uri: given_uri}),
-			dataType: "text",
-			async: false,
-			success:function(data){
-		}
-		}).responseText;
+        finalURL = $.ajax({
+            url: contextPath + "/visualizationAjax",
+            data: ({vis: "utilities", vis_mode: "COPI_URL", uri: given_uri}),
+            dataType: "text",
+            async: false,
+            success: function (data) {
+            }
+        }).responseText;
 
-		return finalURL;
+        return finalURL;
 
-	} else if (type == "profile") {
+    } else if (type == "profile") {
 
-		finalURL = $.ajax({
-			url: contextPath + "/visualizationAjax",
-			data: ({vis: "utilities", vis_mode: "PROFILE_URL", uri: given_uri}),
-			dataType: "text",
-			async: false,
-			success:function(data){
-		}
-		}).responseText;
+        finalURL = $.ajax({
+            url: contextPath + "/visualizationAjax",
+            data: ({vis: "utilities", vis_mode: "PROFILE_URL", uri: given_uri}),
+            dataType: "text",
+            async: false,
+            success: function (data) {
+            }
+        }).responseText;
 
-		return finalURL;
+        return finalURL;
 
-	} else if (type == "image") {
+    } else if (type == "image") {
 
-		finalURL = $.ajax({
-			url: contextPath + "/visualizationAjax",
-			data: ({vis: "utilities", vis_mode: "IMAGE_URL", uri: given_uri}),
-			dataType: "text",
-			async: false,
-			success:function(data){
-		}
-		}).responseText;
+        finalURL = $.ajax({
+            url: contextPath + "/visualizationAjax",
+            data: ({vis: "utilities", vis_mode: "IMAGE_URL", uri: given_uri}),
+            dataType: "text",
+            async: false,
+            success: function (data) {
+            }
+        }).responseText;
 
-		return finalURL;
+        return finalURL;
 
-	} else if (type == "profile_info") {
+    } else if (type == "profile_info") {
 
-		var profileInfoJSON = $.ajax({
-			url: contextPath + "/visualizationAjax",
-			data: ({vis: "utilities", vis_mode: "PROFILE_INFO", uri: given_uri}),
-			dataType: "json",
-			async: false,
-			success:function(data){
-		}
-		}).responseText;
+        var profileInfoJSON = $.ajax({
+            url: contextPath + "/visualizationAjax",
+            data: ({vis: "utilities", vis_mode: "PROFILE_INFO", uri: given_uri}),
+            dataType: "json",
+            async: false,
+            success: function (data) {
+            }
+        }).responseText;
 
-		return profileInfoJSON;
-	}
+        return profileInfoJSON;
+    }
 }
 
 function setProfileImage(imageContainerID, mainImageURL) {
 
-	if (imageContainerID == "") {
-		return;
-	}
+    if (imageContainerID == "") {
+        return;
+    }
 
-	if (!mainImageURL || mainImageURL == "") {
-		$("#" + imageContainerID).empty();
-		return;
-	}
+    if (!mainImageURL || mainImageURL == "") {
+        $("#" + imageContainerID).empty();
+        return;
+    }
 
-	var rawPath = getWellFormedURLs(mainImageURL, "image");
+    var rawPath = getWellFormedURLs(mainImageURL, "image");
 
-	var imageLink =  contextPath + rawPath;
+    var imageLink = contextPath + rawPath;
 
-	var imageContainer = $("#" + imageContainerID);
-	imageContainer.image(imageLink,
-			function(){
-		imageContainer.empty().append(this);
-	},
-	function(){
-		// For performing any action on failure to
-		// find the image.
-		imageContainer.empty();
-	}
-	);
+    var imageContainer = $("#" + imageContainerID);
+    imageContainer.image(imageLink,
+        function () {
+            imageContainer.empty().append(this);
+        },
+        function () {
+            // For performing any action on failure to
+            // find the image.
+            imageContainer.empty();
+        }
+    );
 
 }
 
 function setProfileMoniker(monikerContainerID, moniker, doEllipsis) {
 
-	if (monikerContainerID == "") {
-		return;
-	}
+    if (monikerContainerID == "") {
+        return;
+    }
 
-	if (!moniker) {
-		$("#" + monikerContainerID).empty();
-		return;
-	}
+    if (!moniker) {
+        $("#" + monikerContainerID).empty();
+        return;
+    }
 
-	var finalDisplayMoniker;
+    var finalDisplayMoniker;
 
-	if (moniker.length > 40 && doEllipsis) {
+    if (moniker.length > 40 && doEllipsis) {
 
-		finalDisplayMoniker = moniker.substr(0,40) + "...";
+        finalDisplayMoniker = moniker.substr(0, 40) + "...";
 
-	} else {
+    } else {
 
-		finalDisplayMoniker = moniker;
+        finalDisplayMoniker = moniker;
 
-	}
+    }
 
-	$("#" + monikerContainerID).empty().text(finalDisplayMoniker);
-	$("#" + monikerContainerID).attr('title', moniker);
+    $("#" + monikerContainerID).empty().text(finalDisplayMoniker);
+    $("#" + monikerContainerID).attr('title', moniker);
 
 }
 
 function setProfileName(nameContainerID, name, doNameEllipsis) {
 
-	if (nameContainerID == "") {
-		return;
-	}
+    if (nameContainerID == "") {
+        return;
+    }
 
-	if (!name) {
-		$("#" + nameContainerID).empty();
-		return;
-	}
+    if (!name) {
+        $("#" + nameContainerID).empty();
+        return;
+    }
 
-	var finalDisplayName;
+    var finalDisplayName;
 
-	if (name.length > 40 && doNameEllipsis) {
+    if (name.length > 40 && doNameEllipsis) {
 
-		finalDisplayName = name.substr(0,40) + "...";
+        finalDisplayName = name.substr(0, 40) + "...";
 
-	} else {
+    } else {
 
-		finalDisplayName = name;
+        finalDisplayName = name;
 
-	}
+    }
 
-	$("#" + nameContainerID).empty().text(finalDisplayName);
-	$("#" + nameContainerID).attr('title', name);
+    $("#" + nameContainerID).empty().text(finalDisplayName);
+    $("#" + nameContainerID).attr('title', name);
 
 }
 
 function processProfileInformation(nameContainerID,
-		monikerContainerID,
-		imageContainerID,
-		profileInfoJSON,
-		doMonikerEllipsis,
-		doNameEllipsis) {
+                                   monikerContainerID,
+                                   imageContainerID,
+                                   profileInfoJSON,
+                                   doMonikerEllipsis,
+                                   doNameEllipsis) {
 
-	var name, mainImageURL, moniker;
+    var name, mainImageURL, moniker;
 
-	if (jQuery.isEmptyObject(profileInfoJSON)) {
-		return;
-	}
+    if (jQuery.isEmptyObject(profileInfoJSON)) {
+        return;
+    }
 
-	$.each(profileInfoJSON, function(key, set){
+    $.each(profileInfoJSON, function (key, set) {
 
-		if (key.search(/mainImage/i) > -1) {
+        if (key.search(/mainImage/i) > -1) {
 
-			mainImageURL = set[0];
+            mainImageURL = set[0];
 
-		} else if (key.search(/title/i) > -1) {
+        } else if (key.search(/title/i) > -1) {
 
-			moniker = set[0];
+            moniker = set[0];
 
-		} else if (key.search(/label/i) > -1) {
+        } else if (key.search(/label/i) > -1) {
 
-			name = set[0];
+            name = set[0];
 
-		}
+        }
 
-	});
+    });
 
-	setProfileName(nameContainerID, name, doNameEllipsis);
-	setProfileMoniker(monikerContainerID, moniker, doMonikerEllipsis);
-	setProfileImage(imageContainerID, mainImageURL);
+    setProfileName(nameContainerID, name, doNameEllipsis);
+    setProfileMoniker(monikerContainerID, moniker, doMonikerEllipsis);
+    setProfileImage(imageContainerID, mainImageURL);
 
 }
 
-function visLoaded(nodes){
+function visLoaded(nodes) {
 
-	var jsonedNodes = jQuery.parseJSON(nodes);
+    var jsonedNodes = jQuery.parseJSON(nodes);
 
-	$(document).ready(function() {
-		 createTable(collaboratorTableMetadata.tableID, collaboratorTableMetadata.tableContainer, jsonedNodes);
-	});
+    $(document).ready(function () {
+        createTable(collaboratorTableMetadata.tableID, collaboratorTableMetadata.tableContainer, jsonedNodes);
+    });
 
 }
 
 function createTable(tableID, tableContainer, tableData) {
 
-	var number_of_works = "";
+    var number_of_works = "";
 
-	var table = $('<table>');
-	table.attr('id', tableID);
+    var table = $('<table>');
+    table.attr('id', tableID);
 
-	table.append($('<caption>').html(collaboratorTableMetadata.tableCaption
-										+ "<a href=\"" + collaboratorTableMetadata.tableCSVFileLink
-										+ "\">(.CSV " + i18nStringsPersonLvl.fileCapitalized + ")</a>"));
+    table.append($('<caption>').html(collaboratorTableMetadata.tableCaption
+        + "<a href=\"" + collaboratorTableMetadata.tableCSVFileLink
+        + "\">(.CSV " + i18nStringsPersonLvl.fileCapitalized + ")</a>"));
 
-	var header = $('<thead>');
+    var header = $('<thead>');
 
-	var row = $('<tr>');
+    var row = $('<tr>');
 
-	row.append($('<th>').html(collaboratorTableMetadata.tableColumnTitle1));
-	row.append($('<th>').html(collaboratorTableMetadata.tableColumnTitle2 + "" + $('#ego_label').text()));
+    row.append($('<th>').html(collaboratorTableMetadata.tableColumnTitle1));
+    row.append($('<th>').html(collaboratorTableMetadata.tableColumnTitle2 + "" + $('#ego_label').text()));
 
-	header.append(row);
+    header.append(row);
 
-	table.append(header);
+    table.append(header);
 
-	$.each(tableData, function(i, item){
+    $.each(tableData, function (i, item) {
 
-		/*
-		 * Make sure that we dont append a row that belong to the ego in the "co-investigator/author" table.
-		 * */
-		if (item.url !== unEncodedEgoURI) {
+        /*
+         * Make sure that we dont append a row that belong to the ego in the "co-investigator/author" table.
+         * */
+        if (item.url !== unEncodedEgoURI) {
 
-			number_of_works = item[collaboratorTableMetadata.jsonNumberWorksProperty];
+            number_of_works = item[collaboratorTableMetadata.jsonNumberWorksProperty];
 
-			var row = $('<tr>');
+            var row = $('<tr>');
 
-			row.append($('<td>').html(item.label));
-			row.append($('<td>').html(number_of_works));
+            row.append($('<td>').html(item.label));
+            row.append($('<td>').html(number_of_works));
 
-			table.append(row);
-		}
+            table.append(row);
+        }
 
-	});
+    });
 
-	table.prependTo('#' + tableContainer);
-	$('#' + tableContainer + " #loadingData").remove();
+    table.prependTo('#' + tableContainer);
+    $('#' + tableContainer + " #loadingData").remove();
 
 }
 
@@ -267,7 +267,7 @@ function createTable(tableID, tableContainer, tableData) {
  * passing two parameters to the flash code using flashvars (see renderCoAuthorshipVisualization())
  * and they are delimited using '&' too.
  */
-function getEncodedURLFor(visType){
-	var queryString = "uri="+ egoURI + "&vis=" + visType;
-	return location.protocol + "//" + location.host + contextPath + visualizationDataRoot + '?' + queryString.replace(/&/g, '%26');
+function getEncodedURLFor(visType) {
+    var queryString = "uri=" + egoURI + "&vis=" + visType;
+    return location.protocol + "//" + location.host + contextPath + visualizationDataRoot + '?' + queryString.replace(/&/g, '%26');
 }

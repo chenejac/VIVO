@@ -1,10 +1,10 @@
 package org.vivoweb.webapp.startup;
 
-import edu.cornell.mannlib.vitro.webapp.utils.menuManagement.MenuManagementDataUtils;
-import edu.cornell.mannlib.vitro.webapp.utils.menuManagement.VIVOMenuManagementDataUtils;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import edu.cornell.mannlib.vitro.webapp.utils.menuManagement.MenuManagementDataUtils;
+import edu.cornell.mannlib.vitro.webapp.utils.menuManagement.VIVOMenuManagementDataUtils;
 
 public class MenuManagementSetup implements ServletContextListener {
     @Override

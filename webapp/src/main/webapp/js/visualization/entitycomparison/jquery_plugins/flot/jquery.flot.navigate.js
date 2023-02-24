@@ -61,7 +61,126 @@ other. Either can be null.
 jquery.event.drag.js ~ v1.5 ~ Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)
 Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt
 */
-(function(E){E.fn.drag=function(L,K,J){if(K){this.bind("dragstart",L)}if(J){this.bind("dragend",J)}return !L?this.trigger("drag"):this.bind("drag",K?K:L)};var A=E.event,B=A.special,F=B.drag={not:":input",distance:0,which:1,dragging:false,setup:function(J){J=E.extend({distance:F.distance,which:F.which,not:F.not},J||{});J.distance=I(J.distance);A.add(this,"mousedown",H,J);if(this.attachEvent){this.attachEvent("ondragstart",D)}},teardown:function(){A.remove(this,"mousedown",H);if(this===F.dragging){F.dragging=F.proxy=false}G(this,true);if(this.detachEvent){this.detachEvent("ondragstart",D)}}};B.dragstart=B.dragend={setup:function(){},teardown:function(){}};function H(L){var K=this,J,M=L.data||{};if(M.elem){K=L.dragTarget=M.elem;L.dragProxy=F.proxy||K;L.cursorOffsetX=M.pageX-M.left;L.cursorOffsetY=M.pageY-M.top;L.offsetX=L.pageX-L.cursorOffsetX;L.offsetY=L.pageY-L.cursorOffsetY}else{if(F.dragging||(M.which>0&&L.which!=M.which)||E(L.target).is(M.not)){return }}switch(L.type){case"mousedown":E.extend(M,E(K).offset(),{elem:K,target:L.target,pageX:L.pageX,pageY:L.pageY});A.add(document,"mousemove mouseup",H,M);G(K,false);F.dragging=null;return false;case !F.dragging&&"mousemove":if(I(L.pageX-M.pageX)+I(L.pageY-M.pageY)<M.distance){break}L.target=M.target;J=C(L,"dragstart",K);if(J!==false){F.dragging=K;F.proxy=L.dragProxy=E(J||K)[0]}case"mousemove":if(F.dragging){J=C(L,"drag",K);if(B.drop){B.drop.allowed=(J!==false);B.drop.handler(L)}if(J!==false){break}L.type="mouseup"}case"mouseup":A.remove(document,"mousemove mouseup",H);if(F.dragging){if(B.drop){B.drop.handler(L)}C(L,"dragend",K)}G(K,true);F.dragging=F.proxy=M.elem=false;break}return true}function C(M,K,L){M.type=K;var J=E.event.handle.call(L,M);return J===false?false:J||M.result}function I(J){return Math.pow(J,2)}function D(){return(F.dragging===false)}function G(K,J){if(!K){return }K.unselectable=J?"off":"on";K.onselectstart=function(){return J};if(K.style){K.style.MozUserSelect=J?"":"none"}}})(jQuery);
+(function (E) {
+    E.fn.drag = function (L, K, J) {
+        if (K) {
+            this.bind("dragstart", L)
+        }
+        if (J) {
+            this.bind("dragend", J)
+        }
+        return !L ? this.trigger("drag") : this.bind("drag", K ? K : L)
+    };
+    var A = E.event, B = A.special, F = B.drag = {
+        not: ":input", distance: 0, which: 1, dragging: false, setup: function (J) {
+            J = E.extend({distance: F.distance, which: F.which, not: F.not}, J || {});
+            J.distance = I(J.distance);
+            A.add(this, "mousedown", H, J);
+            if (this.attachEvent) {
+                this.attachEvent("ondragstart", D)
+            }
+        }, teardown: function () {
+            A.remove(this, "mousedown", H);
+            if (this === F.dragging) {
+                F.dragging = F.proxy = false
+            }
+            G(this, true);
+            if (this.detachEvent) {
+                this.detachEvent("ondragstart", D)
+            }
+        }
+    };
+    B.dragstart = B.dragend = {
+        setup: function () {
+        }, teardown: function () {
+        }
+    };
+
+    function H(L) {
+        var K = this, J, M = L.data || {};
+        if (M.elem) {
+            K = L.dragTarget = M.elem;
+            L.dragProxy = F.proxy || K;
+            L.cursorOffsetX = M.pageX - M.left;
+            L.cursorOffsetY = M.pageY - M.top;
+            L.offsetX = L.pageX - L.cursorOffsetX;
+            L.offsetY = L.pageY - L.cursorOffsetY
+        } else {
+            if (F.dragging || (M.which > 0 && L.which != M.which) || E(L.target).is(M.not)) {
+                return
+            }
+        }
+        switch (L.type) {
+            case"mousedown":
+                E.extend(M, E(K).offset(), {elem: K, target: L.target, pageX: L.pageX, pageY: L.pageY});
+                A.add(document, "mousemove mouseup", H, M);
+                G(K, false);
+                F.dragging = null;
+                return false;
+            case !F.dragging && "mousemove":
+                if (I(L.pageX - M.pageX) + I(L.pageY - M.pageY) < M.distance) {
+                    break
+                }
+                L.target = M.target;
+                J = C(L, "dragstart", K);
+                if (J !== false) {
+                    F.dragging = K;
+                    F.proxy = L.dragProxy = E(J || K)[0]
+                }
+            case"mousemove":
+                if (F.dragging) {
+                    J = C(L, "drag", K);
+                    if (B.drop) {
+                        B.drop.allowed = (J !== false);
+                        B.drop.handler(L)
+                    }
+                    if (J !== false) {
+                        break
+                    }
+                    L.type = "mouseup"
+                }
+            case"mouseup":
+                A.remove(document, "mousemove mouseup", H);
+                if (F.dragging) {
+                    if (B.drop) {
+                        B.drop.handler(L)
+                    }
+                    C(L, "dragend", K)
+                }
+                G(K, true);
+                F.dragging = F.proxy = M.elem = false;
+                break
+        }
+        return true
+    }
+
+    function C(M, K, L) {
+        M.type = K;
+        var J = E.event.handle.call(L, M);
+        return J === false ? false : J || M.result
+    }
+
+    function I(J) {
+        return Math.pow(J, 2)
+    }
+
+    function D() {
+        return (F.dragging === false)
+    }
+
+    function G(K, J) {
+        if (!K) {
+            return
+        }
+        K.unselectable = J ? "off" : "on";
+        K.onselectstart = function () {
+            return J
+        };
+        if (K.style) {
+            K.style.MozUserSelect = J ? "" : "none"
+        }
+    }
+})(jQuery);
 
 
 /* jquery.mousewheel.min.js
@@ -75,9 +194,49 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
  *
  * Requires: 1.2.2+
  */
-(function(c){var a=["DOMMouseScroll","mousewheel"];c.event.special.mousewheel={setup:function(){if(this.addEventListener){for(var d=a.length;d;){this.addEventListener(a[--d],b,false)}}else{this.onmousewheel=b}},teardown:function(){if(this.removeEventListener){for(var d=a.length;d;){this.removeEventListener(a[--d],b,false)}}else{this.onmousewheel=null}}};c.fn.extend({mousewheel:function(d){return d?this.bind("mousewheel",d):this.trigger("mousewheel")},unmousewheel:function(d){return this.unbind("mousewheel",d)}});function b(f){var d=[].slice.call(arguments,1),g=0,e=true;f=c.event.fix(f||window.event);f.type="mousewheel";if(f.wheelDelta){g=f.wheelDelta/120}if(f.detail){g=-f.detail/3}d.unshift(f,g);return c.event.handle.apply(this,d)}})(jQuery);
+(function (c) {
+    var a = ["DOMMouseScroll", "mousewheel"];
+    c.event.special.mousewheel = {
+        setup: function () {
+            if (this.addEventListener) {
+                for (var d = a.length; d;) {
+                    this.addEventListener(a[--d], b, false)
+                }
+            } else {
+                this.onmousewheel = b
+            }
+        }, teardown: function () {
+            if (this.removeEventListener) {
+                for (var d = a.length; d;) {
+                    this.removeEventListener(a[--d], b, false)
+                }
+            } else {
+                this.onmousewheel = null
+            }
+        }
+    };
+    c.fn.extend({
+        mousewheel: function (d) {
+            return d ? this.bind("mousewheel", d) : this.trigger("mousewheel")
+        }, unmousewheel: function (d) {
+            return this.unbind("mousewheel", d)
+        }
+    });
 
-
+    function b(f) {
+        var d = [].slice.call(arguments, 1), g = 0, e = true;
+        f = c.event.fix(f || window.event);
+        f.type = "mousewheel";
+        if (f.wheelDelta) {
+            g = f.wheelDelta / 120
+        }
+        if (f.detail) {
+            g = -f.detail / 3
+        }
+        d.unshift(f, g);
+        return c.event.handle.apply(this, d)
+    }
+})(jQuery);
 
 
 (function ($) {
@@ -105,9 +264,9 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
                     c.left = e.pageX - c.left;
                     c.top = e.pageY - c.top;
                     if (zoomOut)
-                        plot.zoomOut({ center: c });
+                        plot.zoomOut({center: c});
                     else
-                        plot.zoom({ center: c });
+                        plot.zoom({center: c});
                 }
 
                 eventHolder[o.zoom.trigger](clickHandler);
@@ -120,7 +279,7 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
             if (o.pan.interactive) {
                 var prevCursor = 'default', pageX = 0, pageY = 0;
 
-                eventHolder.bind("dragstart", { distance: 10 }, function (e) {
+                eventHolder.bind("dragstart", {distance: 10}, function (e) {
                     if (e.which != 1)  // only accept left-click
                         return false;
                     eventHolderCursor = eventHolder.css('cursor');
@@ -134,8 +293,10 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
                 });
                 eventHolder.bind("dragend", function (e) {
                     eventHolder.css('cursor', prevCursor);
-                    plot.pan({ left: pageX - e.pageX,
-                               top: pageY - e.pageY });
+                    plot.pan({
+                        left: pageX - e.pageX,
+                        top: pageY - e.pageY
+                    });
                 });
             }
         }
@@ -162,7 +323,7 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
                 w = plot.width(), h = plot.height();
 
             if (!c)
-                c = { left: w / 2, top: h / 2 };
+                c = {left: w / 2, top: h / 2};
 
             var xf = c.left / w,
                 x1 = c.left - xf * w / amount,
@@ -189,7 +350,7 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
                 var range = max - min, zr = axisOptions.zoomRange;
                 if (zr &&
                     ((zr[0] != null && range < zr[0]) ||
-                     (zr[1] != null && range > zr[1])))
+                        (zr[1] != null && range > zr[1])))
                     return;
 
                 axisOptions.min = min;
@@ -205,7 +366,7 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
             plot.draw();
 
             if (!args.preventEvent)
-                plot.getPlaceholder().trigger("plotzoom", [ plot ]);
+                plot.getPlaceholder().trigger("plotzoom", [plot]);
         }
 
         plot.pan = function (args) {
@@ -226,7 +387,7 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
                     return;
 
                 min = axis.c2p(axis.p2c(axis.min) + delta),
-                max = axis.c2p(axis.p2c(axis.max) + delta);
+                    max = axis.c2p(axis.p2c(axis.max) + delta);
 
                 var pr = axisOptions.panRange;
                 if (pr) {
@@ -257,7 +418,7 @@ Licensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-L
             plot.draw();
 
             if (!args.preventEvent)
-                plot.getPlaceholder().trigger("plotpan", [ plot ]);
+                plot.getPlaceholder().trigger("plotpan", [plot]);
         }
 
         plot.hooks.bindEvents.push(bindEvents);

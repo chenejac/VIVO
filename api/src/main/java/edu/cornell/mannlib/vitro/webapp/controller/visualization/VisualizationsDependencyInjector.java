@@ -1,10 +1,9 @@
 /* $This file is distributed under the terms of the license in LICENSE$ */
 package edu.cornell.mannlib.vitro.webapp.controller.visualization;
 
+import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 import edu.cornell.mannlib.vitro.webapp.visualization.capabilitymap.CapabilityMapRequestHandler;
 import edu.cornell.mannlib.vitro.webapp.visualization.coauthorship.CoAuthorshipRequestHandler;
@@ -23,16 +22,17 @@ import edu.cornell.mannlib.vitro.webapp.visualization.visutils.VisualizationRequ
 
 public class VisualizationsDependencyInjector {
 
-	private static Map<String, VisualizationRequestHandler> visualizationIDsToClass;
+    private static Map<String, VisualizationRequestHandler> visualizationIDsToClass;
 
     /**
      * Instantiate the request handlers for each type of visualization.
+     *
      * @return a map of visualization ID string to request handler
      */
-	private synchronized static Map<String, VisualizationRequestHandler> initVisualizations(
-    		ServletContext servletContext) {
+    private synchronized static Map<String, VisualizationRequestHandler> initVisualizations(
+        ServletContext servletContext) {
         Map<String, VisualizationRequestHandler> handlers = new HashMap<
-                String, VisualizationRequestHandler>() ;
+            String, VisualizationRequestHandler>();
         handlers.put("capabilitymap", new CapabilityMapRequestHandler());
         handlers.put("cumulative_pub_count", new CumulativeCountRequestHandler());
         handlers.put("person_pub_count", new PersonPublicationCountRequestHandler());
@@ -44,13 +44,13 @@ public class VisualizationsDependencyInjector {
         handlers.put("author-network", personLevel);
         handlers.put("investigator-network", personLevel);
         TemporalPublicationVisualizationRequestHandler pubTemporal = new
-                TemporalPublicationVisualizationRequestHandler();
+            TemporalPublicationVisualizationRequestHandler();
         handlers.put("entity_comparison", pubTemporal);
         handlers.put("pub_temporal", pubTemporal);
         handlers.put("publication-graph", pubTemporal);
         handlers.put("coprincipalinvestigator", new CoPIGrantCountRequestHandler());
         TemporalGrantVisualizationRequestHandler grantTemporal = new
-                TemporalGrantVisualizationRequestHandler();
+            TemporalGrantVisualizationRequestHandler();
         handlers.put("entity_grant_count", grantTemporal);
         handlers.put("grant_temporal", grantTemporal);
         handlers.put("grant-graph", grantTemporal);
@@ -59,15 +59,15 @@ public class VisualizationsDependencyInjector {
         handlers.put("tools", new ToolsRequestHandler());
         visualizationIDsToClass = handlers;
         return visualizationIDsToClass;
-	}
+    }
 
-	public static Map<String, VisualizationRequestHandler> getVisualizationIDsToClassMap(
-			ServletContext servletContext) {
-		if (visualizationIDsToClass != null) {
-			return visualizationIDsToClass;
-		} else {
-			return initVisualizations(servletContext);
-		}
-	}
+    public static Map<String, VisualizationRequestHandler> getVisualizationIDsToClassMap(
+        ServletContext servletContext) {
+        if (visualizationIDsToClass != null) {
+            return visualizationIDsToClass;
+        } else {
+            return initVisualizations(servletContext);
+        }
+    }
 
 }

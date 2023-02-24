@@ -6,12 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.rdf.model.Literal;
-
-import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.N3ValidatorVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.EditConfigurationVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.MultiValueEditSubmission;
+import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.N3ValidatorVTwo;
 import edu.cornell.mannlib.vitro.webapp.i18n.I18nBundle;
+import org.apache.jena.rdf.model.Literal;
 
 public class FirstAndLastNameValidator implements N3ValidatorVTwo {
 
@@ -28,11 +27,11 @@ public class FirstAndLastNameValidator implements N3ValidatorVTwo {
 
     @Override
     public Map<String, String> validate(EditConfigurationVTwo editConfig,
-            MultiValueEditSubmission editSub) {
-        Map<String,List<String>> urisFromForm = editSub.getUrisFromForm();
-        Map<String,List<Literal>> literalsFromForm = editSub.getLiteralsFromForm();
+                                        MultiValueEditSubmission editSub) {
+        Map<String, List<String>> urisFromForm = editSub.getUrisFromForm();
+        Map<String, List<Literal>> literalsFromForm = editSub.getLiteralsFromForm();
 
-        Map<String,String> errors = new HashMap<String,String>();
+        Map<String, String> errors = new HashMap<String, String>();
 
         List<String> personUri = urisFromForm.get(uriReceiver);
         if (allListElementsEmpty(personUri) || personUri.contains(">SUBMITTED VALUE WAS BLANK<")) {
@@ -48,31 +47,32 @@ public class FirstAndLastNameValidator implements N3ValidatorVTwo {
         //To Do: update logic if multiple first names considered
         Literal firstName = null;
         List<Literal> firstNameList = literalsFromForm.get("firstName");
-        if(firstNameList != null && firstNameList.size() > 0) {
-        	firstName = firstNameList.get(0);
+        if (firstNameList != null && firstNameList.size() > 0) {
+            firstName = firstNameList.get(0);
         }
-        if( firstName != null &&
-        		firstName.getLexicalForm() != null &&
-        		"".equals(firstName.getLexicalForm()) )
+        if (firstName != null &&
+            firstName.getLexicalForm() != null &&
+            "".equals(firstName.getLexicalForm())) {
             firstName = null;
+        }
 
 
         List<Literal> lastNameList = literalsFromForm.get("lastName");
         Literal lastName = null;
-        if(lastNameList != null && lastNameList.size() > 0) {
-        	lastName = lastNameList.get(0);
+        if (lastNameList != null && lastNameList.size() > 0) {
+            lastName = lastNameList.get(0);
         }
         String lastNameValue = "";
         if (lastName != null) {
             lastNameValue = lastName.getLexicalForm();
-            if( "".equals(lastNameValue) ) {
+            if ("".equals(lastNameValue)) {
                 lastName = null;
             }
         }
 
         if (lastName == null) {
             errors.put("lastName", i18n.text(MISSING_LAST_NAME_ERROR));
-        // Don't reject space in the last name: de Vries, etc.
+            // Don't reject space in the last name: de Vries, etc.
         } else if (lastNameValue.contains(",")) {
             errors.put("lastName", i18n.text(MALFORMED_LAST_NAME_ERROR));
         }
@@ -85,19 +85,20 @@ public class FirstAndLastNameValidator implements N3ValidatorVTwo {
     }
 
     private boolean allListElementsEmpty(List<String> checkList) {
-    	if(checkList == null)
-    		return true;
-    	if(checkList.isEmpty()) {
-    		return true;
-    	}
-    	boolean allEmpty = true;
-    	for(String s: checkList) {
-    		if(s.length() != 0){
-    			allEmpty = false;
-    			break;
-    		}
-    	}
-    	return allEmpty;
+        if (checkList == null) {
+            return true;
+        }
+        if (checkList.isEmpty()) {
+            return true;
+        }
+        boolean allEmpty = true;
+        for (String s : checkList) {
+            if (s.length() != 0) {
+                allEmpty = false;
+                break;
+            }
+        }
+        return allEmpty;
     }
 
 }

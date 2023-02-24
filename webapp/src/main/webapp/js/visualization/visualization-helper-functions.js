@@ -4,21 +4,21 @@
  * For rendering images dynamically.
  *
  */
-$.fn.image = function(src, successFunc, failureFunc){
-	return this.each(function(){
-		var profileImage = new Image();
-		profileImage.onerror = failureFunc;
-		profileImage.onload = successFunc;
-		profileImage.src = src;
+$.fn.image = function (src, successFunc, failureFunc) {
+    return this.each(function () {
+        var profileImage = new Image();
+        profileImage.onerror = failureFunc;
+        profileImage.onload = successFunc;
+        profileImage.src = src;
 
-		return profileImage;
-	});
+        return profileImage;
+    });
 };
 
 
 /**
  * Function by Google Charts API Team to do "extended encode" of data.
-*/
+ */
 function extendedEncodeDataForChartURL(arrVals, maxVal) {
 
     var EXTENDED_MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
@@ -57,10 +57,10 @@ function extendedEncodeDataForChartURL(arrVals, maxVal) {
  */
 function constructVisualizationURLForSparkline(dataString, visualizationOptions) {
 
-	/*
-	 * Since we are directly going to use this URL in img tag, we are supposed to enocde "&"
-	 * update: But since we are directly using it in an Image creating function we dont need to encode it.
-	*/
+    /*
+     * Since we are directly going to use this URL in img tag, we are supposed to enocde "&"
+     * update: But since we are directly using it in an Image creating function we dont need to encode it.
+    */
     //var parameterDifferentiator = "&amp;";
     var parameterDifferentiator = "&";
 
@@ -90,23 +90,23 @@ function constructVisualizationURLForSparkline(dataString, visualizationOptions)
     var chartColor = "chco=" + visualizationOptions.color;
 
     return rootGoogleChartAPI_URL + chartType + parameterDifferentiator
-    			+ chartSize + parameterDifferentiator
-    			+ chartLabelPosition + parameterDifferentiator
-    			+ chartColor + parameterDifferentiator
-    			+ "chd=" + dataString
+        + chartSize + parameterDifferentiator
+        + chartLabelPosition + parameterDifferentiator
+        + chartColor + parameterDifferentiator
+        + "chd=" + dataString
 }
 
 /*
  * In IE trim() is not supported.
  * */
 if (typeof String.prototype.trim !== 'function') {
-	String.prototype.trim = function() {
-		return this.replace(/^\s+|\s+$/g, '');
-	}
+    String.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, '');
+    }
 }
 
 function toTitleCase(str) {
-	return str.replace(/\w\S*/g, function(txt) {
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-	});
+    return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
 }

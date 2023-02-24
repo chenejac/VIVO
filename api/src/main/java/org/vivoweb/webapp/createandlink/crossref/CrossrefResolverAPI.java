@@ -2,6 +2,10 @@
 
 package org.vivoweb.webapp.createandlink.crossref;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.cornell.mannlib.vitro.webapp.utils.http.HttpClientFactory;
@@ -18,18 +22,13 @@ import org.vivoweb.webapp.createandlink.CreateAndLinkUtils;
 import org.vivoweb.webapp.createandlink.ResourceModel;
 import org.vivoweb.webapp.createandlink.utils.HttpReader;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Interface to the CrossRef resolver
  */
 public class CrossrefResolverAPI {
-    protected final Log logger = LogFactory.getLog(getClass());
-
     // Base URL for the resolver
     private static final String CROSSREF_RESOLVER = "https://doi.org/";
+    protected final Log logger = LogFactory.getLog(getClass());
 
     /**
      * Find the DOI in CrossRef, filling the citation object
@@ -49,7 +48,8 @@ public class CrossrefResolverAPI {
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            CrossrefCiteprocJSONModel jsonModel = objectMapper.readValue(json, CrossrefCiteprocJSONModel.class);
+            CrossrefCiteprocJSONModel jsonModel =
+                objectMapper.readValue(json, CrossrefCiteprocJSONModel.class);
             if (jsonModel == null) {
                 return null;
             }
@@ -71,7 +71,8 @@ public class CrossrefResolverAPI {
                 for (CrossrefCiteprocJSONModel.NameField author : jsonModel.author) {
                     splitNameLiteral(author);
                     Citation.Name citationAuthor = new Citation.Name();
-                    citationAuthor.name = CreateAndLinkUtils.formatAuthorString(author.family, author.given);
+                    citationAuthor.name =
+                        CreateAndLinkUtils.formatAuthorString(author.family, author.given);
                     authors.add(citationAuthor);
                 }
                 citation.authors = authors.toArray(new Citation.Name[authors.size()]);
@@ -91,7 +92,7 @@ public class CrossrefResolverAPI {
 
             return json;
         } catch (Exception e) {
-            logger.error("[CREF] Error resolving DOI " + id + ", cause "+ e.getMessage());
+            logger.error("[CREF] Error resolving DOI " + id + ", cause " + e.getMessage());
             return null;
         }
     }
@@ -115,7 +116,6 @@ public class CrossrefResolverAPI {
     }
 
     /**
-     *
      * @param externalResource
      * @return
      */
@@ -208,7 +208,8 @@ public class CrossrefResolverAPI {
      * @param nameFields
      * @return
      */
-    private ResourceModel.NameField[] convertNameFields(CrossrefCiteprocJSONModel.NameField[] nameFields) {
+    private ResourceModel.NameField[] convertNameFields(
+        CrossrefCiteprocJSONModel.NameField[] nameFields) {
         if (nameFields == null) {
             return null;
         }
@@ -245,7 +246,7 @@ public class CrossrefResolverAPI {
                 case "proceedings-article":
                     return "paper-conference";
             }
-         }
+        }
 
         return type;
     }
@@ -282,10 +283,12 @@ public class CrossrefResolverAPI {
      * @param dateField
      * @return
      */
-    private ResourceModel.DateField convertDateField(CrossrefCiteprocJSONModel.DateField dateField) {
+    private ResourceModel.DateField convertDateField(
+        CrossrefCiteprocJSONModel.DateField dateField) {
         if (dateField != null) {
             ResourceModel.DateField resourceDate = new ResourceModel.DateField();
-            if (dateField.dateParts != null && dateField.dateParts.length > 0 && dateField.dateParts[0].length > 0) {
+            if (dateField.dateParts != null && dateField.dateParts.length > 0 &&
+                dateField.dateParts[0].length > 0) {
                 try {
                     resourceDate.year = Integer.parseInt(dateField.dateParts[0][0], 10);
                 } catch (NumberFormatException nfe) {
@@ -371,6 +374,7 @@ public class CrossrefResolverAPI {
 
     /**
      * Read JSON from the URL
+     *
      * @param url
      * @return
      */

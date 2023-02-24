@@ -2,6 +2,28 @@
 
 package org.vivoweb.webapp.controller.freemarker;
 
+import static edu.cornell.mannlib.vitro.webapp.auth.requestedAction.RequestedAction.SOME_LITERAL;
+import static edu.cornell.mannlib.vitro.webapp.auth.requestedAction.RequestedAction.SOME_PREDICATE;
+import static edu.cornell.mannlib.vitro.webapp.auth.requestedAction.RequestedAction.SOME_URI;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import edu.cornell.mannlib.vedit.beans.LoginStatusBean;
 import edu.cornell.mannlib.vitro.webapp.auth.permissions.SimplePermission;
 import edu.cornell.mannlib.vitro.webapp.auth.policy.PolicyHelper;
@@ -46,44 +68,14 @@ import org.vivoweb.webapp.createandlink.ResourceModel;
 import org.vivoweb.webapp.createandlink.crossref.CrossrefCreateAndLinkResourceProvider;
 import org.vivoweb.webapp.createandlink.pubmed.PubMedCreateAndLinkResourceProvider;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static edu.cornell.mannlib.vitro.webapp.auth.requestedAction.RequestedAction.SOME_LITERAL;
-import static edu.cornell.mannlib.vitro.webapp.auth.requestedAction.RequestedAction.SOME_PREDICATE;
-import static edu.cornell.mannlib.vitro.webapp.auth.requestedAction.RequestedAction.SOME_URI;
-
 /**
  * Main controller class for claiming (creating and/or linking) resources to a profile
  */
-@WebServlet(name = "CreateAndLinkResource", urlPatterns = {"/createAndLink/*"} )
+@WebServlet(name = "CreateAndLinkResource", urlPatterns = {"/createAndLink/*"})
 public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
     // Must be able to edit your own account to claim publications
-    public static final AuthorizationRequest REQUIRED_ACTIONS = SimplePermission.EDIT_OWN_ACCOUNT.ACTION;
-
-    // Mappings for publication type to ontology types / classes
-    private static final Map<String, String> typeToClassMap = new HashMap<>();
-
-    // Providers for resolving ids in different resource providers (e.g. CrossRef, PubMed)
-    private static final Map<String, CreateAndLinkResourceProvider> providers = new HashMap<>();
-
-    private static boolean providersRegistered = false;
-
+    public static final AuthorizationRequest REQUIRED_ACTIONS =
+        SimplePermission.EDIT_OWN_ACCOUNT.ACTION;
     /**
      * URIs of types and predicates in the VIVO ontology that we need for creating resources
      */
@@ -101,33 +93,31 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
     public static final String BIBO_PAGE_START = "http://purl.org/ontology/bibo/pageStart";
     public static final String BIBO_PMID = "http://purl.org/ontology/bibo/pmid";
     public static final String BIBO_VOLUME = "http://purl.org/ontology/bibo/volume";
-
     public static final String FOAF_FIRSTNAME = "http://xmlns.com/foaf/0.1/firstName";
     public static final String FOAF_LASTNAME = "http://xmlns.com/foaf/0.1/lastName";
-
     public static final String OBO_CONTACT_INFO_FOR = "http://purl.obolibrary.org/obo/ARG_2000029";
     public static final String OBO_HAS_CONTACT_INFO = "http://purl.obolibrary.org/obo/ARG_2000028";
-
     public static final String OBO_INHERES_IN = "http://purl.obolibrary.org/obo/RO_0000052";
-    public static final String OBO_BEARER_OF  = "http://purl.obolibrary.org/obo/RO_0000053";
-
+    public static final String OBO_BEARER_OF = "http://purl.obolibrary.org/obo/RO_0000053";
     public static final String RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label";
-
     public static final String VIVO_AUTHORSHIP = "http://vivoweb.org/ontology/core#Authorship";
     public static final String VIVO_DATETIME = "http://vivoweb.org/ontology/core#dateTime";
-    public static final String VIVO_DATETIMEPRECISION = "http://vivoweb.org/ontology/core#dateTimePrecision";
-    public static final String VIVO_DATETIMEVALUE = "http://vivoweb.org/ontology/core#dateTimeValue";
+    public static final String VIVO_DATETIMEPRECISION =
+        "http://vivoweb.org/ontology/core#dateTimePrecision";
+    public static final String VIVO_DATETIMEVALUE =
+        "http://vivoweb.org/ontology/core#dateTimeValue";
     public static final String VIVO_EDITORSHIP = "http://vivoweb.org/ontology/core#Editorship";
-    public static final String VIVO_HASPUBLICATIONVENUE = "http://vivoweb.org/ontology/core#hasPublicationVenue";
+    public static final String VIVO_HASPUBLICATIONVENUE =
+        "http://vivoweb.org/ontology/core#hasPublicationVenue";
     public static final String VIVO_PMCID = "http://vivoweb.org/ontology/core#pmcid";
-    public static final String VIVO_PUBLICATIONVENUEFOR = "http://vivoweb.org/ontology/core#publicationVenueFor";
+    public static final String VIVO_PUBLICATIONVENUEFOR =
+        "http://vivoweb.org/ontology/core#publicationVenueFor";
     public static final String VIVO_PUBLISHER = "http://vivoweb.org/ontology/core#publisher";
     public static final String VIVO_PUBLISHER_CLASS = "http://vivoweb.org/ontology/core#Publisher";
     public static final String VIVO_PUBLISHER_OF = "http://vivoweb.org/ontology/core#publisherOf";
     public static final String VIVO_RANK = "http://vivoweb.org/ontology/core#rank";
     public static final String VIVO_RELATEDBY = "http://vivoweb.org/ontology/core#relatedBy";
     public static final String VIVO_RELATES = "http://vivoweb.org/ontology/core#relates";
-
     public static final String VCARD_FAMILYNAME = "http://www.w3.org/2006/vcard/ns#familyName";
     public static final String VCARD_GIVENNAME = "http://www.w3.org/2006/vcard/ns#givenName";
     public static final String VCARD_HAS_NAME = "http://www.w3.org/2006/vcard/ns#hasName";
@@ -137,9 +127,39 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
     public static final String VCARD_NAME = "http://www.w3.org/2006/vcard/ns#Name";
     public static final String VCARD_URL_CLASS = "http://www.w3.org/2006/vcard/ns#URL";
     public static final String VCARD_URL_PROPERTY = "http://www.w3.org/2006/vcard/ns#url";
-
+    // Mappings for publication type to ontology types / classes
+    private static final Map<String, String> typeToClassMap = new HashMap<>();
+    // Providers for resolving ids in different resource providers (e.g. CrossRef, PubMed)
+    private static final Map<String, CreateAndLinkResourceProvider> providers = new HashMap<>();
     private static final String PROVIDER_DOI = "doi";
     private static final String PROVIDER_PMID = "pmid";
+    private static boolean providersRegistered = false;
+
+    public static Set<String> getEnabledProviders(ConfigurationProperties props) {
+        if (!providersRegistered) {
+            registerProviders(props);
+        }
+
+        return providers.keySet();
+    }
+
+    public static synchronized void registerProviders(ConfigurationProperties props) {
+        if (!providersRegistered) {
+            String provStr = props.getProperty("createAndLink.providers", "doi, pmid");
+            if (!StringUtils.isEmpty(provStr)) {
+                String[] provArr = provStr.split("[,]");
+                for (String provId : provArr) {
+                    if (PROVIDER_DOI.equalsIgnoreCase(provId.trim())) {
+                        providers.put(PROVIDER_DOI, new CrossrefCreateAndLinkResourceProvider());
+                    } else if (PROVIDER_PMID.equalsIgnoreCase(provId.trim())) {
+                        providers.put(PROVIDER_PMID, new PubMedCreateAndLinkResourceProvider());
+                    }
+                }
+            }
+
+            providersRegistered = true;
+        }
+    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -165,7 +185,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         typeToClassMap.put("musical_score", "http://vivoweb.org/ontology/core#Score");
         typeToClassMap.put("paper-conference", "http://vivoweb.org/ontology/core#ConferencePaper");
         typeToClassMap.put("patent", "http://purl.org/ontology/bibo/Patent");
-        typeToClassMap.put("personal_communication", "http://purl.org/ontology/bibo/PersonalCommunicationDocument");
+        typeToClassMap.put("personal_communication",
+            "http://purl.org/ontology/bibo/PersonalCommunicationDocument");
         typeToClassMap.put("post-weblog", "http://vivoweb.org/ontology/core#BlogPosting");
         typeToClassMap.put("report", "http://purl.org/ontology/bibo/Report");
         typeToClassMap.put("review", "http://vivoweb.org/ontology/core#Review");
@@ -175,32 +196,6 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
         // Populate the registry of resource providers
         registerProviders(props);
-    }
-
-    public static Set<String> getEnabledProviders(ConfigurationProperties props) {
-        if (!providersRegistered) {
-            registerProviders(props);
-        }
-
-        return providers.keySet();
-    }
-
-    public static synchronized  void registerProviders(ConfigurationProperties props) {
-        if (!providersRegistered) {
-            String provStr = props.getProperty("createAndLink.providers", "doi, pmid");
-            if (!StringUtils.isEmpty(provStr)) {
-                String[] provArr = provStr.split("[,]");
-                for (String provId : provArr) {
-                    if (PROVIDER_DOI.equalsIgnoreCase(provId.trim())) {
-                        providers.put(PROVIDER_DOI,  new CrossrefCreateAndLinkResourceProvider());
-                    } else if (PROVIDER_PMID.equalsIgnoreCase(provId.trim())) {
-                        providers.put(PROVIDER_PMID, new PubMedCreateAndLinkResourceProvider());
-                    }
-                }
-            }
-
-            providersRegistered = true;
-        }
     }
 
     /**
@@ -232,7 +227,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         int typePos = requestURI.indexOf("/createAndLink/") + 15;
         if (typePos < requestURI.length()) {
             if (requestURI.indexOf('/', typePos) > typePos) {
-                externalProvider = requestURI.substring(typePos, requestURI.indexOf('/', typePos) - 1);
+                externalProvider =
+                    requestURI.substring(typePos, requestURI.indexOf('/', typePos) - 1);
             } else {
                 externalProvider = requestURI.substring(typePos);
             }
@@ -266,7 +262,9 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         SelfEditingConfiguration sec = SelfEditingConfiguration.getBean(vreq);
 
         // Find the profile(s) associated with this user
-        List<Individual> assocInds = sec.getAssociatedIndividuals(vreq.getWebappDaoFactory().getIndividualDao(), loggedInAccount.getExternalAuthId());
+        List<Individual> assocInds =
+            sec.getAssociatedIndividuals(vreq.getWebappDaoFactory().getIndividualDao(),
+                loggedInAccount.getExternalAuthId());
         if (!assocInds.isEmpty()) {
             if (person == null) {
                 // If we have associated profiles, ensure that a valid person profile really does exist
@@ -275,7 +273,7 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     person = individualDao.getIndividualByURI(profileUri);
                     isProfileUriForLoggedIn = true;
                 }
-            } else if (!StringUtils.isEmpty(profileUri)){
+            } else if (!StringUtils.isEmpty(profileUri)) {
                 for (Individual ind : assocInds) {
                     if (ind.getURI().equalsIgnoreCase(profileUri)) {
                         isProfileUriForLoggedIn = true;
@@ -292,23 +290,28 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         // If the profile isn't associated with the logged in user
         if (!isProfileUriForLoggedIn) {
             // Check that we have back end editing priveleges
-            if (!PolicyHelper.isAuthorizedForActions(vreq, SimplePermission.DO_BACK_END_EDITING.ACTION)) {
+            if (!PolicyHelper
+                .isAuthorizedForActions(vreq, SimplePermission.DO_BACK_END_EDITING.ACTION)) {
                 // If all else fails, can we add statements to this individual?
-                AddDataPropertyStatement adps = new AddDataPropertyStatement(vreq.getJenaOntModel(), profileUri, SOME_URI, SOME_LITERAL);
-                AddObjectPropertyStatement aops = new AddObjectPropertyStatement(vreq.getJenaOntModel(), profileUri, SOME_PREDICATE, SOME_URI);
+                AddDataPropertyStatement adps =
+                    new AddDataPropertyStatement(vreq.getJenaOntModel(), profileUri, SOME_URI,
+                        SOME_LITERAL);
+                AddObjectPropertyStatement aops =
+                    new AddObjectPropertyStatement(vreq.getJenaOntModel(), profileUri,
+                        SOME_PREDICATE, SOME_URI);
                 if (!PolicyHelper.isAuthorizedForActions(vreq, adps.or(aops))) {
                     return new TemplateResponseValues("unauthorizedForProfile.ftl");
                 }
             }
         }
 
-            // Create a map of common values to pass to the templates
+        // Create a map of common values to pass to the templates
         Map<String, Object> templateValues = new HashMap<>();
         templateValues.put("link", profileUri);
         templateValues.put("label", provider.getLabel());
         templateValues.put("provider", externalProvider);
         templateValues.put("profileUri", profileUri);
-        templateValues.put("personLabel",    person.getRdfsLabel());
+        templateValues.put("personLabel", person.getRdfsLabel());
         templateValues.put("personThumbUrl", person.getThumbUrl());
 
         // Get the requested action (e.g. find, confirm)
@@ -338,14 +341,16 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     // Ensure that we have an ID
                     if (!StringUtils.isEmpty(externalId)) {
                         // Check that the user is claiming a relationship to the resource
-                        if (!"notmine".equalsIgnoreCase(vreq.getParameter("contributor" + externalId))) {
+                        if (!"notmine"
+                            .equalsIgnoreCase(vreq.getParameter("contributor" + externalId))) {
                             // If we are processing a resource that is already in VIVO, get the Vivo URI from the form
                             String vivoUri = vreq.getParameter("vivoUri" + externalId);
 
                             // If we don't already know that the resource has been created in VIVO
                             if (StringUtils.isEmpty(vivoUri)) {
                                 // Check that it hasn't been created since when we first rendered the page
-                                ExternalIdentifiers allExternalIds = provider.allExternalIDsForFind(externalId);
+                                ExternalIdentifiers allExternalIds =
+                                    provider.allExternalIDsForFind(externalId);
                                 vivoUri = findInVIVO(vreq, allExternalIds, profileUri, null);
                             }
 
@@ -357,18 +362,23 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                                 String typeUri = vreq.getParameter("type" + externalId);
 
                                 // Get the appropriate resource provider for the external ID from the form
-                                String resourceProvider = vreq.getParameter("externalProvider" + externalId);
+                                String resourceProvider =
+                                    vreq.getParameter("externalProvider" + externalId);
 
                                 // Get an intermediate ResourceModel from the provider
                                 if (providers.containsKey(resourceProvider)) {
-                                    resourceModel = providers.get(resourceProvider).makeResourceModel(externalId, vreq.getParameter("externalResource" + externalId));
+                                    resourceModel = providers.get(resourceProvider)
+                                        .makeResourceModel(externalId,
+                                            vreq.getParameter("externalResource" + externalId));
                                 } else {
-                                    resourceModel = provider.makeResourceModel(externalId, vreq.getParameter("externalResource" + externalId));
+                                    resourceModel = provider.makeResourceModel(externalId,
+                                        vreq.getParameter("externalResource" + externalId));
                                 }
 
                                 // If we have an intermediate model, create the VIVO representation from the model
                                 if (resourceModel != null) {
-                                    vivoUri = createVIVOObject(vreq, updatedModel, resourceModel, typeUri);
+                                    vivoUri = createVIVOObject(vreq, updatedModel, resourceModel,
+                                        typeUri);
                                 }
                             } else {
                                 // Get the existing statements for the model, and add them to the both in-memory models
@@ -378,7 +388,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                             }
 
                             // Process the user's chosen relationship with the resource, updating the updated model
-                            processRelationships(vreq, updatedModel, vivoUri, profileUri, vreq.getParameter("contributor" + externalId));
+                            processRelationships(vreq, updatedModel, vivoUri, profileUri,
+                                vreq.getParameter("contributor" + externalId));
                         }
                     }
                 }
@@ -393,7 +404,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             // If There are no IDs left to process, go back to the entry screen
             if (StringUtils.isEmpty(externalIdsToFind)) {
                 templateValues.put("showConfirmation", true);
-                return new TemplateResponseValues("createAndLinkResourceEnterID.ftl", templateValues);
+                return new TemplateResponseValues("createAndLinkResourceEnterID.ftl",
+                    templateValues);
             }
         } else if ("findID".equals(action)) {
             // User has pressed a "findID" button - e.g. has entered IDs of resources on the initial entry screen
@@ -444,7 +456,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                             CreateAndLinkResourceProvider doiProvider = providers.get("doi");
                             if (doiProvider != null) {
                                 // Attempt to find the DOI in via the doi resource provider (fills the citation object)
-                                citation.externalResource = doiProvider.findInExternal(allExternalIds.DOI, citation);
+                                citation.externalResource =
+                                    doiProvider.findInExternal(allExternalIds.DOI, citation);
 
                                 // If we were successful, record that the record was looked up via DOI
                                 if (!StringUtils.isEmpty(citation.externalResource)) {
@@ -457,7 +470,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                         if (StringUtils.isEmpty(citation.externalResource)) {
                             // Only if the original identifier was not a DOI
                             if (!"doi".equalsIgnoreCase(externalProvider)) {
-                                citation.externalResource = provider.findInExternal(externalId, citation);
+                                citation.externalResource =
+                                    provider.findInExternal(externalId, citation);
                                 citation.externalProvider = externalProvider;
                             }
                         }
@@ -497,11 +511,13 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                 }
 
                 // Show the confirmation page for the processed identifiers
-                return new TemplateResponseValues("createAndLinkResourceConfirm.ftl", templateValues);
+                return new TemplateResponseValues("createAndLinkResourceConfirm.ftl",
+                    templateValues);
             } else {
                 // Nothing to show, so go back to the form, passing an indicator that nothing was found
                 templateValues.put("notfound", true);
-                return new TemplateResponseValues("createAndLinkResourceEnterID.ftl", templateValues);
+                return new TemplateResponseValues("createAndLinkResourceEnterID.ftl",
+                    templateValues);
             }
         }
 
@@ -515,13 +531,13 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         name.name = null;
 
         String vcardQuery = "SELECT ?givenName ?familyName\n" +
-                "WHERE\n" +
-                "{\n" +
-                "  <" + profileUri + "> <" + OBO_HAS_CONTACT_INFO + "> ?vCard .\n" +
-                "  ?vCard <" + VCARD_HAS_NAME + "> ?vCardName .\n" +
-                "  ?vCardName <" + VCARD_FAMILYNAME + "> ?familyName .\n" +
-                "  OPTIONAL { ?vCardName <" + VCARD_GIVENNAME + "> ?givenName . }\n" +
-                "}\n";
+            "WHERE\n" +
+            "{\n" +
+            "  <" + profileUri + "> <" + OBO_HAS_CONTACT_INFO + "> ?vCard .\n" +
+            "  ?vCard <" + VCARD_HAS_NAME + "> ?vCardName .\n" +
+            "  ?vCardName <" + VCARD_FAMILYNAME + "> ?familyName .\n" +
+            "  OPTIONAL { ?vCardName <" + VCARD_GIVENNAME + "> ?givenName . }\n" +
+            "}\n";
 
         try {
             // Process the query
@@ -529,16 +545,21 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                 @Override
                 protected void processQuerySolution(QuerySolution qs) {
                     // Get the name(s) from the result set
-                    Literal familyName = qs.contains("familyName") ? qs.getLiteral("familyName") : null;
-                    Literal givenName  = qs.contains("givenName") ? qs.getLiteral("givenName") : null;
+                    Literal familyName =
+                        qs.contains("familyName") ? qs.getLiteral("familyName") : null;
+                    Literal givenName =
+                        qs.contains("givenName") ? qs.getLiteral("givenName") : null;
 
                     if (StringUtils.isEmpty(name.name)) {
                         // If we have a first / last name, create a formatted author string
                         if (familyName != null) {
                             if (givenName != null) {
-                                name.name = CreateAndLinkUtils.formatAuthorString(familyName.getString(), givenName.getString());
+                                name.name = CreateAndLinkUtils
+                                    .formatAuthorString(familyName.getString(),
+                                        givenName.getString());
                             } else {
-                                name.name = CreateAndLinkUtils.formatAuthorString(familyName.getString(), null);
+                                name.name = CreateAndLinkUtils
+                                    .formatAuthorString(familyName.getString(), null);
                             }
                         }
                     }
@@ -549,11 +570,11 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         }
 
         String foafQuery = "SELECT ?givenName ?familyName\n" +
-                "WHERE\n" +
-                "{\n" +
-                "  <" + profileUri + "> <" + FOAF_LASTNAME + "> ?familyName .\n" +
-                "  OPTIONAL { <" + profileUri + "> <" + FOAF_FIRSTNAME + "> ?givenName . }\n" +
-                "}";
+            "WHERE\n" +
+            "{\n" +
+            "  <" + profileUri + "> <" + FOAF_LASTNAME + "> ?familyName .\n" +
+            "  OPTIONAL { <" + profileUri + "> <" + FOAF_FIRSTNAME + "> ?givenName . }\n" +
+            "}";
 
         if (StringUtils.isEmpty(name.name)) {
             try {
@@ -562,16 +583,21 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     @Override
                     protected void processQuerySolution(QuerySolution qs) {
                         // Get the name(s) from the result set
-                        Literal familyName = qs.contains("familyName") ? qs.getLiteral("familyName") : null;
-                        Literal givenName  = qs.contains("givenName") ? qs.getLiteral("givenName") : null;
+                        Literal familyName =
+                            qs.contains("familyName") ? qs.getLiteral("familyName") : null;
+                        Literal givenName =
+                            qs.contains("givenName") ? qs.getLiteral("givenName") : null;
 
                         if (StringUtils.isEmpty(name.name)) {
                             // If we have a first / last name, create a formatted author string
                             if (familyName != null) {
                                 if (givenName != null) {
-                                    name.name = CreateAndLinkUtils.formatAuthorString(familyName.getString(), givenName.getString());
+                                    name.name = CreateAndLinkUtils
+                                        .formatAuthorString(familyName.getString(),
+                                            givenName.getString());
                                 } else {
-                                    name.name = CreateAndLinkUtils.formatAuthorString(familyName.getString(), null);
+                                    name.name = CreateAndLinkUtils
+                                        .formatAuthorString(familyName.getString(), null);
                                 }
                             }
                         }
@@ -583,10 +609,10 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         }
 
         String labelQuery = "SELECT ?label\n" +
-                "WHERE\n" +
-                "{\n" +
-                "  <" + profileUri + "> <" + RDFS_LABEL + "> ?label .\n" +
-                "}\n";
+            "WHERE\n" +
+            "{\n" +
+            "  <" + profileUri + "> <" + RDFS_LABEL + "> ?label .\n" +
+            "}\n";
 
         if (StringUtils.isEmpty(name.name)) {
             try {
@@ -595,7 +621,7 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     @Override
                     protected void processQuerySolution(QuerySolution qs) {
                         // Get the name(s) from the result set
-                        Literal label      = qs.contains("label") ? qs.getLiteral("label") : null;
+                        Literal label = qs.contains("label") ? qs.getLiteral("label") : null;
 
                         String authorStr = null;
                         if (label != null) {
@@ -640,7 +666,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
      * @param citation
      * @param profileUri
      */
-    protected void proposeAuthorToLink(VitroRequest vreq, final Citation citation, String profileUri) {
+    protected void proposeAuthorToLink(VitroRequest vreq, final Citation citation,
+                                       String profileUri) {
         // If the resource has no idnetifiers, we have nothing to do
         if (citation.authors == null) {
             return;
@@ -678,7 +705,7 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
         try {
             String query =
-                    "PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>\n" +
+                "PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>\n" +
                     "PREFIX vivo:     <http://vivoweb.org/ontology/core#>\n" +
                     "PREFIX obo:     <http://purl.obolibrary.org/obo/>\n" +
                     "\n" +
@@ -753,7 +780,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
      * @param userUri
      * @param relationship
      */
-    protected void processRelationships(VitroRequest vreq, Model model, String vivoUri, String userUri, String relationship) {
+    protected void processRelationships(VitroRequest vreq, Model model, String vivoUri,
+                                        String userUri, String relationship) {
         if (relationship != null) {
             // If authorship is being claimed
             if (relationship.startsWith("author")) {
@@ -762,12 +790,16 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                 authorship.addProperty(RDF.type, model.getResource(VIVO_AUTHORSHIP));
 
                 // Add the resource and the user as relates predicates of the context
-                authorship.addProperty(model.createProperty(VIVO_RELATES), model.getResource(vivoUri));
-                authorship.addProperty(model.createProperty(VIVO_RELATES), model.getResource(userUri));
+                authorship
+                    .addProperty(model.createProperty(VIVO_RELATES), model.getResource(vivoUri));
+                authorship
+                    .addProperty(model.createProperty(VIVO_RELATES), model.getResource(userUri));
 
                 // Add related by predicates to the user and resource, linking to the context
-                model.getResource(vivoUri).addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
-                model.getResource(userUri).addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
+                model.getResource(vivoUri)
+                    .addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
+                model.getResource(userUri)
+                    .addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
 
                 // If the relationship contains an author position
                 if (relationship.length() > 6) {
@@ -788,12 +820,16 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                 editorship.addProperty(RDF.type, model.getResource(VIVO_EDITORSHIP));
 
                 // Add the resource and the user as relates predicates of the context
-                editorship.addProperty(model.createProperty(VIVO_RELATES), model.getResource(vivoUri));
-                editorship.addProperty(model.createProperty(VIVO_RELATES), model.getResource(userUri));
+                editorship
+                    .addProperty(model.createProperty(VIVO_RELATES), model.getResource(vivoUri));
+                editorship
+                    .addProperty(model.createProperty(VIVO_RELATES), model.getResource(userUri));
 
                 // Add related by predicates to the user and resource, linking to the context
-                model.getResource(vivoUri).addProperty(model.createProperty(VIVO_RELATEDBY), editorship);
-                model.getResource(userUri).addProperty(model.createProperty(VIVO_RELATEDBY), editorship);
+                model.getResource(vivoUri)
+                    .addProperty(model.createProperty(VIVO_RELATEDBY), editorship);
+                model.getResource(userUri)
+                    .addProperty(model.createProperty(VIVO_RELATEDBY), editorship);
             }
         }
     }
@@ -806,8 +842,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
      */
     protected void removeAuthorship(VitroRequest vreq, Model model, String vivoUri, int rank) {
         // Prepare property / resources outsite of the loop
-        Property RANK_PREDICATE      = model.getProperty(VIVO_RANK);
-        Property RELATES_PREDICATE   = model.getProperty(VIVO_RELATES);
+        Property RANK_PREDICATE = model.getProperty(VIVO_RANK);
+        Property RELATES_PREDICATE = model.getProperty(VIVO_RELATES);
         Resource AUTHORSHIP_RESOURCE = model.getResource(VIVO_AUTHORSHIP);
 
         // Lookp through all the subjects in the model
@@ -835,9 +871,11 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                                         Resource relatedResource = rdfNode.asResource();
 
                                         // Ensure that the object resource is a VCARD
-                                        if (relatedResource.hasProperty(RDF.type, model.getResource(VCARD_INDIVIDUAL))) {
+                                        if (relatedResource.hasProperty(RDF.type,
+                                            model.getResource(VCARD_INDIVIDUAL))) {
                                             // If the VCARD has no other references
-                                            if (isVCardOnlyLinkedToAuthorship(vreq.getRDFService(), subject.getURI(), relatedResource.getURI())) {
+                                            if (isVCardOnlyLinkedToAuthorship(vreq.getRDFService(),
+                                                subject.getURI(), relatedResource.getURI())) {
                                                 // Remove the VCARD
                                                 removeVCard(model, relatedResource.getURI());
                                             }
@@ -858,15 +896,17 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         }
     }
 
-    private boolean isVCardOnlyLinkedToAuthorship(final RDFService rdfService, final String authorshipUri, final String vcardUri) {
+    private boolean isVCardOnlyLinkedToAuthorship(final RDFService rdfService,
+                                                  final String authorshipUri,
+                                                  final String vcardUri) {
         final List<String> subjects = new ArrayList<>();
         String query = "SELECT ?s ?p\n" +
-                "WHERE\n" +
-                "{\n" +
-                "  {\n" +
-                "  \t?s ?p <" + vcardUri + "> .\n" +
-                "  }\n" +
-                "}\n";
+            "WHERE\n" +
+            "{\n" +
+            "  {\n" +
+            "  \t?s ?p <" + vcardUri + "> .\n" +
+            "  }\n" +
+            "}\n";
 
         try {
             rdfService.sparqlSelectQuery(query, new ResultSetConsumer() {
@@ -914,7 +954,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
      * @param resourceModel
      * @return
      */
-    protected String createVIVOObject(VitroRequest vreq, Model model, ResourceModel resourceModel, String typeUri) {
+    protected String createVIVOObject(VitroRequest vreq, Model model, ResourceModel resourceModel,
+                                      String typeUri) {
         String vivoUri = getUnusedUri(vreq);
 
         // Create the resource in our model
@@ -923,7 +964,7 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         // Add the correct type to the resource
         if (!StringUtils.isEmpty(typeUri)) {
             // If the form passed a type uri, ensure that it is a known type URI
-            for (PublicationType publicationType: getPublicationTypes(vreq)) {
+            for (PublicationType publicationType : getPublicationTypes(vreq)) {
                 // We have a known type, so record it on the work
                 if (typeUri.equals(publicationType.getUri())) {
                     work.addProperty(RDF.type, model.getResource(typeUri));
@@ -935,7 +976,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         // If the work does not have a type set
         if (!work.hasProperty(RDF.type)) {
             // Try to map the type in the external model, or use academic article if none.
-            work.addProperty(RDF.type, model.getResource(typeToClassMap.getOrDefault(resourceModel.type, BIBO_ARTICLE)));
+            work.addProperty(RDF.type,
+                model.getResource(typeToClassMap.getOrDefault(resourceModel.type, BIBO_ARTICLE)));
         }
 
         // Add the title
@@ -956,7 +998,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
         // Add a PubMed Central ID
         if (!StringUtils.isEmpty(resourceModel.PubMedCentralID)) {
-            work.addProperty(model.createProperty(VIVO_PMCID), resourceModel.PubMedCentralID.toLowerCase());
+            work.addProperty(model.createProperty(VIVO_PMCID),
+                resourceModel.PubMedCentralID.toLowerCase());
         }
 
         // Add the journal
@@ -980,15 +1023,18 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     }
 
                     if (!StringUtils.isEmpty(resourceModel.publisher)) {
-                        String publisherUri = findVIVOUriForPublisher(vreq.getRDFService(), resourceModel.publisher);
+                        String publisherUri =
+                            findVIVOUriForPublisher(vreq.getRDFService(), resourceModel.publisher);
 
                         Resource publisher = null;
                         if (!StringUtils.isEmpty(publisherUri)) {
                             publisher = model.getResource(publisherUri);
                         } else {
-                            publisher = model.createResource(getPublisherURI(vreq, resourceModel.publisher));
+                            publisher = model
+                                .createResource(getPublisherURI(vreq, resourceModel.publisher));
                             publisher.addProperty(RDFS.label, resourceModel.publisher);
-                            publisher.addProperty(RDF.type, model.getResource(VIVO_PUBLISHER_CLASS));
+                            publisher
+                                .addProperty(RDF.type, model.getResource(VIVO_PUBLISHER_CLASS));
                         }
 
                         if (publisher != null) {
@@ -1035,7 +1081,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     }
 
                     if (!StringUtils.isEmpty(resourceModel.publisher)) {
-                        Resource publisher = model.createResource(getPublisherURI(vreq, resourceModel.publisher));
+                        Resource publisher =
+                            model.createResource(getPublisherURI(vreq, resourceModel.publisher));
                         publisher.addProperty(RDFS.label, resourceModel.publisher);
                         publisher.addProperty(RDF.type, model.getResource(VIVO_PUBLISHER_CLASS));
                         publisher.addProperty(model.createProperty(VIVO_PUBLISHER_OF), book);
@@ -1073,10 +1120,11 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         }
 
         // Add a page count
-        if (!StringUtils.isEmpty(resourceModel.pageStart) && !StringUtils.isEmpty(resourceModel.pageEnd)) {
+        if (!StringUtils.isEmpty(resourceModel.pageStart) &&
+            !StringUtils.isEmpty(resourceModel.pageEnd)) {
             try {
                 int pageStart = Integer.parseInt(resourceModel.pageStart, 10);
-                int pageEnd   = Integer.parseInt(resourceModel.pageEnd, 10);
+                int pageEnd = Integer.parseInt(resourceModel.pageEnd, 10);
 
                 if (pageStart > 0) {
                     if (pageEnd > pageStart) {
@@ -1103,7 +1151,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             int rank = 1;
             for (ResourceModel.NameField author : resourceModel.author) {
                 if (author != null) {
-                    Resource vcard = model.createResource(getVCardURI(vreq, author.family, author.given));
+                    Resource vcard =
+                        model.createResource(getVCardURI(vreq, author.family, author.given));
                     vcard.addProperty(RDF.type, model.getResource(VCARD_INDIVIDUAL));
 
                     Resource name = model.createResource(getUnusedUri(vreq));
@@ -1119,10 +1168,13 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                     Resource authorship = model.createResource(getUnusedUri(vreq));
                     authorship.addProperty(RDF.type, model.getResource(VIVO_AUTHORSHIP));
 
-                    authorship.addProperty(model.createProperty(VIVO_RELATES), model.getResource(vivoUri));
-                    authorship.addProperty(model.createProperty(VIVO_RELATES), model.getResource(vcard.getURI()));
+                    authorship.addProperty(model.createProperty(VIVO_RELATES),
+                        model.getResource(vivoUri));
+                    authorship.addProperty(model.createProperty(VIVO_RELATES),
+                        model.getResource(vcard.getURI()));
 
-                    model.getResource(vivoUri).addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
+                    model.getResource(vivoUri)
+                        .addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
                     vcard.addProperty(model.createProperty(VIVO_RELATEDBY), authorship);
                     authorship.addLiteral(model.createProperty(VIVO_RANK), rank);
                 }
@@ -1197,7 +1249,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
      * @param date
      * @return
      */
-    protected boolean addDateToResource(VitroRequest vreq, Resource work, ResourceModel.DateField date) {
+    protected boolean addDateToResource(VitroRequest vreq, Resource work,
+                                        ResourceModel.DateField date) {
         Model model = work.getModel();
 
         if (date == null || date.year == null) {
@@ -1209,7 +1262,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
         if (date.month != null) {
             if (date.day != null) {
-                formattedDate = String.format("%04d-%02d-%02dT00:00:00", date.year, date.month, date.day);
+                formattedDate =
+                    String.format("%04d-%02d-%02dT00:00:00", date.year, date.month, date.day);
                 precision = "http://vivoweb.org/ontology/core#dayPrecision";
             } else {
                 formattedDate = String.format("%04d-%02d-01T00:00:00", date.year, date.month);
@@ -1220,7 +1274,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             precision = "http://vivoweb.org/ontology/core#yearPrecision";
         }
 
-        Resource dateResource = model.createResource(getUnusedUri(vreq)).addProperty(RDF.type, model.getResource("http://vivoweb.org/ontology/core#DateTimeValue"));
+        Resource dateResource = model.createResource(getUnusedUri(vreq)).addProperty(RDF.type,
+            model.getResource("http://vivoweb.org/ontology/core#DateTimeValue"));
         dateResource.addProperty(model.createProperty(VIVO_DATETIME), formattedDate);
         dateResource.addProperty(model.createProperty(VIVO_DATETIMEPRECISION), precision);
 
@@ -1257,12 +1312,12 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             for (String issn : issns) {
                 final List<String> journals = new ArrayList<>();
                 String query = "SELECT ?journal\n" +
-                        "WHERE\n" +
-                        "{\n" +
-                        "  {\n" +
-                        "  \t?journal <http://purl.org/ontology/bibo/issn> \"" + issn + "\" .\n" +
-                        "  }\n" +
-                        "}\n";
+                    "WHERE\n" +
+                    "{\n" +
+                    "  {\n" +
+                    "  \t?journal <http://purl.org/ontology/bibo/issn> \"" + issn + "\" .\n" +
+                    "  }\n" +
+                    "}\n";
 
                 try {
                     rdfService.sparqlSelectQuery(query, new ResultSetConsumer() {
@@ -1301,15 +1356,15 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             for (String isbn : isbns) {
                 final List<String> books = new ArrayList<>();
                 String query = "SELECT ?book\n" +
-                        "WHERE\n" +
-                        "{\n" +
-                        "  {\n" +
-                        (getDigitCount(isbn) == 10 ?
+                    "WHERE\n" +
+                    "{\n" +
+                    "  {\n" +
+                    (getDigitCount(isbn) == 10 ?
                         "  \t?book <http://purl.org/ontology/bibo/isbn10> \"" + isbn + "\" .\n" :
-                        "  \t?book <http://purl.org/ontology/bibo/isbn13> \"" + isbn + "\" .\n" ) +
-                        "  \t?book a <http://purl.org/ontology/bibo/Book> .\n" +
-                        "  }\n" +
-                        "}\n";
+                        "  \t?book <http://purl.org/ontology/bibo/isbn13> \"" + isbn + "\" .\n") +
+                    "  \t?book a <http://purl.org/ontology/bibo/Book> .\n" +
+                    "  }\n" +
+                    "}\n";
 
                 try {
                     rdfService.sparqlSelectQuery(query, new ResultSetConsumer() {
@@ -1345,20 +1400,20 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
      * Find a Uri for an Publisher
      *
      * @param rdfService
-     * @param publisher The name of the publisher
+     * @param publisher  The name of the publisher
      * @return
      */
     private String findVIVOUriForPublisher(RDFService rdfService, String publisher) {
         // First look to see if any publishers already have that label
         final List<String> publisherUris = new ArrayList<>();
         String query = "SELECT ?publisher\n" +
-                "WHERE\n" +
-                "{\n" +
-                "  {\n" +
-                "  \t?publisher a <" + VIVO_PUBLISHER_CLASS + "> .\n" +
-                "  \t?publisher <" + RDFS.label + "> \"" + publisher + "\" .\n" +
-                "  }\n" +
-                "}\n";
+            "WHERE\n" +
+            "{\n" +
+            "  {\n" +
+            "  \t?publisher a <" + VIVO_PUBLISHER_CLASS + "> .\n" +
+            "  \t?publisher <" + RDFS.label + "> \"" + publisher + "\" .\n" +
+            "  }\n" +
+            "}\n";
 
         try {
             rdfService.sparqlSelectQuery(query, new ResultSetConsumer() {
@@ -1393,28 +1448,31 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         if (!StringUtils.isEmpty(doi)) {
             final List<String> works = new ArrayList<>();
             String query = "SELECT ?work\n" +
-                    "WHERE\n" +
-                    "{\n" +
-                    "  {\n" +
-                    "  \t?work <http://purl.org/ontology/bibo/doi> \"" + doi + "\" .\n" +
-                    "  }\n" +
-                    "  UNION\n" +
-                    "  {\n" +
-                    "  \t?work <http://purl.org/ontology/bibo/doi> \"http://doi.org/" + doi + "\" .\n" +
-                    "  }\n" +
-                    "  UNION\n" +
-                    "  {\n" +
-                    "  \t?work <http://purl.org/ontology/bibo/doi> \"https://doi.org/" + doi + "\" .\n" +
-                    "  }\n" +
-                    "  UNION\n" +
-                    "  {\n" +
-                    "  \t?work <http://purl.org/ontology/bibo/doi> \"http://dx.doi.org/" + doi + "\" .\n" +
-                    "  }\n" +
-                    "  UNION\n" +
-                    "  {\n" +
-                    "  \t?work <http://purl.org/ontology/bibo/doi> \"https://dx.doi.org/" + doi + "\" .\n" +
-                    "  }\n" +
-                    "}\n";
+                "WHERE\n" +
+                "{\n" +
+                "  {\n" +
+                "  \t?work <http://purl.org/ontology/bibo/doi> \"" + doi + "\" .\n" +
+                "  }\n" +
+                "  UNION\n" +
+                "  {\n" +
+                "  \t?work <http://purl.org/ontology/bibo/doi> \"http://doi.org/" + doi + "\" .\n" +
+                "  }\n" +
+                "  UNION\n" +
+                "  {\n" +
+                "  \t?work <http://purl.org/ontology/bibo/doi> \"https://doi.org/" + doi +
+                "\" .\n" +
+                "  }\n" +
+                "  UNION\n" +
+                "  {\n" +
+                "  \t?work <http://purl.org/ontology/bibo/doi> \"http://dx.doi.org/" + doi +
+                "\" .\n" +
+                "  }\n" +
+                "  UNION\n" +
+                "  {\n" +
+                "  \t?work <http://purl.org/ontology/bibo/doi> \"https://dx.doi.org/" + doi +
+                "\" .\n" +
+                "  }\n" +
+                "}\n";
 
             try {
                 rdfService.sparqlSelectQuery(query, new ResultSetConsumer() {
@@ -1461,6 +1519,7 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
     /**
      * Find a Uri for a resource that defines a PubMed ID
+     *
      * @param rdfService
      * @param pmid
      * @return
@@ -1470,12 +1529,12 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         if (!StringUtils.isEmpty(pmid)) {
             final List<String> works = new ArrayList<>();
             String query = "SELECT ?work\n" +
-                    "WHERE\n" +
-                    "{\n" +
-                    "  {\n" +
-                    "  \t?work <http://purl.org/ontology/bibo/pmid> \"" + pmid + "\" .\n" +
-                    "  }\n" +
-                    "}\n";
+                "WHERE\n" +
+                "{\n" +
+                "  {\n" +
+                "  \t?work <http://purl.org/ontology/bibo/pmid> \"" + pmid + "\" .\n" +
+                "  }\n" +
+                "}\n";
 
             try {
                 rdfService.sparqlSelectQuery(query, new ResultSetConsumer() {
@@ -1502,13 +1561,15 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
     /**
      * Try to find a resource in VIVO that defines one of the external identifiers
+     *
      * @param vreq
      * @param ids
      * @param profileUri
      * @param citation
      * @return
      */
-    protected String findInVIVO(VitroRequest vreq, ExternalIdentifiers ids, String profileUri, Citation citation) {
+    protected String findInVIVO(VitroRequest vreq, ExternalIdentifiers ids, String profileUri,
+                                Citation citation) {
         // First, look for a resource that defines the DOI
         String vivoUri = findVIVOUriForDOI(vreq.getRDFService(), ids.DOI);
 
@@ -1560,11 +1621,13 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                         case VIVO_DATETIMEVALUE:
                             Resource dateTime = stmt.getResource();
                             if (dateTime != null) {
-                                Statement stmtDate = dateTime.getProperty(model.getProperty(VIVO_DATETIME));
+                                Statement stmtDate =
+                                    dateTime.getProperty(model.getProperty(VIVO_DATETIME));
                                 if (stmtDate != null) {
                                     String dateTimeValue = stmtDate.getString();
                                     if (dateTimeValue != null && dateTimeValue.length() > 3) {
-                                        citation.publicationYear = Integer.parseInt(dateTimeValue.substring(0, 4), 10);
+                                        citation.publicationYear =
+                                            Integer.parseInt(dateTimeValue.substring(0, 4), 10);
                                     }
                                 }
                             }
@@ -1604,7 +1667,8 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                                             // If it is a relates property
                                             case VIVO_RELATES:
                                                 // If it isn't pointing to the resource, it must be pointing to a person
-                                                if (!vivoUri.equals(relationshipStmt.getResource().getURI())) {
+                                                if (!vivoUri.equals(
+                                                    relationshipStmt.getResource().getURI())) {
                                                     personResource = relationshipStmt.getResource();
                                                 }
                                                 break;
@@ -1635,27 +1699,43 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                                         Statement familyName = null;
                                         Statement givenName = null;
                                         if (isResourceOfType(personResource, VCARD_INDIVIDUAL)) {
-                                            if (personResource.hasProperty(model.getProperty(VCARD_HAS_NAME))) {
-                                                Resource vcardName = personResource.getPropertyResourceValue(model.getProperty(VCARD_HAS_NAME));
+                                            if (personResource
+                                                .hasProperty(model.getProperty(VCARD_HAS_NAME))) {
+                                                Resource vcardName = personResource
+                                                    .getPropertyResourceValue(
+                                                        model.getProperty(VCARD_HAS_NAME));
                                                 if (vcardName != null) {
-                                                    if (vcardName.hasProperty(model.getProperty(VCARD_GIVENNAME))) {
-                                                        givenName = vcardName.getProperty(model.getProperty(VCARD_GIVENNAME));
+                                                    if (vcardName.hasProperty(
+                                                        model.getProperty(VCARD_GIVENNAME))) {
+                                                        givenName = vcardName.getProperty(
+                                                            model.getProperty(VCARD_GIVENNAME));
                                                     }
-                                                    if (vcardName.hasProperty(model.getProperty(VCARD_FAMILYNAME))) {
-                                                        familyName = vcardName.getProperty(model.getProperty(VCARD_FAMILYNAME));
+                                                    if (vcardName.hasProperty(
+                                                        model.getProperty(VCARD_FAMILYNAME))) {
+                                                        familyName = vcardName.getProperty(
+                                                            model.getProperty(VCARD_FAMILYNAME));
                                                     }
                                                 }
                                             }
-                                        } else if (personResource.hasProperty(model.getProperty(OBO_HAS_CONTACT_INFO))) {
-                                            Resource vCard = personResource.getPropertyResourceValue(model.getProperty(OBO_HAS_CONTACT_INFO));
-                                            if (vCard.hasProperty(model.getProperty(VCARD_HAS_NAME))) {
-                                                Resource vcardName = vCard.getPropertyResourceValue(model.getProperty(VCARD_HAS_NAME));
+                                        } else if (personResource
+                                            .hasProperty(model.getProperty(OBO_HAS_CONTACT_INFO))) {
+                                            Resource vCard = personResource
+                                                .getPropertyResourceValue(
+                                                    model.getProperty(OBO_HAS_CONTACT_INFO));
+                                            if (vCard
+                                                .hasProperty(model.getProperty(VCARD_HAS_NAME))) {
+                                                Resource vcardName = vCard.getPropertyResourceValue(
+                                                    model.getProperty(VCARD_HAS_NAME));
                                                 if (vcardName != null) {
-                                                    if (vcardName.hasProperty(model.getProperty(VCARD_GIVENNAME))) {
-                                                        givenName = vcardName.getProperty(model.getProperty(VCARD_GIVENNAME));
+                                                    if (vcardName.hasProperty(
+                                                        model.getProperty(VCARD_GIVENNAME))) {
+                                                        givenName = vcardName.getProperty(
+                                                            model.getProperty(VCARD_GIVENNAME));
                                                     }
-                                                    if (vcardName.hasProperty(model.getProperty(VCARD_FAMILYNAME))) {
-                                                        familyName = vcardName.getProperty(model.getProperty(VCARD_FAMILYNAME));
+                                                    if (vcardName.hasProperty(
+                                                        model.getProperty(VCARD_FAMILYNAME))) {
+                                                        familyName = vcardName.getProperty(
+                                                            model.getProperty(VCARD_FAMILYNAME));
                                                     }
                                                 }
                                                 linked = true;
@@ -1664,11 +1744,15 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
                                         if (givenName == null) {
                                             // It's a foaf person, which means it is already linked to a full profile in VIVO
-                                            if (personResource.hasProperty(model.getProperty(FOAF_FIRSTNAME))) {
-                                                givenName = personResource.getProperty(model.getProperty(FOAF_FIRSTNAME));
+                                            if (personResource
+                                                .hasProperty(model.getProperty(FOAF_FIRSTNAME))) {
+                                                givenName = personResource
+                                                    .getProperty(model.getProperty(FOAF_FIRSTNAME));
                                             }
-                                            if (personResource.hasProperty(model.getProperty(FOAF_LASTNAME))) {
-                                                familyName = personResource.getProperty(model.getProperty(FOAF_LASTNAME));
+                                            if (personResource
+                                                .hasProperty(model.getProperty(FOAF_LASTNAME))) {
+                                                familyName = personResource
+                                                    .getProperty(model.getProperty(FOAF_LASTNAME));
                                             }
                                             linked = true;
                                         }
@@ -1677,26 +1761,35 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
                                         if (familyName != null) {
                                             newAuthor = new Citation.Name();
                                             if (givenName != null) {
-                                                newAuthor.name = CreateAndLinkUtils.formatAuthorString(familyName.getString(), givenName.getString());
+                                                newAuthor.name = CreateAndLinkUtils
+                                                    .formatAuthorString(familyName.getString(),
+                                                        givenName.getString());
                                             } else {
-                                                newAuthor.name = CreateAndLinkUtils.formatAuthorString(familyName.getString(), null);
+                                                newAuthor.name = CreateAndLinkUtils
+                                                    .formatAuthorString(familyName.getString(),
+                                                        null);
                                             }
 
                                             // Record whether the author is a full profile, or just a VCARD
                                             newAuthor.linked = linked;
                                         } else {
-                                            Statement label = personResource.getProperty(RDFS.label);
+                                            Statement label =
+                                                personResource.getProperty(RDFS.label);
                                             if (label != null) {
                                                 String name = label.getString();
                                                 if (name.contains(",")) {
                                                     String[] parts = name.split("\\s*,\\s*");
                                                     if (parts.length > 1) {
-                                                        name = CreateAndLinkUtils.formatAuthorString(parts[0], parts[parts.length - 1]);
+                                                        name = CreateAndLinkUtils
+                                                            .formatAuthorString(parts[0],
+                                                                parts[parts.length - 1]);
                                                     }
                                                 } else {
                                                     String[] parts = name.split("\\s*");
                                                     if (parts.length > 1) {
-                                                        name = CreateAndLinkUtils.formatAuthorString(parts[parts.length - 1], parts[0]);
+                                                        name = CreateAndLinkUtils
+                                                            .formatAuthorString(
+                                                                parts[parts.length - 1], parts[0]);
                                                     }
                                                 }
 
@@ -1752,9 +1845,11 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             // If we have unranked authors, add them to the end of the ranked authors
             if (unrankedAuthors.size() > 0) {
                 if (rankedAuthors == null) {
-                    citation.authors = unrankedAuthors.toArray(new Citation.Name[unrankedAuthors.size()]);
+                    citation.authors =
+                        unrankedAuthors.toArray(new Citation.Name[unrankedAuthors.size()]);
                 } else {
-                    Citation.Name[] newAuthors = new Citation.Name[rankedAuthors.length + unrankedAuthors.size()];
+                    Citation.Name[] newAuthors =
+                        new Citation.Name[rankedAuthors.length + unrankedAuthors.size()];
                     int i = 0;
                     while (i < rankedAuthors.length) {
                         newAuthors[i] = rankedAuthors[i];
@@ -1822,12 +1917,14 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
             if (!addModel.isEmpty()) {
                 addStream = makeN3InputStream(addModel);
-                changeSet.addAddition(addStream, RDFService.ModelSerializationFormat.N3, ModelNames.ABOX_ASSERTIONS);
+                changeSet.addAddition(addStream, RDFService.ModelSerializationFormat.N3,
+                    ModelNames.ABOX_ASSERTIONS);
             }
 
             if (!removeModel.isEmpty()) {
                 removeStream = makeN3InputStream(removeModel);
-                changeSet.addRemoval(removeStream, RDFService.ModelSerializationFormat.N3, ModelNames.ABOX_ASSERTIONS);
+                changeSet.addRemoval(removeStream, RDFService.ModelSerializationFormat.N3,
+                    ModelNames.ABOX_ASSERTIONS);
             }
 
             try {
@@ -1835,11 +1932,17 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
             } catch (RDFServiceException e) {
             } finally {
                 if (addStream != null) {
-                    try { addStream.close(); } catch (IOException e) { }
+                    try {
+                        addStream.close();
+                    } catch (IOException e) {
+                    }
                 }
 
                 if (removeStream != null) {
-                    try { removeStream.close(); } catch (IOException e) { }
+                    try {
+                        removeStream.close();
+                    } catch (IOException e) {
+                    }
                 }
             }
         }
@@ -1859,6 +1962,7 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
 
     /**
      * Get a list of publication types - classes that are a bibo:Document - from the triple store
+     *
      * @param vreq
      * @return
      */
@@ -1869,12 +1973,12 @@ public class CreateAndLinkResourceController extends FreemarkerHttpServlet {
         try {
             // Find all classes that are a subclass of Document, and their labels
             String query = "PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n" +
-                    "\n" +
-                    "SELECT ?uri ?label\n" +
-                    "WHERE {\n" +
-                    "\t?uri rdfs:label ?label .\n" +
-                    "\t?uri rdfs:subClassOf  <http://purl.org/ontology/bibo/Document> .\n" +
-                    "}\n";
+                "\n" +
+                "SELECT ?uri ?label\n" +
+                "WHERE {\n" +
+                "\t?uri rdfs:label ?label .\n" +
+                "\t?uri rdfs:subClassOf  <http://purl.org/ontology/bibo/Document> .\n" +
+                "}\n";
 
             vreq.getRDFService().sparqlSelectQuery(query, new ResultSetConsumer() {
                 @Override

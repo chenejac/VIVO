@@ -14,21 +14,21 @@ $.extend(this, i18nStringsUtil);
             var nNext = document.createElement('span');
             var nLast = document.createElement('span');
 
-/*
-			nFirst.innerHTML = oSettings.oLanguage.oPaginate.sFirst;
-			nPrevious.innerHTML = oSettings.oLanguage.oPaginate.sPrevious;
-			nNext.innerHTML = oSettings.oLanguage.oPaginate.sNext;
-			nLast.innerHTML = oSettings.oLanguage.oPaginate.sLast;
-			*/
+            /*
+                        nFirst.innerHTML = oSettings.oLanguage.oPaginate.sFirst;
+                        nPrevious.innerHTML = oSettings.oLanguage.oPaginate.sPrevious;
+                        nNext.innerHTML = oSettings.oLanguage.oPaginate.sNext;
+                        nLast.innerHTML = oSettings.oLanguage.oPaginate.sLast;
+                        */
 
             nFirst.innerHTML = "<span class='small-arrows'>&laquo;</span> <span class='paginate-nav-text'>"
-                                + i18nStringsUtil.firstString + "</span>";
+                + i18nStringsUtil.firstString + "</span>";
             nPrevious.innerHTML = "<span class='small-arrows'>&lsaquo;</span> <span class='paginate-nav-text'>"
-                                + i18nStringsUtil.previousString + "</span>";
+                + i18nStringsUtil.previousString + "</span>";
             nNext.innerHTML = "<span class='paginate-nav-text'>" + i18nStringsUtil.nextString
-                                + "</span><span class='small-arrows'>&rsaquo;</span>";
+                + "</span><span class='small-arrows'>&rsaquo;</span>";
             nLast.innerHTML = "<span class='paginate-nav-text'>" + i18nStringsUtil.lastString
-                                + "</span><span class='small-arrows'>&raquo;</span>";
+                + "</span><span class='small-arrows'>&raquo;</span>";
 
             var oClasses = oSettings.oClasses;
             nFirst.className = oClasses.sPageButton + " " + oClasses.sPageFirst;
@@ -84,13 +84,13 @@ $.extend(this, i18nStringsUtil);
             }
         },
 
-/*
-		 * Function: oPagination.full_numbers.fnUpdate
-		 * Purpose:  Update the list of page buttons shows
-		 * Returns:  -
- 		 * Inputs:   object:oSettings - dataTables settings object
-		 *           function:fnCallbackDraw - draw function to call on page change
-		 */
+        /*
+                 * Function: oPagination.full_numbers.fnUpdate
+                 * Purpose:  Update the list of page buttons shows
+                 * Returns:  -
+                  * Inputs:   object:oSettings - dataTables settings object
+                 *           function:fnCallbackDraw - draw function to call on page change
+                 */
         "fnUpdate": function (oSettings, fnCallbackDraw) {
             if (!oSettings.aanFeatures.p) {
                 return;
@@ -143,7 +143,7 @@ $.extend(this, i18nStringsUtil);
                 /* Update the 'premanent botton's classes */
                 anButtons = an[i].getElementsByTagName('span');
                 anStatic = [
-                anButtons[0], anButtons[1], anButtons[anButtons.length - 2], anButtons[anButtons.length - 1]];
+                    anButtons[0], anButtons[1], anButtons[anButtons.length - 2], anButtons[anButtons.length - 1]];
                 $(anStatic).removeClass(oClasses.sPageButton + " " + oClasses.sPageButtonActive + " " + oClasses.sPageButtonStaticDisabled);
                 if (iCurrentPage == 1) {
                     anStatic[0].className += " " + oClasses.sPageButtonStaticDisabled;
@@ -164,9 +164,9 @@ $.extend(this, i18nStringsUtil);
 
 
             if (iPages <= 1) {
-            	$("." + temporalGraphProcessor.dataTableParams.paginationContainerDIVClass).hide();
+                $("." + temporalGraphProcessor.dataTableParams.paginationContainerDIVClass).hide();
             } else {
-            	$("." + temporalGraphProcessor.dataTableParams.paginationContainerDIVClass).show();
+                $("." + temporalGraphProcessor.dataTableParams.paginationContainerDIVClass).show();
             }
         }
     };
@@ -210,34 +210,34 @@ $.extend(this, i18nStringsUtil);
 
 var DatatableCustomFilters = {
 
-	peopleOrOrganizations: function(oSettings, aData, iDataIndex, rawData) {
+    peopleOrOrganizations: function (oSettings, aData, iDataIndex, rawData) {
 
-		if (temporalGraphProcessor.currentSelectedFilter === "NONE") {
-		  return true;
-		} else {
-			/*
-			 * We know for a fact that the unique identifier for each row is the value for the checkbox,
-			 * that is found in the first column for each row.
-			 * */
-			var row_data = rawData[0];
-			var entityURI = $(row_data).filter("input[type=checkbox]").val();
-			if (entityURI) {
-				var currentEntityVisMode = URIToEntityRecord[entityURI].visMode;
+        if (temporalGraphProcessor.currentSelectedFilter === "NONE") {
+            return true;
+        } else {
+            /*
+             * We know for a fact that the unique identifier for each row is the value for the checkbox,
+             * that is found in the first column for each row.
+             * */
+            var row_data = rawData[0];
+            var entityURI = $(row_data).filter("input[type=checkbox]").val();
+            if (entityURI) {
+                var currentEntityVisMode = URIToEntityRecord[entityURI].visMode;
 
-				if (currentEntityVisMode === "ORGANIZATION"
-					&& temporalGraphProcessor.currentSelectedFilter === "ORGANIZATIONS") {
-					return true;
-				} else if (currentEntityVisMode === "PERSON"
-					&& temporalGraphProcessor.currentSelectedFilter === "PEOPLE") {
-					return true;
-				}
-			}
+                if (currentEntityVisMode === "ORGANIZATION"
+                    && temporalGraphProcessor.currentSelectedFilter === "ORGANIZATIONS") {
+                    return true;
+                } else if (currentEntityVisMode === "PERSON"
+                    && temporalGraphProcessor.currentSelectedFilter === "PEOPLE") {
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 };
 
@@ -252,41 +252,41 @@ var DatatableCustomFilters = {
  */
 function init(graphContainer) {
 
-	var optionSelected = $("select.comparisonValues option:selected").val();
-	// TODO: make use of the id on the select field instead of a generic one.
-	$("#comparisonParameter").text(i18nStringsUtil.totalNumberOf + " " + optionSelected);
-	$('#yaxislabel').html(i18nStringsUtil.numberOf + " " + optionSelected).jangle(-90);
-	$('#comparisonHeader').html(optionSelected).css('font-weight', 'bold');
-	$('#legend-unknown-bar-text').text(toTitleCase(COMPARISON_PARAMETERS_INFO[currentParameter].name) + " " + i18nStringsUtil.withUnknownYear);
-	$('#legend-known-bar-text').text(toTitleCase(COMPARISON_PARAMETERS_INFO[currentParameter].name) + " " + i18nStringsUtil.withKnownYear);
-	$('#legend-current-year-bar-text').text(toTitleCase(COMPARISON_PARAMETERS_INFO[currentParameter].name) + " " + i18nStringsUtil.fromIncompleteYear);
+    var optionSelected = $("select.comparisonValues option:selected").val();
+    // TODO: make use of the id on the select field instead of a generic one.
+    $("#comparisonParameter").text(i18nStringsUtil.totalNumberOf + " " + optionSelected);
+    $('#yaxislabel').html(i18nStringsUtil.numberOf + " " + optionSelected).jangle(-90);
+    $('#comparisonHeader').html(optionSelected).css('font-weight', 'bold');
+    $('#legend-unknown-bar-text').text(toTitleCase(COMPARISON_PARAMETERS_INFO[currentParameter].name) + " " + i18nStringsUtil.withUnknownYear);
+    $('#legend-known-bar-text').text(toTitleCase(COMPARISON_PARAMETERS_INFO[currentParameter].name) + " " + i18nStringsUtil.withKnownYear);
+    $('#legend-current-year-bar-text').text(toTitleCase(COMPARISON_PARAMETERS_INFO[currentParameter].name) + " " + i18nStringsUtil.fromIncompleteYear);
 
-	var defaultFlotOptions = {
-			xaxis : {
-				min : globalDateObject.getFullYear() - 10,
-				max : globalDateObject.getFullYear() - 1,
-				tickDecimals : 0,
-				tickSize : 2
-			},
-			yaxis: {
-				tickDecimals : 0,
-				min : 0,
-				max: 5
-			},
-			grid: {
-				borderColor : "#D9D9D9"
-			}
+    var defaultFlotOptions = {
+        xaxis: {
+            min: globalDateObject.getFullYear() - 10,
+            max: globalDateObject.getFullYear() - 1,
+            tickDecimals: 0,
+            tickSize: 2
+        },
+        yaxis: {
+            tickDecimals: 0,
+            min: 0,
+            max: 5
+        },
+        grid: {
+            borderColor: "#D9D9D9"
+        }
 
-	};
+    };
 
-	/*
-	 * [[]] is an empty 2D array object. $.plot is passed this for the default
-	 * behavior. Ex.When the page initially loads, or when no graphs are present
-	 * on the webpage.
-	 */
+    /*
+     * [[]] is an empty 2D array object. $.plot is passed this for the default
+     * behavior. Ex.When the page initially loads, or when no graphs are present
+     * on the webpage.
+     */
 
-	var initialDataObject = [ [] ];
-	$.plot(graphContainer, initialDataObject, defaultFlotOptions);
+    var initialDataObject = [[]];
+    $.plot(graphContainer, initialDataObject, defaultFlotOptions);
 }
 
 /**
@@ -305,25 +305,25 @@ function init(graphContainer) {
 //TODO: side-effect year.
 function unStuffZerosFromLineGraphs(jsonObject, year) {
 
-	calcZeroLessMinAndMax(jsonObject, year);
-	var currentMinYear = year.globalMin, currentMaxYear = year.globalMax;
+    calcZeroLessMinAndMax(jsonObject, year);
+    var currentMinYear = year.globalMin, currentMaxYear = year.globalMax;
 
-	var normalizedYearRange = getNormalizedYearRange();
+    var normalizedYearRange = getNormalizedYearRange();
 
-	$.each(jsonObject,
-			function(key, val) {
-				var i = 0;
-				for (i = 0; i < val.data.length; i++) {
-					if (((val.data[i][0] < normalizedYearRange.normalizedMinYear) || (val.data[i][0] > normalizedYearRange.normalizedMaxYear))
-							&& val.data[i][1] == 0) {
+    $.each(jsonObject,
+        function (key, val) {
+            var i = 0;
+            for (i = 0; i < val.data.length; i++) {
+                if (((val.data[i][0] < normalizedYearRange.normalizedMinYear) || (val.data[i][0] > normalizedYearRange.normalizedMaxYear))
+                    && val.data[i][1] == 0) {
 
-						val.data.splice(i, 1);
-						i--;
-					} else {
-						continue;
-					}
-				}
-			});
+                    val.data.splice(i, 1);
+                    i--;
+                } else {
+                    continue;
+                }
+            }
+        });
 }
 
 /**
@@ -335,13 +335,13 @@ function unStuffZerosFromLineGraphs(jsonObject, year) {
  *            jsonObject
  */
 function unStuffZerosFromLineGraph(jsonObject) {
-	var i = 0;
-	for (i = 0; i < jsonObject.data.length; i++) {
-		if (jsonObject.data[i][1] == 0) {
-			jsonObject.data.splice(i, 1);
-			i--;
-		}
-	}
+    var i = 0;
+    for (i = 0; i < jsonObject.data.length; i++) {
+        if (jsonObject.data[i][1] == 0) {
+            jsonObject.data.splice(i, 1);
+            i--;
+        }
+    }
 }
 
 
@@ -352,33 +352,33 @@ function unStuffZerosFromLineGraph(jsonObject) {
  */
 function getNormalizedYearRange() {
 
-	/*
-	 * This is done to make sure that at least last 10 years worth of data points
-	 * can be displayed.
-	 * */
-	if (globalDateObject.getFullYear() < year.globalMax) {
+    /*
+     * This is done to make sure that at least last 10 years worth of data points
+     * can be displayed.
+     * */
+    if (globalDateObject.getFullYear() < year.globalMax) {
 
-		inferredMaxYear = year.globalMax;
+        inferredMaxYear = year.globalMax;
 
-	} else {
+    } else {
 
-		inferredMaxYear = globalDateObject.getFullYear();
-	}
+        inferredMaxYear = globalDateObject.getFullYear();
+    }
 
-	if (globalDateObject.getFullYear() - 9 > year.globalMin) {
+    if (globalDateObject.getFullYear() - 9 > year.globalMin) {
 
-		inferredMinYear = year.globalMin;
+        inferredMinYear = year.globalMin;
 
-	} else {
+    } else {
 
-		inferredMinYear = globalDateObject.getFullYear() - 9;
-	}
+        inferredMinYear = globalDateObject.getFullYear() - 9;
+    }
 
-	return {
-		normalizedMinYear: inferredMinYear,
-		normalizedMaxYear: inferredMaxYear,
-		normalizedRange: inferredMaxYear - inferredMinYear
-	};
+    return {
+        normalizedMinYear: inferredMinYear,
+        normalizedMaxYear: inferredMaxYear,
+        normalizedRange: inferredMaxYear - inferredMinYear
+    };
 }
 
 /**
@@ -397,30 +397,30 @@ function getNormalizedYearRange() {
  */
 function stuffZerosIntoLineGraphs(jsonObject, year) {
 
-	calcZeroLessMinAndMax(jsonObject, year);
+    calcZeroLessMinAndMax(jsonObject, year);
 
-	var normalizedYearRange = getNormalizedYearRange();
+    var normalizedYearRange = getNormalizedYearRange();
 
-	$.each(jsonObject,
-			function(key, val) {
-		var position = normalizedYearRange.normalizedMinYear, i = 0;
+    $.each(jsonObject,
+        function (key, val) {
+            var position = normalizedYearRange.normalizedMinYear, i = 0;
 
-		for (i = 0; i < normalizedYearRange.normalizedRange + 1; i++) {
+            for (i = 0; i < normalizedYearRange.normalizedRange + 1; i++) {
 
-			if (val.data[i]) {
+                if (val.data[i]) {
 
-				if (val.data[i][0] != position
-						&& position <= normalizedYearRange.normalizedMaxYear) {
-					val.data.splice(i, 0, [ position, 0 ]);
-				}
-			}
-			else {
-				val.data.push( [ position, 0 ]);
-			}
-			position++;
-		}
-	});
+                    if (val.data[i][0] != position
+                        && position <= normalizedYearRange.normalizedMaxYear) {
+                        val.data.splice(i, 0, [position, 0]);
+                    }
+                } else {
+                    val.data.push([position, 0]);
+                }
+                position++;
+            }
+        });
 }
+
 /**
  * During runtime, when the user checks/unchecks a checkbox, the zeroes have to
  * be inserted and removed dynamically. This function calculates the max{year}
@@ -433,26 +433,26 @@ function stuffZerosIntoLineGraphs(jsonObject, year) {
  */
 function calcZeroLessMinAndMax(jsonObject, year) {
 
-	var validYearsInData = new Array();
+    var validYearsInData = new Array();
 
-	$.each(jsonObject, function(key, val) {
+    $.each(jsonObject, function (key, val) {
 
-		for (i = 0; i < val.data.length; i++) {
+        for (i = 0; i < val.data.length; i++) {
 
-			/*
-			 * TO make sure that,
-			 * 		1. Not to consider years that dont have any counts attached to it.
-			 * 		2. Not to consider unknown years indicated by "-1".
-			 * */
-			if (val.data[i][1] != 0 && val.data[i][0] != -1) {
-				validYearsInData.push(val.data[i][0]);
-			}
-		}
+            /*
+             * TO make sure that,
+             * 		1. Not to consider years that dont have any counts attached to it.
+             * 		2. Not to consider unknown years indicated by "-1".
+             * */
+            if (val.data[i][1] != 0 && val.data[i][0] != -1) {
+                validYearsInData.push(val.data[i][0]);
+            }
+        }
 
-	});
+    });
 
-	year.globalMin = Math.min.apply(Math, validYearsInData);
-	year.globalMax = Math.max.apply(Math, validYearsInData);
+    year.globalMin = Math.min.apply(Math, validYearsInData);
+    year.globalMax = Math.max.apply(Math, validYearsInData);
 
 }
 
@@ -466,25 +466,25 @@ function calcZeroLessMinAndMax(jsonObject, year) {
  */
 function calcMinandMaxYears(jsonObject, year) {
 
-	var validYearsInData = new Array();
+    var validYearsInData = new Array();
 
-	$.each(jsonObject, function(key, val) {
+    $.each(jsonObject, function (key, val) {
 
-		for (i = 0; i < val.data.length; i++) {
+        for (i = 0; i < val.data.length; i++) {
 
-			/*
-			 * TO make sure that,
-			 * 		1. Not to consider years that dont have any counts attached to it.
-			 * 		2. Not to consider unknown years indicated by "-1".
-			 * */
-			if (val.data[i][1] != 0 && val.data[i][0] != -1) {
-				validYearsInData.push(val.data[i][0]);
-			}
-		}
+            /*
+             * TO make sure that,
+             * 		1. Not to consider years that dont have any counts attached to it.
+             * 		2. Not to consider unknown years indicated by "-1".
+             * */
+            if (val.data[i][1] != 0 && val.data[i][0] != -1) {
+                validYearsInData.push(val.data[i][0]);
+            }
+        }
 
-	});
-	year.min = Math.min.apply(Math, validYearsInData);
-	year.max = Math.max.apply(Math, validYearsInData);
+    });
+    year.min = Math.min.apply(Math, validYearsInData);
+    year.max = Math.max.apply(Math, validYearsInData);
 }
 
 /**
@@ -495,39 +495,39 @@ function calcMinandMaxYears(jsonObject, year) {
  */
 function calcMaxOfComparisonParameter(allEntities) {
 
-	var validCountsInData = new Array();
+    var validCountsInData = new Array();
 
-	$.each(allEntities, function(key, currentEntity) {
+    $.each(allEntities, function (key, currentEntity) {
 
-		combinedCount = currentEntity.activityCount;
+        combinedCount = currentEntity.activityCount;
 
-		validCountsInData.push(combinedCount.knownYearCount + combinedCount.unknownYearCount);
-	});
+        validCountsInData.push(combinedCount.knownYearCount + combinedCount.unknownYearCount);
+    });
 
-	return Math.max.apply(Math, validCountsInData);
+    return Math.max.apply(Math, validCountsInData);
 }
 
-function calcMaxWithinComparisonParameter(jsonObject){
+function calcMaxWithinComparisonParameter(jsonObject) {
 
-	var validCountsInData = new Array();
+    var validCountsInData = new Array();
 
-	$.each(jsonObject, function(key, val) {
+    $.each(jsonObject, function (key, val) {
 
-		for (i = 0; i < val.data.length; i++) {
+        for (i = 0; i < val.data.length; i++) {
 
-			/*
-			 * TO make sure that,
-			 * 		1. Not to consider years that dont have any counts attached to it.
-			 * 		2. Not to consider unknown years indicated by "-1".
-			 * */
-			if (val.data[i][1] != 0 && val.data[i][0] != -1) {
-				validCountsInData.push(val.data[i][1]);
-			}
-		}
+            /*
+             * TO make sure that,
+             * 		1. Not to consider years that dont have any counts attached to it.
+             * 		2. Not to consider unknown years indicated by "-1".
+             * */
+            if (val.data[i][1] != 0 && val.data[i][0] != -1) {
+                validCountsInData.push(val.data[i][1]);
+            }
+        }
 
-	});
+    });
 
-	return Math.max.apply(Math, validCountsInData);
+    return Math.max.apply(Math, validCountsInData);
 }
 
 /**
@@ -540,79 +540,79 @@ function calcMaxWithinComparisonParameter(jsonObject){
  * @returns a flag - 0/1 - indicating whether a contains b.
  */
 function contains(objectArray, object) {
-	var i = 0, flag = 0;
-	for (i = 0; i < objectArray.length; i++) {
-		if (objectArray[i] == object) {
-			flag = i;
-		}
+    var i = 0, flag = 0;
+    for (i = 0; i < objectArray.length; i++) {
+        if (objectArray[i] == object) {
+            flag = i;
+        }
 
-	}
-	return flag;
+    }
+    return flag;
 }
 
 var LineWidth = {
 
-	getLineWidth: function(tickSize) {
-		if (tickSize >= 0 && tickSize < 10) {
-			return 3;
-		} else if (tickSize >= 10 && tickSize < 50) {
-			return 2;
-		} else {
-			return 1;
-		}
-	}
+    getLineWidth: function (tickSize) {
+        if (tickSize >= 0 && tickSize < 10) {
+            return 3;
+        } else if (tickSize >= 10 && tickSize < 50) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
 
 };
 
 var TickSize = {
 
-	maxValue: 0.0,
+    maxValue: 0.0,
 
-	maxTicks: {
-		yAxis: 12.0,
-		xAxis: 12.0
-	},
+    maxTicks: {
+        yAxis: 12.0,
+        xAxis: 12.0
+    },
 
-	tickSizeUnits: {
-		yAxis: [1.0, 2.5, 5.0],
-		xAxis: [1.0, 2, 5.0]
-	},
+    tickSizeUnits: {
+        yAxis: [1.0, 2.5, 5.0],
+        xAxis: [1.0, 2, 5.0]
+    },
 
-	getApproximateTickSize: function(allowedMaxTicks) {
-		return Math.max(Math.ceil(parseFloat(this.maxValue) / allowedMaxTicks), 1.0);
-	},
+    getApproximateTickSize: function (allowedMaxTicks) {
+        return Math.max(Math.ceil(parseFloat(this.maxValue) / allowedMaxTicks), 1.0);
+    },
 
-	getFinalTickSize: function(unitTickSizeGenerator) {
-		tickSizeMultiplier = 1.0;
-		finalTickSize = 1.0;
-		approximateTickSize = this.getApproximateTickSize(this.maxTicks.yAxis);
+    getFinalTickSize: function (unitTickSizeGenerator) {
+        tickSizeMultiplier = 1.0;
+        finalTickSize = 1.0;
+        approximateTickSize = this.getApproximateTickSize(this.maxTicks.yAxis);
 
-		while (true) {
-			if (approximateTickSize <= (unitTickSizeGenerator[0] * tickSizeMultiplier)) {
-				finalTickSize = unitTickSizeGenerator[0] * tickSizeMultiplier;
-				break;
-			}
-			if (approximateTickSize <= (unitTickSizeGenerator[1] * tickSizeMultiplier)) {
-				finalTickSize = unitTickSizeGenerator[1] * tickSizeMultiplier;
-				break;
-			}
-			if (approximateTickSize <= (unitTickSizeGenerator[2] * tickSizeMultiplier)) {
-				finalTickSize = unitTickSizeGenerator[2] * tickSizeMultiplier;
-				break;
-			}
-			tickSizeMultiplier *= 10.0;
-		}
-		return finalTickSize;
-	},
+        while (true) {
+            if (approximateTickSize <= (unitTickSizeGenerator[0] * tickSizeMultiplier)) {
+                finalTickSize = unitTickSizeGenerator[0] * tickSizeMultiplier;
+                break;
+            }
+            if (approximateTickSize <= (unitTickSizeGenerator[1] * tickSizeMultiplier)) {
+                finalTickSize = unitTickSizeGenerator[1] * tickSizeMultiplier;
+                break;
+            }
+            if (approximateTickSize <= (unitTickSizeGenerator[2] * tickSizeMultiplier)) {
+                finalTickSize = unitTickSizeGenerator[2] * tickSizeMultiplier;
+                break;
+            }
+            tickSizeMultiplier *= 10.0;
+        }
+        return finalTickSize;
+    },
 
-	getTickSize: function(value, onAxis) {
-		this.maxValue = value;
-		if (onAxis.trim().toLowerCase() === 'y') {
-			return this.getFinalTickSize(this.tickSizeUnits.yAxis);
-		} else if (onAxis.trim().toLowerCase() === 'x') {
-			return this.getFinalTickSize(this.tickSizeUnits.xAxis);
-		}
-	}
+    getTickSize: function (value, onAxis) {
+        this.maxValue = value;
+        if (onAxis.trim().toLowerCase() === 'y') {
+            return this.getFinalTickSize(this.tickSizeUnits.yAxis);
+        } else if (onAxis.trim().toLowerCase() === 'x') {
+            return this.getFinalTickSize(this.tickSizeUnits.xAxis);
+        }
+    }
 };
 
 /**
@@ -637,7 +637,7 @@ function createLegendRow(entity, bottomDiv) {
      * there is no drill-down possible, so don't diaply the temporal graph icon.
      * */
     if (entity.visMode !== "PERSON") {
-    	labelDiv.append('<a class="temporal-vis-url" href="' + getTemporalVisURL(entity.entityURI) + '"><img src = "' + temporalGraphDrillDownIcon + '"/></a>');
+        labelDiv.append('<a class="temporal-vis-url" href="' + getTemporalVisURL(entity.entityURI) + '"><img src = "' + temporalGraphDrillDownIcon + '"/></a>');
     }
 
 
@@ -685,11 +685,10 @@ function createLegendRow(entity, bottomDiv) {
     parentP.append(numAttributeText);
 
     if (bottomDiv.children('p.displayCounter').nextAll().last().length > 0) {
-    	bottomDiv.children('p.displayCounter').nextAll().last().after(parentP);
+        bottomDiv.children('p.displayCounter').nextAll().last().after(parentP);
     } else {
-    	bottomDiv.children('p.displayCounter').after(parentP);
+        bottomDiv.children('p.displayCounter').after(parentP);
     }
-
 
 
     renderBarAndLabel(entity, barDiv, labelDiv, numAttributeText);
@@ -702,9 +701,9 @@ function createLegendRow(entity, bottomDiv) {
 
 function renderBarAndLabel(entity, divBar, divLabel, spanElement) {
 
-	var combinedCount = entity.activityCount;
+    var combinedCount = entity.activityCount;
 
-	var sum = combinedCount.knownYearCount + combinedCount.unknownYearCount;
+    var sum = combinedCount.knownYearCount + combinedCount.unknownYearCount;
 
     var normalizedWidth = getNormalizedWidth(entity, sum);
 
@@ -712,13 +711,13 @@ function renderBarAndLabel(entity, divBar, divLabel, spanElement) {
 
     if (combinedCount.knownYearCount - combinedCount.currentYearCount) {
 
-    	var knownNormalizedWidth = getNormalizedWidth(entity, combinedCount.knownYearCount - combinedCount.currentYearCount);
+        var knownNormalizedWidth = getNormalizedWidth(entity, combinedCount.knownYearCount - combinedCount.currentYearCount);
 
         var countExplanation = (combinedCount.knownYearCount - combinedCount.currentYearCount)
-                                + ' ' + i18nStringsUtil.ofString + ' ' + sum
-    	                        + ' ' + i18nStringsUtil.wereString + ' '
-    	                        + COMPARISON_PARAMETERS_INFO[currentParameter].verbName
-    	                        + ' ' + i18nStringsUtil.inCompletedYear;
+            + ' ' + i18nStringsUtil.ofString + ' ' + sum
+            + ' ' + i18nStringsUtil.wereString + ' '
+            + COMPARISON_PARAMETERS_INFO[currentParameter].verbName
+            + ' ' + i18nStringsUtil.inCompletedYear;
 
         divBar.children(".known-bar").attr("title", countExplanation);
 
@@ -726,17 +725,17 @@ function renderBarAndLabel(entity, divBar, divLabel, spanElement) {
 
     } else {
 
-    	divBar.children(".known-bar").hide();
+        divBar.children(".known-bar").hide();
     }
 
 
     if (combinedCount.unknownYearCount) {
-    	var unknownNormalizedWidth = getNormalizedWidth(entity, combinedCount.unknownYearCount);
+        var unknownNormalizedWidth = getNormalizedWidth(entity, combinedCount.unknownYearCount);
 
         var countExplanation = combinedCount.unknownYearCount + ' ' + i18nStringsUtil.ofString + ' '
-                                + sum + ' ' + i18nStringsUtil.haveAnUnknown + ' '
-                                + COMPARISON_PARAMETERS_INFO[currentParameter].name
-                                + ' ' + i18nStringsUtil.yearNotChartered;
+            + sum + ' ' + i18nStringsUtil.haveAnUnknown + ' '
+            + COMPARISON_PARAMETERS_INFO[currentParameter].name
+            + ' ' + i18nStringsUtil.yearNotChartered;
 
         divBar.children(".unknown-bar").attr("title", countExplanation);
 
@@ -744,16 +743,16 @@ function renderBarAndLabel(entity, divBar, divLabel, spanElement) {
 
     } else {
 
-    	divBar.children(".unknown-bar").hide();
+        divBar.children(".unknown-bar").hide();
     }
 
     if (combinedCount.currentYearCount) {
-    	var currentNormalizedWidth = getNormalizedWidth(entity, combinedCount.currentYearCount);
+        var currentNormalizedWidth = getNormalizedWidth(entity, combinedCount.currentYearCount);
 
         var countExplanation = combinedCount.currentYearCount + ' ' + i18nStringsUtil.ofString + ' ' + sum
-                                + ' ' + i18nStringsUtil.wereString + ' '
-                                + COMPARISON_PARAMETERS_INFO[currentParameter].verbName + ' '
-                                + i18nStringsUtil.inIncompleteYear;
+            + ' ' + i18nStringsUtil.wereString + ' '
+            + COMPARISON_PARAMETERS_INFO[currentParameter].verbName + ' '
+            + i18nStringsUtil.inIncompleteYear;
 
         divBar.children(".current-year-bar").attr("title", countExplanation);
 
@@ -761,7 +760,7 @@ function renderBarAndLabel(entity, divBar, divLabel, spanElement) {
 
     } else {
 
-    	divBar.children(".current-year-bar").hide();
+        divBar.children(".current-year-bar").hide();
     }
 
     var entityLabelForLegend = divLabel.find(".entity-label-url");
@@ -772,48 +771,48 @@ function renderBarAndLabel(entity, divBar, divLabel, spanElement) {
     spanElement.text(sum).css("font-size", "0.8em").css("color", "#595B5B");
 }
 
-function getVIVOURL(entityURI){
+function getVIVOURL(entityURI) {
 
-	return subOrganizationVivoProfileURL + "uri=" + entityURI;
+    return subOrganizationVivoProfileURL + "uri=" + entityURI;
 
 }
 
 function getTemporalVisURL(entityURI) {
-	if (vivoDefaultNamespace) {
+    if (vivoDefaultNamespace) {
 
-		/*
-		 * This means that the URI of the entity is made up of default namespace so lets make the
-		 * short url, shorter!
-		 * */
-		if (entityURI.search(vivoDefaultNamespace) === 0) {
-			return temporalGraphCommonURL + entityURI.substring(vivoDefaultNamespace.length);
-		}
-	}
+        /*
+         * This means that the URI of the entity is made up of default namespace so lets make the
+         * short url, shorter!
+         * */
+        if (entityURI.search(vivoDefaultNamespace) === 0) {
+            return temporalGraphCommonURL + entityURI.substring(vivoDefaultNamespace.length);
+        }
+    }
 
-	/*
-	 * Default short url template involves using long uri, this in case the entity is not based off
-	 * of default namespace.
-	 * */
-	return temporalGraphCommonURL + "?uri=" + entityURI ;
+    /*
+     * Default short url template involves using long uri, this in case the entity is not based off
+     * of default namespace.
+     * */
+    return temporalGraphCommonURL + "?uri=" + entityURI;
 }
 
 function getVIVOProfileURL(given_uri) {
 
-	finalURL = $.ajax({
-		url: contextPath + "/visualization",
-		data: ({vis: "utilities", vis_mode: "PROFILE_URL", uri: given_uri}),
-		dataType: "text",
-		async: false,
-		success:function(data){
-	}
-	}).responseText;
+    finalURL = $.ajax({
+        url: contextPath + "/visualization",
+        data: ({vis: "utilities", vis_mode: "PROFILE_URL", uri: given_uri}),
+        dataType: "text",
+        async: false,
+        success: function (data) {
+        }
+    }).responseText;
 
-	return finalURL;
+    return finalURL;
 
 }
 
 function slugify(textToBeSlugified) {
-	return textToBeSlugified.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-]/g, '').toLowerCase();
+    return textToBeSlugified.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-]/g, '').toLowerCase();
 }
 
 /**
@@ -830,9 +829,9 @@ function slugify(textToBeSlugified) {
  */
 function removeLegendRow(checkbox) {
 
-	//console.log("removeLegendRow is called for "+$(checkbox).attr("value"));
-	var pToBeRemovedIdentifier = $(checkbox).attr("value");
-	$('p#' + slugify(pToBeRemovedIdentifier)).remove();
+    //console.log("removeLegendRow is called for "+$(checkbox).attr("value"));
+    var pToBeRemovedIdentifier = $(checkbox).attr("value");
+    $('p#' + slugify(pToBeRemovedIdentifier)).remove();
 
     $(checkbox).next('a').css("font-weight", "normal");
 }
@@ -848,15 +847,15 @@ function removeLegendRow(checkbox) {
  * @param numOfEdgeEntries
  */
 function setOptionsForPagination(object, itemsPerPage, numberOfDisplayEntries,
-		numOfEdgeEntries) {
+                                 numOfEdgeEntries) {
 
-	object = {
-			items_per_page : itemsPerPage,
-			num_display_entries : numberOfDisplayEntries,
-			num_edge_entries : numOfEdgeEntries,
-			prev_text : i18nStringsUtil.previousString,
-			next_text : i18nStringsUtil.nextString
-	};
+    object = {
+        items_per_page: itemsPerPage,
+        num_display_entries: numberOfDisplayEntries,
+        num_edge_entries: numOfEdgeEntries,
+        prev_text: i18nStringsUtil.previousString,
+        next_text: i18nStringsUtil.nextString
+    };
 }
 
 /**
@@ -867,43 +866,43 @@ function setOptionsForPagination(object, itemsPerPage, numberOfDisplayEntries,
 
 function removeUnknowns(jsonRecords) {
 
-	var i = 0, j = 0;
+    var i = 0, j = 0;
 
-	while (j < jsonRecords.length) {
+    while (j < jsonRecords.length) {
 
-		jsonRecords[j].unknownsValue = -1;
+        jsonRecords[j].unknownsValue = -1;
 
-		for (i = 0; i < jsonRecords[j].data.length; i++) {
-			if (jsonRecords[j].data[i][0] == -1) {
-				jsonRecords[j].unknownsValue = jsonRecords[j].data[i][1];
-				jsonRecords[j].data.splice(i, 1);
-				i--;
-			}
-		}
-		j++;
-	}
+        for (i = 0; i < jsonRecords[j].data.length; i++) {
+            if (jsonRecords[j].data[i][0] == -1) {
+                jsonRecords[j].unknownsValue = jsonRecords[j].data[i][1];
+                jsonRecords[j].data.splice(i, 1);
+                i--;
+            }
+        }
+        j++;
+    }
 
 }
 
 function insertBackUnknowns(jsonRecords) {
 
-	var i = 0, j = 0;
+    var i = 0, j = 0;
 
-	while (j < jsonRecords.length) {
-		if (jsonRecords[j].unknownsValue != -1) {
-			jsonRecords[j].data.push( [ -1, jsonRecords[j].unknownsValue ]);
-		}
-		j++;
-	}
+    while (j < jsonRecords.length) {
+        if (jsonRecords[j].unknownsValue != -1) {
+            jsonRecords[j].data.push([-1, jsonRecords[j].unknownsValue]);
+        }
+        j++;
+    }
 }
 
 /**
  * function to get the next free color in the queue
  * side-effecting entity here.
  */
-function getNextFreeColor(entity){
+function getNextFreeColor(entity) {
 
-	/* check freeColors is not empty and
+    /* check freeColors is not empty and
      * Remove the first element out of freeColors
      */
 
@@ -922,22 +921,22 @@ function getNextFreeColor(entity){
     colors[entity.label] = colorToAssign;
 }
 
-function getNormalizedWidth(entity, sum){
+function getNormalizedWidth(entity, sum) {
 
-	 var maxValueOfComparisonParameter = calcMaxOfComparisonParameter(URIToEntityRecord);
-	 var normalizedWidth = 0;
+    var maxValueOfComparisonParameter = calcMaxOfComparisonParameter(URIToEntityRecord);
+    var normalizedWidth = 0;
 
-	 normalizedWidth = Math.floor(225 * (sum / maxValueOfComparisonParameter));
+    normalizedWidth = Math.floor(225 * (sum / maxValueOfComparisonParameter));
 
-	 /*
-	  * This will make sure that the entites that have very low <parameter> count have at least
-	  * 1 pixel width bar. This happens when the highest count organization has a very high count
-	  * compared to the lowest count organization.
-	  * */
-	 return normalizedWidth === 0 ? 1 : normalizedWidth;
+    /*
+     * This will make sure that the entites that have very low <parameter> count have at least
+     * 1 pixel width bar. This happens when the highest count organization has a very high count
+     * compared to the lowest count organization.
+     * */
+    return normalizedWidth === 0 ? 1 : normalizedWidth;
 }
 
-function renderLineGraph(renderedObjects, entity){
+function renderLineGraph(renderedObjects, entity) {
 
     renderedObjects.push(entity);
     stuffZerosIntoLineGraphs(renderedObjects, year);
@@ -945,7 +944,7 @@ function renderLineGraph(renderedObjects, entity){
 }
 
 
-function removeUsedColor(entity){
+function removeUsedColor(entity) {
 
     if (colors[entity.label]) {
         colorToRemove = colors[entity.label];
@@ -953,13 +952,13 @@ function removeUsedColor(entity){
         entity.color = "";
     }
 
-	//Insert it at the end of freeColors
+    //Insert it at the end of freeColors
     freeColors.push(colorToRemove);
 }
 
-function removeEntityUnChecked(renderedObjects, entity){
+function removeEntityUnChecked(renderedObjects, entity) {
 
-	//remove the entity that is unchecked
+    //remove the entity that is unchecked
     var ii = 0;
     while (ii < renderedObjects.length) {
 
@@ -967,7 +966,7 @@ function removeEntityUnChecked(renderedObjects, entity){
             unStuffZerosFromLineGraph(renderedObjects[ii]);
             renderedObjects.splice(ii, 1);
         } else {
-        	ii++;
+            ii++;
         }
     }
     unStuffZerosFromLineGraphs(renderedObjects, year);
@@ -975,88 +974,88 @@ function removeEntityUnChecked(renderedObjects, entity){
 }
 
 
-function generateCheckBoxes(label, checkedFlag, fontFlag){
+function generateCheckBoxes(label, checkedFlag, fontFlag) {
 
-	var parentP = $('<p>');
+    var parentP = $('<p>');
 
-	var li = $('<li>');
+    var li = $('<li>');
 
-	var checkbox = $('<input>');
-	checkbox.attr('type','checkbox');
-	checkbox.attr('class', entityCheckboxSelectorDOMClass);
-	checkbox.attr('value', label);
-	if(checkedFlag == 1){
-		checkbox.prop('checked');
-	}
+    var checkbox = $('<input>');
+    checkbox.attr('type', 'checkbox');
+    checkbox.attr('class', entityCheckboxSelectorDOMClass);
+    checkbox.attr('value', label);
+    if (checkedFlag == 1) {
+        checkbox.prop('checked');
+    }
 
-	var a = $('<a/>');
-	if(fontFlag == 1){
-		a.css("font-weight", "bold");
-	}
-	a.html(label);
+    var a = $('<a/>');
+    if (fontFlag == 1) {
+        a.css("font-weight", "bold");
+    }
+    a.html(label);
 
-	parentP.append(li);
-	parentP.append(checkbox);
-	parentP.append(a);
+    parentP.append(li);
+    parentP.append(checkbox);
+    parentP.append(a);
 
     return parentP;
 }
 
-function clearRenderedObjects(){
+function clearRenderedObjects() {
 
-	$.each(URIToCheckedEntities, function(index, val){
-		if($(val).is(':checked')){
-			$(val).prop("checked", false);
-			updateRowHighlighter(val);
-			removeUsedColor(URIToEntityRecord[$(val).attr("value")]);
-			removeEntityUnChecked(renderedObjects, URIToEntityRecord[$(val).attr("value")]);
-			removeLegendRow(val);
-			displayLineGraphs();
-		}
-	});
+    $.each(URIToCheckedEntities, function (index, val) {
+        if ($(val).is(':checked')) {
+            $(val).prop("checked", false);
+            updateRowHighlighter(val);
+            removeUsedColor(URIToEntityRecord[$(val).attr("value")]);
+            removeEntityUnChecked(renderedObjects, URIToEntityRecord[$(val).attr("value")]);
+            removeLegendRow(val);
+            displayLineGraphs();
+        }
+    });
 
-	URIToCheckedEntities = {};
+    URIToCheckedEntities = {};
 
-	checkIfColorLimitIsReached();
-	updateCounter();
+    checkIfColorLimitIsReached();
+    updateCounter();
 
 }
 
-function createNotification( template, vars, opts ){
-	return $notificationContainer.notify("create", template, vars, opts);
+function createNotification(template, vars, opts) {
+    return $notificationContainer.notify("create", template, vars, opts);
 }
 
-function updateCounter(){
-	//notification about the max items that can be clicked
-	$("#counter").text(renderedObjects.length);
+function updateCounter() {
+    //notification about the max items that can be clicked
+    $("#counter").text(renderedObjects.length);
 }
 
-function displayLineGraphs(){
+function displayLineGraphs() {
 
-	//plot all we got
+    //plot all we got
     if (renderedObjects.length == 0) {
 
-    	init(graphContainer);
+        init(graphContainer);
 
     } else {
 
-    	removeUnknowns(renderedObjects);
+        removeUnknowns(renderedObjects);
         $.plot(graphContainer, renderedObjects, FlotOptions);
         insertBackUnknowns(renderedObjects);
 
     }
 }
 
-function removeCheckBoxFromGlobalSet(checkbox){
+function removeCheckBoxFromGlobalSet(checkbox) {
     //remove checkbox object from the globals
-	var value = $(checkbox).attr("value");
-	/*if (labelToCheckedEntities[value]) {
-		delete labelToCheckedEntities[value];
-	}*/
+    var value = $(checkbox).attr("value");
+    /*if (labelToCheckedEntities[value]) {
+        delete labelToCheckedEntities[value];
+    }*/
 
-	if (URIToCheckedEntities[value]) {
-		delete URIToCheckedEntities[value];
-	}
+    if (URIToCheckedEntities[value]) {
+        delete URIToCheckedEntities[value];
+    }
 
 }
 
@@ -1065,124 +1064,124 @@ function removeCheckBoxFromGlobalSet(checkbox){
  * used by jquery.dataTables. The JsonObject
  * returned is used to populate the pagination table.
  */
-function prepareTableForDataTablePagination(jsonData, dataTableParams){
+function prepareTableForDataTablePagination(jsonData, dataTableParams) {
 
 //	console.log(processJSONData.currentEntityLevel);
 
-	if (processJSONData.currentEntityLevel === i18nStringsGuiEvents.organizationsAndPeople) {
-		$.fn.dataTableExt.afnFiltering.push(DatatableCustomFilters.peopleOrOrganizations);
-	}
+    if (processJSONData.currentEntityLevel === i18nStringsGuiEvents.organizationsAndPeople) {
+        $.fn.dataTableExt.afnFiltering.push(DatatableCustomFilters.peopleOrOrganizations);
+    }
 
 
-	var table = $('<table>');
-	table.attr('cellpadding', '0');
-	table.attr('cellspacing', '0');
-	table.attr('border', '0');
-	table.attr('id', 'datatable');
-	table.css('font-size', '0.9em');
-	table.css('width', '100%');
+    var table = $('<table>');
+    table.attr('cellpadding', '0');
+    table.attr('cellspacing', '0');
+    table.attr('border', '0');
+    table.attr('id', 'datatable');
+    table.css('font-size', '0.9em');
+    table.css('width', '100%');
 
-	var thead = $('<thead>');
-	var tr = $('<tr>');
+    var thead = $('<thead>');
+    var tr = $('<tr>');
 
-	var checkboxTH = $('<th>');
-	checkboxTH.html(' ');
+    var checkboxTH = $('<th>');
+    checkboxTH.html(' ');
 
-	var entityLabelTH = $('<th>');
-	entityLabelTH.html(i18nStringsUtil.entityLabel);
+    var entityLabelTH = $('<th>');
+    entityLabelTH.html(i18nStringsUtil.entityLabel);
 
-	var activityCountTH = $('<th>');
-	if ($("select.comparisonValues option:selected").text() === i18nStringsUtil.byPublications) {
-		activityCountTH.html(i18nStringsUtil.publicationCount);
-	} else {
-		activityCountTH.html(i18nStringsUtil.grantCount);
-	}
-	activityCountTH.attr("id", "activity-count-column");
+    var activityCountTH = $('<th>');
+    if ($("select.comparisonValues option:selected").text() === i18nStringsUtil.byPublications) {
+        activityCountTH.html(i18nStringsUtil.publicationCount);
+    } else {
+        activityCountTH.html(i18nStringsUtil.grantCount);
+    }
+    activityCountTH.attr("id", "activity-count-column");
 
-	var entityTypeTH = $('<th>');
-	entityTypeTH.html(i18nStringsUtil.entityType);
+    var entityTypeTH = $('<th>');
+    entityTypeTH.html(i18nStringsUtil.entityType);
 
-	tr.append(checkboxTH);
-	tr.append(entityLabelTH);
-	tr.append(activityCountTH);
-	tr.append(entityTypeTH);
+    tr.append(checkboxTH);
+    tr.append(entityLabelTH);
+    tr.append(activityCountTH);
+    tr.append(entityTypeTH);
 
-	thead.append(tr);
+    thead.append(tr);
 
-	table.append(thead);
+    table.append(thead);
 
-	var tbody = $('<tbody>');
-	var checkboxCount = 0;
+    var tbody = $('<tbody>');
+    var checkboxCount = 0;
 
-	$.each(URIToEntityRecord, function(index, val) {
-		var entityTypesWithoutStopWords = removeStopWords(val);
-		var row = $('<tr>');
+    $.each(URIToEntityRecord, function (index, val) {
+        var entityTypesWithoutStopWords = removeStopWords(val);
+        var row = $('<tr>');
 
-		var checkboxTD = $('<td>');
-		checkboxTD.html('<div class="disabled-checkbox-event-receiver">&nbsp;</div><input type="checkbox" class="'
-								+ entityCheckboxSelectorDOMClass + '" value="'
-								+ val.entityURI + '"'+'/>');
+        var checkboxTD = $('<td>');
+        checkboxTD.html('<div class="disabled-checkbox-event-receiver">&nbsp;</div><input type="checkbox" class="'
+            + entityCheckboxSelectorDOMClass + '" value="'
+            + val.entityURI + '"' + '/>');
 
-		var labelTD =  $('<td>');
-		labelTD.css("width", "100px");
-		labelTD.html(val.label);
+        var labelTD = $('<td>');
+        labelTD.css("width", "100px");
+        labelTD.html(val.label);
 
-		var publicationCountTD =  $('<td>');
+        var publicationCountTD = $('<td>');
 
-		var combinedCount = val.activityCount;
+        var combinedCount = val.activityCount;
 
-		publicationCountTD.html(combinedCount.knownYearCount + combinedCount.unknownYearCount);
+        publicationCountTD.html(combinedCount.knownYearCount + combinedCount.unknownYearCount);
 
-		var entityTypeTD =  $('<td>');
-		entityTypeTD.html(entityTypesWithoutStopWords);
+        var entityTypeTD = $('<td>');
+        entityTypeTD.html(entityTypesWithoutStopWords);
 
-		row.append(checkboxTD);
-		row.append(labelTD);
-		row.append(publicationCountTD);
-		row.append(entityTypeTD);
+        row.append(checkboxTD);
+        row.append(labelTD);
+        row.append(publicationCountTD);
+        row.append(entityTypeTD);
 
-		tbody.append(row);
-		checkboxCount++;
-	});
+        tbody.append(row);
+        checkboxCount++;
+    });
 
-	table.append(tbody);
-	tableDiv.append(table);
+    table.append(tbody);
+    tableDiv.append(table);
 
-	var entityListTable = $('#datatable').dataTable({
-	    "sDom": '<"' + dataTableParams.searchBarParentContainerDIVClass + '"f><"filterInfo"i><"' + dataTableParams.paginationContainerDIVClass + '"p><"table-separator"><"datatablewrapper"t>',
-	    "aaSorting": [
-	        [2, "desc"], [1,'asc']
-	    ],
-	    "asStripClasses": [],
-	    "iDisplayLength": 10,
-	    "bInfo": true,
-	    "oLanguage": {
-			"sInfo": "Records _START_ - _END_ of _TOTAL_",
-			"sInfoEmpty": i18nStringsUtil.noMatchingEntities,
-			"sInfoFiltered": ""
-		},
-	    "sPaginationType": "gmail_style",
-	    "fnDrawCallback": function () {
+    var entityListTable = $('#datatable').dataTable({
+        "sDom": '<"' + dataTableParams.searchBarParentContainerDIVClass + '"f><"filterInfo"i><"' + dataTableParams.paginationContainerDIVClass + '"p><"table-separator"><"datatablewrapper"t>',
+        "aaSorting": [
+            [2, "desc"], [1, 'asc']
+        ],
+        "asStripClasses": [],
+        "iDisplayLength": 10,
+        "bInfo": true,
+        "oLanguage": {
+            "sInfo": "Records _START_ - _END_ of _TOTAL_",
+            "sInfoEmpty": i18nStringsUtil.noMatchingEntities,
+            "sInfoFiltered": ""
+        },
+        "sPaginationType": "gmail_style",
+        "fnDrawCallback": function () {
 
-	        /* We check whether max number of allowed comparisions (currently 10) is reached
-	         * here as well becasue the only function that is guaranteed to be called during
-	         * page navigation is this. No need to bind it to the nav-buttons becuase 1. It is over-ridden
-	         * by built-in navigation events & this is much cleaner.
-	         * */
-	        checkIfColorLimitIsReached();
-	    }
-	});
+            /* We check whether max number of allowed comparisions (currently 10) is reached
+             * here as well becasue the only function that is guaranteed to be called during
+             * page navigation is this. No need to bind it to the nav-buttons becuase 1. It is over-ridden
+             * by built-in navigation events & this is much cleaner.
+             * */
+            checkIfColorLimitIsReached();
+        }
+    });
 
 
-	var searchInputBox = $("." + dataTableParams.searchBarParentContainerDIVClass).find("input[type=text]");
+    var searchInputBox = $("." + dataTableParams.searchBarParentContainerDIVClass).find("input[type=text]");
 
-	searchInputBox.after("<span id='reset-search' title='" + i18nStringsUtil.clerSearchQuery + "'>X</span>");
+    searchInputBox.after("<span id='reset-search' title='" + i18nStringsUtil.clerSearchQuery + "'>X</span>");
 
-	$( document ).on('click', "#reset-search", function() {
-		entityListTable.fnFilter("");
-	});
+    $(document).on('click', "#reset-search", function () {
+        entityListTable.fnFilter("");
+    });
 
-	return entityListTable;
+    return entityListTable;
 }
 
 
@@ -1191,191 +1190,192 @@ function prepareTableForDataTablePagination(jsonData, dataTableParams){
  * used by jquery.dataTables. The JsonObject
  * returned is used to populate the pagination table.
  */
-function reloadDataTablePagination(preselectedEntityURIs, jsonData){
+function reloadDataTablePagination(preselectedEntityURIs, jsonData) {
 
-	if (processJSONData.currentEntityLevel === i18nStringsGuiEvents.organizationsAndPeople) {
+    if (processJSONData.currentEntityLevel === i18nStringsGuiEvents.organizationsAndPeople) {
 
-		/*
-		 * This will make sure that duplicate filters are not added.
-		 * */
-		if($.inArray(DatatableCustomFilters.peopleOrOrganizations, $.fn.dataTableExt.afnFiltering) < 0) {
-			$.fn.dataTableExt.afnFiltering.push(DatatableCustomFilters.peopleOrOrganizations);
-		}
-	} else {
+        /*
+         * This will make sure that duplicate filters are not added.
+         * */
+        if ($.inArray(DatatableCustomFilters.peopleOrOrganizations, $.fn.dataTableExt.afnFiltering) < 0) {
+            $.fn.dataTableExt.afnFiltering.push(DatatableCustomFilters.peopleOrOrganizations);
+        }
+    } else {
 
-		var indexOfPeopleOrOrganizationFilter = $.inArray(DatatableCustomFilters.peopleOrOrganizations, $.fn.dataTableExt.afnFiltering);
+        var indexOfPeopleOrOrganizationFilter = $.inArray(DatatableCustomFilters.peopleOrOrganizations, $.fn.dataTableExt.afnFiltering);
 
-		if (indexOfPeopleOrOrganizationFilter >= 0) {
-			$.fn.dataTableExt.afnFiltering.splice(indexOfPeopleOrOrganizationFilter, 1);
-		}
-	}
+        if (indexOfPeopleOrOrganizationFilter >= 0) {
+            $.fn.dataTableExt.afnFiltering.splice(indexOfPeopleOrOrganizationFilter, 1);
+        }
+    }
 
-	var currentDataTable = $('#datatable').dataTable();
+    var currentDataTable = $('#datatable').dataTable();
 
-	currentDataTable.fnClearTable();
+    currentDataTable.fnClearTable();
 
-	if ($("select.comparisonValues option:selected").text() === "i18nStringsUtil.byPublications") {
-		$("#activity-count-column").html(i18nStringsUtil.publicationCount);
-	} else {
-		$("#activity-count-column").html(i18nStringsUtil.grantCount);
-	}
+    if ($("select.comparisonValues option:selected").text() === "i18nStringsUtil.byPublications") {
+        $("#activity-count-column").html(i18nStringsUtil.publicationCount);
+    } else {
+        $("#activity-count-column").html(i18nStringsUtil.grantCount);
+    }
 
-	function addNewRowAfterReload(entity) {
+    function addNewRowAfterReload(entity) {
 
-		var checkboxTD = '<div class="disabled-checkbox-event-receiver">&nbsp;</div><input type="checkbox" class="'
-			+ entityCheckboxSelectorDOMClass
-			+ '" value="'
-			+ entity.entityURI + '"' +'/>';
+        var checkboxTD = '<div class="disabled-checkbox-event-receiver">&nbsp;</div><input type="checkbox" class="'
+            + entityCheckboxSelectorDOMClass
+            + '" value="'
+            + entity.entityURI + '"' + '/>';
 
-		var labelTD =  entity.label;
+        var labelTD = entity.label;
 
-		var combinedCount = entity.activityCount;
+        var combinedCount = entity.activityCount;
 
-		var publicationCountTD = combinedCount.knownYearCount + combinedCount.unknownYearCount;
+        var publicationCountTD = combinedCount.knownYearCount + combinedCount.unknownYearCount;
 
-		var entityTypeTD =  removeStopWords(entity);
+        var entityTypeTD = removeStopWords(entity);
 
-		var newRow = [checkboxTD,
-		  labelTD,
-		  publicationCountTD,
-		  entityTypeTD];
+        var newRow = [checkboxTD,
+            labelTD,
+            publicationCountTD,
+            entityTypeTD];
 
-		/*
-		 * Dont redraw the table, so no sorting, no filtering.
-		 * */
-		currentDataTable.fnAddData(newRow, false);
-	}
+        /*
+         * Dont redraw the table, so no sorting, no filtering.
+         * */
+        currentDataTable.fnAddData(newRow, false);
+    }
 
-	/*
-	 * This will ensure that currently selected entities are added first in the table,
-	 * to make sure that they are "visible" in the DOM. This so that our manual trigger
-	 * for selecting this checkboxes on page load, actually works.
-	 * */
-	$.each(preselectedEntityURIs, function(index, uri) {
-		if (URIToEntityRecord[uri]) {
-			addNewRowAfterReload(URIToEntityRecord[uri]);
-		}
-	});
+    /*
+     * This will ensure that currently selected entities are added first in the table,
+     * to make sure that they are "visible" in the DOM. This so that our manual trigger
+     * for selecting this checkboxes on page load, actually works.
+     * */
+    $.each(preselectedEntityURIs, function (index, uri) {
+        if (URIToEntityRecord[uri]) {
+            addNewRowAfterReload(URIToEntityRecord[uri]);
+        }
+    });
 
 
-	$.each(URIToEntityRecord, function(index, val) {
+    $.each(URIToEntityRecord, function (index, val) {
 
-		/*
-		 * Don't consider already added pre-selected entities.
-		 * */
-		if ($.inArray(index, preselectedEntityURIs) < 0) {
-			addNewRowAfterReload(val);
-		}
-	});
+        /*
+         * Don't consider already added pre-selected entities.
+         * */
+        if ($.inArray(index, preselectedEntityURIs) < 0) {
+            addNewRowAfterReload(val);
+        }
+    });
 
-	/*
-	 * We should change to the first page so that checkboxes are selectable.
-	 * */
-	currentDataTable.fnPageChange('first');
+    /*
+     * We should change to the first page so that checkboxes are selectable.
+     * */
+    currentDataTable.fnPageChange('first');
 
-	return currentDataTable;
+    return currentDataTable;
 }
 
-function updateRowHighlighter(linkedCheckBox){
-	linkedCheckBox.closest("tr").removeClass('datatablerowhighlight');
+function updateRowHighlighter(linkedCheckBox) {
+    linkedCheckBox.closest("tr").removeClass('datatablerowhighlight');
 }
 
 function removeStopWords(val) {
 
-	return $.map(val.organizationType, function(type, i){
+    return $.map(val.organizationType, function (type, i) {
 
-		if ($.inArray(type, STOP_WORDS_FOR_TABLE) < 0) {
-			return (type);
-		}
-	}).join(", ");
+        if ($.inArray(type, STOP_WORDS_FOR_TABLE) < 0) {
+            return (type);
+        }
+    }).join(", ");
 }
 
-function setEntityLevel(entityLevel){
-	$('#entityleveltext').text('  ' + entityLevel.toLowerCase()).css('font-style', 'italic');
-	$('#entityHeader').text(entityLevel).css('font-weight', 'bold');
-	$('#headerText').css("color", "#2485ae");
+function setEntityLevel(entityLevel) {
+    $('#entityleveltext').text('  ' + entityLevel.toLowerCase()).css('font-style', 'italic');
+    $('#entityHeader').text(entityLevel).css('font-weight', 'bold');
+    $('#headerText').css("color", "#2485ae");
 }
 
-function toCamelCase(string){
-	return string ? (string.substr(0,1).toUpperCase() + string.substr(1, string.length-1).toLowerCase()) : "";
+function toCamelCase(string) {
+    return string ? (string.substr(0, 1).toUpperCase() + string.substr(1, string.length - 1).toLowerCase()) : "";
 }
 
-function getSize(map){
-	var size = 0;
+function getSize(map) {
+    var size = 0;
 
-	$.each(map, function(){
-		size++;
-	});
+    $.each(map, function () {
+        size++;
+    });
 
-	return size;
+    return size;
 }
 
-function disableUncheckedEntities(){
+function disableUncheckedEntities() {
 
-	$.each($("input[type=checkbox]." + entityCheckboxSelectorDOMClass + ":not(:checked)"), function(index, val){
-		$(val).attr('disabled', true);
-		$(val).prev().show();
-	});
+    $.each($("input[type=checkbox]." + entityCheckboxSelectorDOMClass + ":not(:checked)"), function (index, val) {
+        $(val).attr('disabled', true);
+        $(val).prev().show();
+    });
 
-	/*
-	 * This indicates the first time this function is called presumably after the 10th checkbox is selected.
-	 * We want to display a warning message only in Internet Explorer because in IE the div that handles
-	 * disabled-checkbox-clicks is colored white & we cant see the actual checkbox.
-	 *
-	 * Note that the usual Error message will still display if the user tries to click on the white box
-	 * (or a disabled checkbox in case of non-IE browsers).
-	 * */
-	if ($("#datatable").data("isEntitySelectionAllowed")) {
-		if ($.browser.msie) {
-			createNotification("warning-notification", { title: i18nStringsUtil.informationString,
-				text: i18nStringsUtil.shortMaxEntityNote },{
-				custom: false,
-				expires: false
-				});
-		}
-	}
+    /*
+     * This indicates the first time this function is called presumably after the 10th checkbox is selected.
+     * We want to display a warning message only in Internet Explorer because in IE the div that handles
+     * disabled-checkbox-clicks is colored white & we cant see the actual checkbox.
+     *
+     * Note that the usual Error message will still display if the user tries to click on the white box
+     * (or a disabled checkbox in case of non-IE browsers).
+     * */
+    if ($("#datatable").data("isEntitySelectionAllowed")) {
+        if ($.browser.msie) {
+            createNotification("warning-notification", {
+                title: i18nStringsUtil.informationString,
+                text: i18nStringsUtil.shortMaxEntityNote
+            }, {
+                custom: false,
+                expires: false
+            });
+        }
+    }
 
 
-	$("#datatable").data("isEntitySelectionAllowed", false);
+    $("#datatable").data("isEntitySelectionAllowed", false);
 }
 
-function enableUncheckedEntities(){
+function enableUncheckedEntities() {
 
-	$.each($("input[type=checkbox]." + entityCheckboxSelectorDOMClass + ":not(:checked)"), function(index, val){
-		$(val).attr('disabled', false);
-		$(val).prev().hide();
-	});
+    $.each($("input[type=checkbox]." + entityCheckboxSelectorDOMClass + ":not(:checked)"), function (index, val) {
+        $(val).attr('disabled', false);
+        $(val).prev().hide();
+    });
 
 
-
-	$("#datatable").data("isEntitySelectionAllowed", true);
+    $("#datatable").data("isEntitySelectionAllowed", true);
 }
 
-function checkIfColorLimitIsReached(){
+function checkIfColorLimitIsReached() {
 
-	if (getSize(URIToCheckedEntities) >= 10) {
-		disableUncheckedEntities();
-	} else {
-		enableUncheckedEntities();
-	}
+    if (getSize(URIToCheckedEntities) >= 10) {
+        disableUncheckedEntities();
+    } else {
+        enableUncheckedEntities();
+    }
 }
 
-function setTickSizeOfAxes(){
+function setTickSizeOfAxes() {
 
-	var checkedLabelToEntityRecord = {};
-	var yearRange;
+    var checkedLabelToEntityRecord = {};
+    var yearRange;
 
-	$.each(URIToCheckedEntities, function(index, val){
-		checkedLabelToEntityRecord[index] = URIToEntityRecord[index];
-	});
+    $.each(URIToCheckedEntities, function (index, val) {
+        checkedLabelToEntityRecord[index] = URIToEntityRecord[index];
+    });
 
-	var normalizedYearRange = getNormalizedYearRange();
+    var normalizedYearRange = getNormalizedYearRange();
 
     FlotOptions.xaxis.tickSize =
-		TickSize.getTickSize(normalizedYearRange.normalizedRange, 'x');
+        TickSize.getTickSize(normalizedYearRange.normalizedRange, 'x');
 
     FlotOptions.series.lines.lineWidth = LineWidth.getLineWidth(FlotOptions.xaxis.tickSize);
 
-	FlotOptions.yaxis.tickSize =
-			TickSize.getTickSize(calcMaxWithinComparisonParameter(checkedLabelToEntityRecord), 'y');
+    FlotOptions.yaxis.tickSize =
+        TickSize.getTickSize(calcMaxWithinComparisonParameter(checkedLabelToEntityRecord), 'y');
 }

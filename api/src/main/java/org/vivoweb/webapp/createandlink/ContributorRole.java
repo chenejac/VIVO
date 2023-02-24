@@ -13,7 +13,15 @@ public class ContributorRole {
         this.uri = uri;
     }
 
-    public String getKey() { return key; }
-    public String getLabel() { return label; }
-    public String getUri() { return uri; }
+    public String getKey() {
+        return key;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getUri() {
+        return uri;
+    }
 }

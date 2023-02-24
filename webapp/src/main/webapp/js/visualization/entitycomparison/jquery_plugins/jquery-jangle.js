@@ -26,8 +26,8 @@
  *
  */
 
-(function($) {
-    $.fn.jangleUpdate = function($el, deg) {
+(function ($) {
+    $.fn.jangleUpdate = function ($el, deg) {
         var currPos = $el.data('jangle') || 0,
             newPos = currPos + deg
 
@@ -36,7 +36,7 @@
         return newPos;
     };
 
-    $.fn.jangleFeatureDetection = function() {
+    $.fn.jangleFeatureDetection = function () {
         // JS properites to check
         var props = ['transformProperty', 'WebkitTransform', 'MozTransform', 'OTransform', 'msTransform'],
 
@@ -44,8 +44,8 @@
             elStyle = this[0] ? this[0].style : {};
 
         // test for CSS transform support
-        for ( var i in props ) {
-            if ( elStyle[ props[i] ] !== undefined ) {
+        for (var i in props) {
+            if (elStyle[props[i]] !== undefined) {
                 return true;
             }
         }
@@ -53,7 +53,7 @@
         return false;
     };
 
-    $.fn.jangleCSSTransform = function(deg) {
+    $.fn.jangleCSSTransform = function (deg) {
         // css transform init
         var styleTransform,
 
@@ -74,7 +74,7 @@
         return this;
     };
 
-    $.fn.jangleIETransform = function(deg) {
+    $.fn.jangleIETransform = function (deg) {
         // crazy math algorithm voodoo - see http://msdn.microsoft.com/en-us/library/ms533014%28VS.85%29.aspx
         // and http://www.boogdesign.com/b2evo/index.php/element-rotation-ie-matrix-filter?blog=2
         var rotation = Math.PI * (deg < 0 ? deg + 360 : deg) / 180,
@@ -82,7 +82,7 @@
             sin = Math.sin(rotation),
 
             // ie matrix offsets
-            setOffsets = function(img) { // set IE origin to match other browsers - http://blog.siteroller.net/cross-browser-css-rotation
+            setOffsets = function (img) { // set IE origin to match other browsers - http://blog.siteroller.net/cross-browser-css-rotation
                 if (img.style.position !== 'absolute' && img.style.position !== 'fixed') {
                     img.style.position = 'relative';
                     img.style.top = (img.clientHeight - img.offsetHeight) / 2;
@@ -90,13 +90,13 @@
                 }
             };
 
-        return this.each(function() {
-            this.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11="+cos+",M12="+(-sin)+",M21="+sin+",M22="+cos+",SizingMethod='auto expand')";
+        return this.each(function () {
+            this.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11=" + cos + ",M12=" + (-sin) + ",M21=" + sin + ",M22=" + cos + ",SizingMethod='auto expand')";
             setOffsets(this);
         });
     };
 
-    $.fn.jangleAnimation = function(s) { // =requestAnimation
+    $.fn.jangleAnimation = function (s) { // =requestAnimation
         var $this = this,
 
             currPos = this.data('jangle') || 0,  // s.continuous ? this.data('jangle') : 0
@@ -105,7 +105,7 @@
 
             cssTransforms = this.jangleFeatureDetection(),
 
-            animation = setInterval(function() {
+            animation = setInterval(function () {
                 if ((currPos += (s.interval * s.degrees / s.duration)) <= newPos) {
                     $this[cssTransforms ? 'jangleCSSTransform' : 'jangleIETransform'](currPos);
                 } else {
@@ -115,7 +115,7 @@
             }, s.interval);
     };
 
-    $.fn.jangle = function(options) {
+    $.fn.jangle = function (options) {
         // set defaults
         var defaults = {
                 continuous: false, // account for current angle
@@ -131,7 +131,7 @@
 
 
         // make sure properties are integers or keep as is
-        settings.degrees =  (parseInt(options, 10) || settings.degrees) % 360; // set degrees if 'options' is an integer
+        settings.degrees = (parseInt(options, 10) || settings.degrees) % 360; // set degrees if 'options' is an integer
         settings.duration = parseInt(settings.duration, 10) || settings.duration;
         settings.interval = parseInt(settings.interval, 10) || settings.interval;
 

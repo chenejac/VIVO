@@ -16,26 +16,26 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class GenericQueryMap extends HashMap<String, Set<String>> {
 
-	public GenericQueryMap() {
-		super();
-	}
+    public GenericQueryMap() {
+        super();
+    }
 
-	public void addEntry(String property, String value) {
+    public void addEntry(String property, String value) {
 
-		Set<String> values;
+        Set<String> values;
 
-		if (this.containsKey(property)) {
+        if (this.containsKey(property)) {
 
-			values = this.get(property);
-			values.add(value);
+            values = this.get(property);
+            values.add(value);
 
-		} else {
+        } else {
 
-			values = new HashSet<String>();
-			values.add(value);
-			this.put(property, values);
+            values = new HashSet<String>();
+            values.add(value);
+            this.put(property, values);
 
-		}
-	}
+        }
+    }
 
 }

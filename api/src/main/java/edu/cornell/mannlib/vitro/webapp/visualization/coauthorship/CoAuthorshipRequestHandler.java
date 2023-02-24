@@ -8,12 +8,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-
-import org.apache.jena.query.Dataset;
-
 import edu.cornell.mannlib.vitro.webapp.auth.requestedAction.AuthorizationRequest;
 import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
 import edu.cornell.mannlib.vitro.webapp.controller.freemarker.responsevalues.ResponseValues;
@@ -24,276 +18,285 @@ import edu.cornell.mannlib.vitro.webapp.visualization.exceptions.MalformedQueryP
 import edu.cornell.mannlib.vitro.webapp.visualization.valueobjects.Collaborator;
 import edu.cornell.mannlib.vitro.webapp.visualization.visutils.UtilityFunctions;
 import edu.cornell.mannlib.vitro.webapp.visualization.visutils.VisualizationRequestHandler;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.jena.query.Dataset;
 
 /**
  * This request handler is used when information related to co-authorship network
  * for an individual is requested. It currently provides 2 outputs,
- * 		1. Graphml content representing the individual's co-authorship network
- * 		1. CSV file containing the list(& count) of unique co-authors with which
+ * 1. Graphml content representing the individual's co-authorship network
+ * 1. CSV file containing the list(& count) of unique co-authors with which
  * the individual has worked over the years. This data powers the related sparkline.
  *
  * @author cdtank
  */
 public class CoAuthorshipRequestHandler implements VisualizationRequestHandler {
 
-	@Override
-	public Object generateAjaxVisualization(VitroRequest vitroRequest, Log log,
-			Dataset dataset) throws MalformedQueryParametersException {
-		throw new UnsupportedOperationException("CoAuthorship does not provide Ajax Response.");
-	}
+    @Override
+    public Object generateAjaxVisualization(VitroRequest vitroRequest, Log log,
+                                            Dataset dataset)
+        throws MalformedQueryParametersException {
+        throw new UnsupportedOperationException("CoAuthorship does not provide Ajax Response.");
+    }
 
-	@Override
-	public ResponseValues generateVisualizationForShortURLRequests(
-			Map<String, String> parameters, VitroRequest vitroRequest, Log log,
-			Dataset dataSource) throws MalformedQueryParametersException {
-		throw new UnsupportedOperationException("CoAuthorship does not provide Short URL Response.");
-	}
+    @Override
+    public ResponseValues generateVisualizationForShortURLRequests(
+        Map<String, String> parameters, VitroRequest vitroRequest, Log log,
+        Dataset dataSource) throws MalformedQueryParametersException {
+        throw new UnsupportedOperationException(
+            "CoAuthorship does not provide Short URL Response.");
+    }
 
-	@Override
-	public Map<String, String> generateDataVisualization(
-			VitroRequest vitroRequest, Log log, Dataset dataset)
-			throws MalformedQueryParametersException {
-
-
-		String egoURI = vitroRequest.getParameter(
-				VisualizationFrameworkConstants
-						.INDIVIDUAL_URI_KEY);
-
-		String visMode = vitroRequest.getParameter(
-						VisualizationFrameworkConstants
-								.VIS_MODE_KEY);
-
-		CoAuthorshipQueryRunner queryManager =
-		new CoAuthorshipQueryRunner(egoURI, vitroRequest, log);
-
-		CollaborationData authorNodesAndEdges =
-		queryManager.getQueryResult();
-
-    	/*
-    	 * We will be using the same visualization package for both sparkline & coauthorship
-    	 * flash vis. We will use "VIS_MODE_KEY" as a modifier to differentiate
-    	 * between these two. The default will be to render the coauthorship network vis.
-    	 * */
-		if (VisualizationFrameworkConstants.COAUTHORS_COUNT_PER_YEAR_VIS_MODE
-				.equalsIgnoreCase(visMode)) {
-			/*
-			 * When the csv file is required - based on which sparkline visualization will
-			 * be rendered.
-			 * */
-				return prepareCoauthorsCountPerYearDataResponse(authorNodesAndEdges);
-
-		} else if (VisualizationFrameworkConstants.COAUTHORS_LIST_VIS_MODE
-				.equalsIgnoreCase(visMode)) {
-			/*
-			 * When the csv file is required - based on which sparkline visualization will
-			 * be rendered.
-			 * */
-				return prepareCoauthorsListDataResponse(authorNodesAndEdges);
-
-		} else if (VisualizationFrameworkConstants.COAUTHOR_NETWORK_DOWNLOAD_VIS_MODE
-				.equalsIgnoreCase(visMode)) {
-			/*
-			 * When the csv file is required - based on which sparkline visualization will
-			 * be rendered.
-			 * */
-				return prepareNetworkDownloadDataResponse(authorNodesAndEdges);
-
-		} else {
-    			/*
-    			 * When the graphML file is required - based on which coauthorship network
-    			 * visualization will be rendered.
-    			 * */
-    			return prepareNetworkStreamDataResponse(authorNodesAndEdges);
-		}
-
-	}
-
-	public ResponseValues generateStandardVisualization(VitroRequest vitroRequest,
-											  	Log log,
-											    Dataset dataset)
-		throws MalformedQueryParametersException {
-
-		throw new UnsupportedOperationException("CoAuthorship Visualization "
-						+ "does not provide Standalone response.");
-	}
-
-	private String getCoauthorsListCSVContent(CollaborationData coAuthorshipData) {
-
-		StringBuilder csvFileContent = new StringBuilder();
-
-		csvFileContent.append("Co-author, Count\n");
-
-		for (Collaborator currNode : coAuthorshipData.getCollaborators()) {
-			/*
-			 * We have already printed the Ego Node info.
-			 * */
-			if (currNode != coAuthorshipData.getEgoCollaborator()) {
+    @Override
+    public Map<String, String> generateDataVisualization(
+        VitroRequest vitroRequest, Log log, Dataset dataset)
+        throws MalformedQueryParametersException {
 
 
-			csvFileContent.append(StringEscapeUtils.escapeCsv(currNode.getCollaboratorName()));
-			csvFileContent.append(",");
-			csvFileContent.append(currNode.getNumOfActivities());
-			csvFileContent.append("\n");
+        String egoURI = vitroRequest.getParameter(
+            VisualizationFrameworkConstants
+                .INDIVIDUAL_URI_KEY);
 
-			}
-		}
+        String visMode = vitroRequest.getParameter(
+            VisualizationFrameworkConstants
+                .VIS_MODE_KEY);
 
-		return csvFileContent.toString();
-	}
+        CoAuthorshipQueryRunner queryManager =
+            new CoAuthorshipQueryRunner(egoURI, vitroRequest, log);
 
-	private String getCoauthorsPerYearCSVContent(Map<String, Set<Collaborator>> yearToCoauthors) {
+        CollaborationData authorNodesAndEdges =
+            queryManager.getQueryResult();
 
-		StringBuilder csvFileContent = new StringBuilder();
+        /*
+         * We will be using the same visualization package for both sparkline & coauthorship
+         * flash vis. We will use "VIS_MODE_KEY" as a modifier to differentiate
+         * between these two. The default will be to render the coauthorship network vis.
+         * */
+        if (VisualizationFrameworkConstants.COAUTHORS_COUNT_PER_YEAR_VIS_MODE
+            .equalsIgnoreCase(visMode)) {
+            /*
+             * When the csv file is required - based on which sparkline visualization will
+             * be rendered.
+             * */
+            return prepareCoauthorsCountPerYearDataResponse(authorNodesAndEdges);
 
-		csvFileContent.append("Year, Count, Co-author(s)\n");
+        } else if (VisualizationFrameworkConstants.COAUTHORS_LIST_VIS_MODE
+            .equalsIgnoreCase(visMode)) {
+            /*
+             * When the csv file is required - based on which sparkline visualization will
+             * be rendered.
+             * */
+            return prepareCoauthorsListDataResponse(authorNodesAndEdges);
 
-		for (Entry<String, Set<Collaborator>> currentEntry : yearToCoauthors.entrySet()) {
-			csvFileContent.append(StringEscapeUtils.escapeCsv(currentEntry.getKey()));
-			csvFileContent.append(",");
-			csvFileContent.append(currentEntry.getValue().size());
-			csvFileContent.append(",");
-			csvFileContent.append(StringEscapeUtils.escapeCsv(
-										getCoauthorNamesAsString(currentEntry.getValue())));
-			csvFileContent.append("\n");
-		}
+        } else if (VisualizationFrameworkConstants.COAUTHOR_NETWORK_DOWNLOAD_VIS_MODE
+            .equalsIgnoreCase(visMode)) {
+            /*
+             * When the csv file is required - based on which sparkline visualization will
+             * be rendered.
+             * */
+            return prepareNetworkDownloadDataResponse(authorNodesAndEdges);
 
-		return csvFileContent.toString();
+        } else {
+            /*
+             * When the graphML file is required - based on which coauthorship network
+             * visualization will be rendered.
+             * */
+            return prepareNetworkStreamDataResponse(authorNodesAndEdges);
+        }
 
-	}
+    }
 
-	private String getCoauthorNamesAsString(Set<Collaborator> coAuthors) {
+    public ResponseValues generateStandardVisualization(VitroRequest vitroRequest,
+                                                        Log log,
+                                                        Dataset dataset)
+        throws MalformedQueryParametersException {
 
-		StringBuilder coAuthorsMerged = new StringBuilder();
+        throw new UnsupportedOperationException("CoAuthorship Visualization "
+            + "does not provide Standalone response.");
+    }
 
-		String coAuthorSeparator = "; ";
-		for (Collaborator currCoAuthor : coAuthors) {
-			coAuthorsMerged.append(currCoAuthor.getCollaboratorName()).append(coAuthorSeparator);
-		}
+    private String getCoauthorsListCSVContent(CollaborationData coAuthorshipData) {
 
-		return StringUtils.removeEnd(coAuthorsMerged.toString(), coAuthorSeparator);
-	}
+        StringBuilder csvFileContent = new StringBuilder();
 
-	/**
-	 * Provides response when a csv file containing number & names of unique co-authors per
-	 * year is requested.
-	 * @param authorNodesAndEdges Author nodes and edges
-	 */
-	private Map<String, String> prepareCoauthorsCountPerYearDataResponse(
-					CollaborationData authorNodesAndEdges) {
+        csvFileContent.append("Co-author, Count\n");
 
-		String outputFileName;
-		Map<String, Set<Collaborator>> yearToCoauthors = new TreeMap<String, Set<Collaborator>>();
+        for (Collaborator currNode : coAuthorshipData.getCollaborators()) {
+            /*
+             * We have already printed the Ego Node info.
+             * */
+            if (currNode != coAuthorshipData.getEgoCollaborator()) {
 
-		if (authorNodesAndEdges.getCollaborators() != null
-					&& authorNodesAndEdges.getCollaborators().size() > 0) {
 
-			outputFileName = UtilityFunctions.slugify(authorNodesAndEdges
-									.getEgoCollaborator().getCollaboratorName())
-			+ "_co-authors-per-year" + ".csv";
+                csvFileContent.append(StringEscapeUtils.escapeCsv(currNode.getCollaboratorName()));
+                csvFileContent.append(",");
+                csvFileContent.append(currNode.getNumOfActivities());
+                csvFileContent.append("\n");
 
-			yearToCoauthors = UtilityFunctions.getActivityYearToCollaborators(authorNodesAndEdges);
+            }
+        }
 
-		} else {
+        return csvFileContent.toString();
+    }
 
-			outputFileName = "no_co-authors-per-year" + ".csv";
-		}
+    private String getCoauthorsPerYearCSVContent(Map<String, Set<Collaborator>> yearToCoauthors) {
 
-        Map<String, String> fileData = new HashMap<String, String>();
-		fileData.put(DataVisualizationController.FILE_NAME_KEY,
-					 outputFileName);
-		fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
-					 "application/octet-stream");
-		fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
-					 getCoauthorsPerYearCSVContent(yearToCoauthors));
+        StringBuilder csvFileContent = new StringBuilder();
 
-		return fileData;
-	}
+        csvFileContent.append("Year, Count, Co-author(s)\n");
 
-	/**
-	 * Provides response when a csv file containing number & names of unique co-authors per
-	 * year is requested.
-	 * @param coAuthorshipData   Co authorship data
-	 */
-	private Map<String, String> prepareCoauthorsListDataResponse(
-					CollaborationData coAuthorshipData) {
+        for (Entry<String, Set<Collaborator>> currentEntry : yearToCoauthors.entrySet()) {
+            csvFileContent.append(StringEscapeUtils.escapeCsv(currentEntry.getKey()));
+            csvFileContent.append(",");
+            csvFileContent.append(currentEntry.getValue().size());
+            csvFileContent.append(",");
+            csvFileContent.append(StringEscapeUtils.escapeCsv(
+                getCoauthorNamesAsString(currentEntry.getValue())));
+            csvFileContent.append("\n");
+        }
 
-		String outputFileName = "";
+        return csvFileContent.toString();
 
-		if (coAuthorshipData.getCollaborators() != null
-					&& coAuthorshipData.getCollaborators().size() > 0) {
+    }
 
-			outputFileName = UtilityFunctions.slugify(coAuthorshipData.getEgoCollaborator()
-															.getCollaboratorName())
-									+ "_co-authors" + ".csv";
-		} else {
-			outputFileName = "no_co-authors" + ".csv";
-		}
+    private String getCoauthorNamesAsString(Set<Collaborator> coAuthors) {
 
-        Map<String, String> fileData = new HashMap<String, String>();
-		fileData.put(DataVisualizationController.FILE_NAME_KEY,
-					 outputFileName);
-		fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
-					 "application/octet-stream");
-		fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
-					 getCoauthorsListCSVContent(coAuthorshipData));
+        StringBuilder coAuthorsMerged = new StringBuilder();
 
-		return fileData;
-	}
+        String coAuthorSeparator = "; ";
+        for (Collaborator currCoAuthor : coAuthors) {
+            coAuthorsMerged.append(currCoAuthor.getCollaboratorName()).append(coAuthorSeparator);
+        }
 
-	/**
-	 * Provides a response when graphml formatted co-authorship network is requested, typically by
-	 * the flash vis.
-	 * @param authorNodesAndEdges Author nodes and edges
-	 */
-	private Map<String, String> prepareNetworkStreamDataResponse(
-									CollaborationData authorNodesAndEdges) {
+        return StringUtils.removeEnd(coAuthorsMerged.toString(), coAuthorSeparator);
+    }
 
-		CoAuthorshipGraphMLWriter coAuthorshipGraphMLWriter =
-				new CoAuthorshipGraphMLWriter(authorNodesAndEdges);
+    /**
+     * Provides response when a csv file containing number & names of unique co-authors per
+     * year is requested.
+     *
+     * @param authorNodesAndEdges Author nodes and edges
+     */
+    private Map<String, String> prepareCoauthorsCountPerYearDataResponse(
+        CollaborationData authorNodesAndEdges) {
 
-        Map<String, String> fileData = new HashMap<String, String>();
-		fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
-					 "text/xml");
-		fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
-					 coAuthorshipGraphMLWriter.getCoAuthorshipGraphMLContent().toString());
+        String outputFileName;
+        Map<String, Set<Collaborator>> yearToCoauthors = new TreeMap<String, Set<Collaborator>>();
 
-		return fileData;
+        if (authorNodesAndEdges.getCollaborators() != null
+            && authorNodesAndEdges.getCollaborators().size() > 0) {
 
-	}
+            outputFileName = UtilityFunctions.slugify(authorNodesAndEdges
+                .getEgoCollaborator().getCollaboratorName())
+                + "_co-authors-per-year" + ".csv";
 
-	private Map<String, String> prepareNetworkDownloadDataResponse(
-									CollaborationData authorNodesAndEdges) {
+            yearToCoauthors = UtilityFunctions.getActivityYearToCollaborators(authorNodesAndEdges);
 
-		String outputFileName = "";
+        } else {
 
-		if (authorNodesAndEdges.getCollaborators() != null
-					&& authorNodesAndEdges.getCollaborators().size() > 0) {
-
-			outputFileName = UtilityFunctions.slugify(authorNodesAndEdges
-									.getEgoCollaborator().getCollaboratorName())
-									+ "_co-author-network.graphml" + ".xml";
-
-		} else {
-			outputFileName = "no_co-author-network.graphml" + ".xml";
-		}
-
-		CoAuthorshipGraphMLWriter coAuthorshipGraphMLWriter =
-				new CoAuthorshipGraphMLWriter(authorNodesAndEdges);
+            outputFileName = "no_co-authors-per-year" + ".csv";
+        }
 
         Map<String, String> fileData = new HashMap<String, String>();
         fileData.put(DataVisualizationController.FILE_NAME_KEY,
-				 outputFileName);
-		fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
-					 "text/xml");
-		fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
-					 coAuthorshipGraphMLWriter.getCoAuthorshipGraphMLContent().toString());
+            outputFileName);
+        fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
+            "application/octet-stream");
+        fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
+            getCoauthorsPerYearCSVContent(yearToCoauthors));
 
-		return fileData;
-	}
+        return fileData;
+    }
 
-	@Override
-	public AuthorizationRequest getRequiredPrivileges() {
-		return null;
-	}
+    /**
+     * Provides response when a csv file containing number & names of unique co-authors per
+     * year is requested.
+     *
+     * @param coAuthorshipData Co authorship data
+     */
+    private Map<String, String> prepareCoauthorsListDataResponse(
+        CollaborationData coAuthorshipData) {
+
+        String outputFileName = "";
+
+        if (coAuthorshipData.getCollaborators() != null
+            && coAuthorshipData.getCollaborators().size() > 0) {
+
+            outputFileName = UtilityFunctions.slugify(coAuthorshipData.getEgoCollaborator()
+                .getCollaboratorName())
+                + "_co-authors" + ".csv";
+        } else {
+            outputFileName = "no_co-authors" + ".csv";
+        }
+
+        Map<String, String> fileData = new HashMap<String, String>();
+        fileData.put(DataVisualizationController.FILE_NAME_KEY,
+            outputFileName);
+        fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
+            "application/octet-stream");
+        fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
+            getCoauthorsListCSVContent(coAuthorshipData));
+
+        return fileData;
+    }
+
+    /**
+     * Provides a response when graphml formatted co-authorship network is requested, typically by
+     * the flash vis.
+     *
+     * @param authorNodesAndEdges Author nodes and edges
+     */
+    private Map<String, String> prepareNetworkStreamDataResponse(
+        CollaborationData authorNodesAndEdges) {
+
+        CoAuthorshipGraphMLWriter coAuthorshipGraphMLWriter =
+            new CoAuthorshipGraphMLWriter(authorNodesAndEdges);
+
+        Map<String, String> fileData = new HashMap<String, String>();
+        fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
+            "text/xml");
+        fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
+            coAuthorshipGraphMLWriter.getCoAuthorshipGraphMLContent().toString());
+
+        return fileData;
+
+    }
+
+    private Map<String, String> prepareNetworkDownloadDataResponse(
+        CollaborationData authorNodesAndEdges) {
+
+        String outputFileName = "";
+
+        if (authorNodesAndEdges.getCollaborators() != null
+            && authorNodesAndEdges.getCollaborators().size() > 0) {
+
+            outputFileName = UtilityFunctions.slugify(authorNodesAndEdges
+                .getEgoCollaborator().getCollaboratorName())
+                + "_co-author-network.graphml" + ".xml";
+
+        } else {
+            outputFileName = "no_co-author-network.graphml" + ".xml";
+        }
+
+        CoAuthorshipGraphMLWriter coAuthorshipGraphMLWriter =
+            new CoAuthorshipGraphMLWriter(authorNodesAndEdges);
+
+        Map<String, String> fileData = new HashMap<String, String>();
+        fileData.put(DataVisualizationController.FILE_NAME_KEY,
+            outputFileName);
+        fileData.put(DataVisualizationController.FILE_CONTENT_TYPE_KEY,
+            "text/xml");
+        fileData.put(DataVisualizationController.FILE_CONTENT_KEY,
+            coAuthorshipGraphMLWriter.getCoAuthorshipGraphMLContent().toString());
+
+        return fileData;
+    }
+
+    @Override
+    public AuthorizationRequest getRequiredPrivileges() {
+        return null;
+    }
 
 }

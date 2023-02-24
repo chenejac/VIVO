@@ -2,17 +2,16 @@
 
 package org.vivoweb.reasoner.plugin;
 
-import org.apache.jena.vocabulary.RDFS;
-
 import edu.cornell.mannlib.vitro.webapp.reasoner.ReasonerPlugin;
 import edu.cornell.mannlib.vitro.webapp.reasoner.plugin.SimplePropertyAndTypeRule;
+import org.apache.jena.vocabulary.RDFS;
 
 public class DCTitleForDocuments extends SimplePropertyAndTypeRule implements ReasonerPlugin {
 
-	public DCTitleForDocuments() {
-		super(RDFS.label.getURI(),
-		      "http://purl.org/ontology/bibo/Document",
-		      "http://purl.org/dc/terms/title");
-	}
+    public DCTitleForDocuments() {
+        super(RDFS.label.getURI(),
+            "http://purl.org/ontology/bibo/Document",
+            "http://purl.org/dc/terms/title");
+    }
 
 }

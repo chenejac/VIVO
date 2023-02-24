@@ -11,63 +11,67 @@ import edu.cornell.mannlib.vitro.webapp.visualization.valueobjects.Collaborator;
 
 public abstract class CollaborationData {
 
-	private Set<Collaborator> collaborators;
-	private Set<Collaboration> collaborations;
-	private Collaborator egoCollaborator;
-	private Set<Map<String, String>> NODE_SCHEMA;
-	private Set<Map<String, String>> EDGE_SCHEMA;
+    private Set<Collaborator> collaborators;
+    private Set<Collaboration> collaborations;
+    private Collaborator egoCollaborator;
+    private Set<Map<String, String>> NODE_SCHEMA;
+    private Set<Map<String, String>> EDGE_SCHEMA;
 
-	private Date builtFromCacheTime = null;
+    private Date builtFromCacheTime = null;
 
-	public CollaborationData(Collaborator egoCollaborator,
-							Set<Collaborator> collaborators,
-							Set<Collaboration> collaborations) {
-		this.egoCollaborator = egoCollaborator;
-		this.collaborators = collaborators;
-		this.collaborations = collaborations;
-	}
+    public CollaborationData(Collaborator egoCollaborator,
+                             Set<Collaborator> collaborators,
+                             Set<Collaboration> collaborations) {
+        this.egoCollaborator = egoCollaborator;
+        this.collaborators = collaborators;
+        this.collaborations = collaborations;
+    }
 
-	public Date getBuiltFromCacheTime() { return builtFromCacheTime; }
+    public Date getBuiltFromCacheTime() {
+        return builtFromCacheTime;
+    }
 
-	public Set<Collaborator> getCollaborators() {
-		return collaborators;
-	}
+    public void setBuiltFromCacheTime(Date time) {
+        this.builtFromCacheTime = time;
+    }
 
-	public Set<Collaboration> getCollaborations() {
-		return collaborations;
-	}
+    public Set<Collaborator> getCollaborators() {
+        return collaborators;
+    }
 
-	public Collaborator getEgoCollaborator() {
-		return egoCollaborator;
-	}
+    public Set<Collaboration> getCollaborations() {
+        return collaborations;
+    }
 
-	/*
-	 * Node Schema for graphML
-	 * */
-	public Set<Map<String, String>> getNodeSchema() {
+    public Collaborator getEgoCollaborator() {
+        return egoCollaborator;
+    }
 
-		if (NODE_SCHEMA == null) {
-			NODE_SCHEMA = initializeNodeSchema();
-		}
+    /*
+     * Node Schema for graphML
+     * */
+    public Set<Map<String, String>> getNodeSchema() {
 
-		return NODE_SCHEMA;
-	}
+        if (NODE_SCHEMA == null) {
+            NODE_SCHEMA = initializeNodeSchema();
+        }
 
-	/*
-	 * Edge Schema for graphML
-	 * */
-	public Set<Map<String, String>> getEdgeSchema() {
+        return NODE_SCHEMA;
+    }
 
-		if (EDGE_SCHEMA == null) {
-			EDGE_SCHEMA = initializeEdgeSchema();
-		}
+    /*
+     * Edge Schema for graphML
+     * */
+    public Set<Map<String, String>> getEdgeSchema() {
 
-		return EDGE_SCHEMA;
-	}
+        if (EDGE_SCHEMA == null) {
+            EDGE_SCHEMA = initializeEdgeSchema();
+        }
 
-	public void setBuiltFromCacheTime(Date time) { this.builtFromCacheTime = time; }
+        return EDGE_SCHEMA;
+    }
 
-	abstract Set<Map<String, String>> initializeEdgeSchema();
+    abstract Set<Map<String, String>> initializeEdgeSchema();
 
-	abstract Set<Map<String, String>> initializeNodeSchema();
+    abstract Set<Map<String, String>> initializeNodeSchema();
 }

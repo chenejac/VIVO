@@ -7,8 +7,8 @@
 */
 
 
-jQuery.fn.autoEllipsis = function(options) {
-    var get_AutoEllipsisScroller = function(id) {
+jQuery.fn.autoEllipsis = function (options) {
+    var get_AutoEllipsisScroller = function (id) {
         var aeScrollerId = "WingooliAutoEllipsisScroller_" + id
         if (!document.getElementById(aeScrollerId)) {
             var div = document.createElement("div");
@@ -19,7 +19,7 @@ jQuery.fn.autoEllipsis = function(options) {
         return document.getElementById(aeScrollerId);
     };
 
-    var StringEllipsesByMaxLetters = function(element, originalText, maxLettersAllowed) {
+    var StringEllipsesByMaxLetters = function (element, originalText, maxLettersAllowed) {
         element.title = "";
         var text = originalText;
         if (text == null || text == "") text = element.innerHTML;
@@ -37,7 +37,7 @@ jQuery.fn.autoEllipsis = function(options) {
     var _this = this;
 
     var settings = jQuery.extend({}, options);
-    this.each(function(i) {
+    this.each(function (i) {
         var aeScroller = get_AutoEllipsisScroller(i);
         saeScroller = $(aeScroller);
         sthis = $(this);
@@ -46,7 +46,7 @@ jQuery.fn.autoEllipsis = function(options) {
         var origText = sthis.html();
 
         var element = this;
-        var elementBounds = { width: element.offsetWidth, height: element.offsetHeight };
+        var elementBounds = {width: element.offsetWidth, height: element.offsetHeight};
 
         var jAeScroller = $(aeScroller);
         var jElement = $(element);
@@ -56,7 +56,8 @@ jQuery.fn.autoEllipsis = function(options) {
         for (var i = 0; i < props.length; i++) {
             try {
                 jAeScroller.css(props[i], jElement.css(props[i]));
-            } catch (ex) { }
+            } catch (ex) {
+            }
         }
         jElement.css("overflow", "visible");
 

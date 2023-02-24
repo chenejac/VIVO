@@ -11,53 +11,54 @@ import edu.cornell.mannlib.vitro.webapp.visualization.valueobjects.Individual;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SubjectEntityJSON {
-	@JsonProperty
-	private String subjectEntityLabel;
+    @JsonProperty
+    private String subjectEntityLabel;
 
-	@JsonProperty
-	private String subjectEntityURI;
+    @JsonProperty
+    private String subjectEntityURI;
 
-	@JsonProperty
-	private Map<String, String> parentURIToLabel = new HashMap<String, String>();
+    @JsonProperty
+    private Map<String, String> parentURIToLabel = new HashMap<String, String>();
 
-	public SubjectEntityJSON(String subjectEntityURI, String label,
-			Set<Individual> parentOrganizations) {
-		this.subjectEntityURI = subjectEntityURI;
-		this.subjectEntityLabel = label;
+    public SubjectEntityJSON(String subjectEntityURI, String label,
+                             Set<Individual> parentOrganizations) {
+        this.subjectEntityURI = subjectEntityURI;
+        this.subjectEntityLabel = label;
 
-		this.setParentURIToLabel(parentOrganizations);
-	}
+        this.setParentURIToLabel(parentOrganizations);
+    }
 
-	public SubjectEntityJSON(String subjectEntityURI, String label,
-							 Map<String, String> parentURIToLabel) {
-		this.subjectEntityURI = subjectEntityURI;
-		this.subjectEntityLabel = label;
-		this.parentURIToLabel = parentURIToLabel;
-	}
+    public SubjectEntityJSON(String subjectEntityURI, String label,
+                             Map<String, String> parentURIToLabel) {
+        this.subjectEntityURI = subjectEntityURI;
+        this.subjectEntityLabel = label;
+        this.parentURIToLabel = parentURIToLabel;
+    }
 
-	public String getSubjectEntityURI() {
-		return subjectEntityURI;
-	}
+    public String getSubjectEntityURI() {
+        return subjectEntityURI;
+    }
 
-	public void setSubjectEntityURI(String subjectEntityURI) {
-		this.subjectEntityURI = subjectEntityURI;
-	}
+    public void setSubjectEntityURI(String subjectEntityURI) {
+        this.subjectEntityURI = subjectEntityURI;
+    }
 
-	public String getSubjectEntityLabel() {
-		return subjectEntityLabel;
-	}
+    public String getSubjectEntityLabel() {
+        return subjectEntityLabel;
+    }
 
-	public void setSubjectEntityLabel(String label) {
-		this.subjectEntityLabel = label;
-	}
+    public void setSubjectEntityLabel(String label) {
+        this.subjectEntityLabel = label;
+    }
 
-	public Map<String, String> getParentURIToLabel() {
-		return parentURIToLabel;
-	}
+    public Map<String, String> getParentURIToLabel() {
+        return parentURIToLabel;
+    }
 
-	public void setParentURIToLabel(Set<Individual> parentOrganizations) {
-		for (Individual parentOrganization : parentOrganizations) {
-			this.parentURIToLabel.put(parentOrganization.getIndividualURI(), parentOrganization.getIndividualLabel());
-		}
-	}
+    public void setParentURIToLabel(Set<Individual> parentOrganizations) {
+        for (Individual parentOrganization : parentOrganizations) {
+            this.parentURIToLabel.put(parentOrganization.getIndividualURI(),
+                parentOrganization.getIndividualLabel());
+        }
+    }
 }

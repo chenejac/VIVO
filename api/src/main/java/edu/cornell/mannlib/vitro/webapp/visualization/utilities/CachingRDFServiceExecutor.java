@@ -2,11 +2,6 @@
 
 package edu.cornell.mannlib.vitro.webapp.visualization.utilities;
 
-import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
-import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFService;
-import edu.cornell.mannlib.vitro.webapp.utils.threads.VitroBackgroundThread;
-import edu.cornell.mannlib.vitro.webapp.visualization.model.ConceptLabelMap;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +14,9 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFService;
+import edu.cornell.mannlib.vitro.webapp.utils.threads.VitroBackgroundThread;
+
 /**
  * Utility class that populates and returns a cache.
  * Once the cache is populated, it can return the cached results whilst refreshing in the background.
@@ -27,13 +25,15 @@ import java.util.concurrent.TimeoutException;
  */
 public class CachingRDFServiceExecutor<T> {
     /**
+     * RDF Service to be used by background threads
+     */
+    private static RDFService backgroundRDFService = null;
+    private final RDFServiceCallable<T> resultBuilder;
+    /**
      * Cache information
      */
     private T cachedResults;
     private long lastCacheTime;
-
-    private final RDFServiceCallable<T> resultBuilder;
-
     /**
      * Background task tracker
      */
@@ -41,20 +41,26 @@ public class CachingRDFServiceExecutor<T> {
     private Thread backgroundCompletion = null;
     private long backgroundTaskStartTime = -1;
 
-    /**
-     * RDF Service to be used by background threads
-     */
-    private static RDFService backgroundRDFService = null;
-
     public CachingRDFServiceExecutor(RDFServiceCallable<T> resultBuilder) {
         this.resultBuilder = resultBuilder;
+    }
+
+    /**
+     * Set the RDF service to be used for background threads (called from a startup servlet)
+     *
+     * @param rdfService An RDFService
+     */
+    public static void setBackgroundRDFService(RDFService rdfService) {
+        backgroundRDFService = rdfService;
     }
 
     public boolean isCached() {
         return cachedResults != null;
     }
 
-    public Date cachedWhen() { return new Date(lastCacheTime); }
+    public Date cachedWhen() {
+        return new Date(lastCacheTime);
+    }
 
     /**
      * Return the cached results if present, or start the task.
@@ -91,7 +97,8 @@ public class CachingRDFServiceExecutor<T> {
         if (cachedResults != null) {
             // If the background service exists, and the cache is considered invalid
 
-        	if (backgroundRDFService != null && resultBuilder.invalidateCache(System.currentTimeMillis() - lastCacheTime)) {
+            if (backgroundRDFService != null &&
+                resultBuilder.invalidateCache(System.currentTimeMillis() - lastCacheTime)) {
                 // In most cases, only wait for half a second
                 long waitFor = 500;
 
@@ -108,7 +115,7 @@ public class CachingRDFServiceExecutor<T> {
                     completeBackgroundTask(waitFor);
                 }
 
-        	}
+            }
         } else {
             // No cached results, so fetch the results using any available RDF service
             if (rdfService != null) {
@@ -126,26 +133,26 @@ public class CachingRDFServiceExecutor<T> {
     }
 
     public synchronized T get(RDFService rdfService, boolean allowWaits, boolean force) {
-    	/*
-    	 * UQAM-Bug-Correction
-    	 * Forces the regeneration of the result
-    	 */
-    	if (force) {
-    		try {
-        		String backLang = backgroundRDFService.getVitroRequest().getLocale().getLanguage();
-        		String srvLang = rdfService.getVitroRequest().getLocale().getLanguage();
-        		if (!backLang.equals(srvLang)) {
-        			backgroundRDFService.setVitroRequest(rdfService.getVitroRequest());
-            		startBackgroundTask(rdfService);
-            		completeBackgroundTask();
-        		}
-			} catch (Exception e) {
-    			backgroundRDFService.setVitroRequest(rdfService.getVitroRequest());
-	    		startBackgroundTask(rdfService);
-	    		completeBackgroundTask();
-			}
-    		return cachedResults;
-    	}
+        /*
+         * UQAM-Bug-Correction
+         * Forces the regeneration of the result
+         */
+        if (force) {
+            try {
+                String backLang = backgroundRDFService.getVitroRequest().getLocale().getLanguage();
+                String srvLang = rdfService.getVitroRequest().getLocale().getLanguage();
+                if (!backLang.equals(srvLang)) {
+                    backgroundRDFService.setVitroRequest(rdfService.getVitroRequest());
+                    startBackgroundTask(rdfService);
+                    completeBackgroundTask();
+                }
+            } catch (Exception e) {
+                backgroundRDFService.setVitroRequest(rdfService.getVitroRequest());
+                startBackgroundTask(rdfService);
+                completeBackgroundTask();
+            }
+            return cachedResults;
+        }
         // First, check if there are results from the previous background task, and update the cache
         if (backgroundTask != null && backgroundTask.isDone()) {
             completeBackgroundTask();
@@ -153,7 +160,8 @@ public class CachingRDFServiceExecutor<T> {
         // If we have cached results
         if (cachedResults != null) {
             // If the background service exists, and the cache is considered invalid
-            if (backgroundRDFService != null && resultBuilder.invalidateCache(System.currentTimeMillis() - lastCacheTime)) {
+            if (backgroundRDFService != null &&
+                resultBuilder.invalidateCache(System.currentTimeMillis() - lastCacheTime)) {
                 // In most cases, only wait for half a second
                 long waitFor = 500;
 
@@ -259,20 +267,23 @@ public class CachingRDFServiceExecutor<T> {
 
     /**
      * Create and start a background thread using the configured task
+     *
      * @param rdfService An RDFService
      */
     private void startBackgroundTask(RDFService rdfService) {
         // Ensure that there isn't already a task
         if (backgroundTask == null && rdfService != null) {
             // Set an RDF service to use
-            resultBuilder.setRDFService(backgroundRDFService != null ? backgroundRDFService : rdfService);
+            resultBuilder
+                .setRDFService(backgroundRDFService != null ? backgroundRDFService : rdfService);
 
             // Create the background task, and record the time
             backgroundTask = new FutureTask<T>(resultBuilder);
             backgroundTaskStartTime = System.currentTimeMillis();
 
             // Start a background thread, ensuring that it can be terminated by the host
-            Thread thread = new VitroBackgroundThread(backgroundTask, resultBuilder.getClass().getName());
+            Thread thread =
+                new VitroBackgroundThread(backgroundTask, resultBuilder.getClass().getName());
             thread.setDaemon(true);
             thread.start();
         }
@@ -316,6 +327,7 @@ public class CachingRDFServiceExecutor<T> {
 
     /**
      * Complete the background task
+     *
      * @param waitFor - maximum time to wait for the results, -1 if forever
      */
     private void completeBackgroundTask(long waitFor) {
@@ -351,15 +363,8 @@ public class CachingRDFServiceExecutor<T> {
     }
 
     /**
-     * Set the RDF service to be used for background threads (called from a startup servlet)
-     * @param rdfService An RDFService
-     */
-    public static void setBackgroundRDFService(RDFService rdfService) {
-        backgroundRDFService = rdfService;
-    }
-
-    /**
      * Class to be implemented by user to provide the means of generating the results
+     *
      * @param <T>
      */
     public static abstract class RDFServiceCallable<T> implements Callable<T> {
@@ -376,16 +381,21 @@ public class CachingRDFServiceExecutor<T> {
         /**
          * Default constructor
          */
-        public RDFServiceCallable() { }
+        public RDFServiceCallable() {
+        }
 
         /**
          * Constructor that allows an affinity object to be supplied
+         *
          * @param affinity Affinity
          */
-        public RDFServiceCallable(Affinity affinity) { this.affinity = affinity; }
+        public RDFServiceCallable(Affinity affinity) {
+            this.affinity = affinity;
+        }
 
         /**
          * Set the RDF service to be used
+         *
          * @param rdfService An RDFService
          */
         final void setRDFService(RDFService rdfService) {
@@ -394,6 +404,7 @@ public class CachingRDFServiceExecutor<T> {
 
         /**
          * Entry point for the background threads, ensuring the right start / cleanup is done
+         *
          * @throws Exception Any exception
          */
         @Override
@@ -429,6 +440,7 @@ public class CachingRDFServiceExecutor<T> {
 
         /**
          * Method for users to implement, to return the results
+         *
          * @param rdfService An RDFService
          * @throws Exception Any exception
          */
@@ -437,6 +449,7 @@ public class CachingRDFServiceExecutor<T> {
         /**
          * Method to determine if the cache should be invalidated for the current results
          * Default implementation dynamically adjusts the cache time based on the efficiency of creating results
+         *
          * @param timeCached The time of caching
          */
         boolean invalidateCache(long timeCached) {
@@ -469,24 +482,13 @@ public class CachingRDFServiceExecutor<T> {
      */
     public static class Affinity {
         private final int maxThreads = 1;
-
-        static class ThreadControl {
-            ThreadControl(long started, long expectedDuration) {
-                this.started = started;
-                this.expectedDuration = expectedDuration;
-            }
-
-            final long started;
-            final long expectedDuration;
-            final CountDownLatch latch = new CountDownLatch(1);
-        }
-
         // Map of executing threads, and the time they expect to need to execute
         private final Map<Thread, ThreadControl> threadToExecutionTime = new HashMap<>();
         private final Set<Thread> executingThreads = new HashSet<>();
 
         /**
          * Called by a background thread to determine if it is allowed to start
+         *
          * @param expectedExecutionTime time that the thread expects to take (usually the last execution time)
          */
         private void requestStart(long expectedExecutionTime) {
@@ -506,8 +508,9 @@ public class CachingRDFServiceExecutor<T> {
 
         /**
          * Adds a thread to the map, returns whether the thread needs to wait
+         *
          * @param thread The thread to add
-         * @param time start time of the thread
+         * @param time   start time of the thread
          * @return true if the thread needs to wait, false if it can continue
          */
         private synchronized CountDownLatch queueThis(Thread thread, Long time) {
@@ -565,7 +568,8 @@ public class CachingRDFServiceExecutor<T> {
                                     nextToRelease = thread;
                                     nextToReleaseControl = threadControl;
                                 }
-                            } else if (threadControl.expectedDuration < nextToReleaseControl.expectedDuration) {
+                            } else if (threadControl.expectedDuration <
+                                nextToReleaseControl.expectedDuration) {
                                 nextToRelease = thread;
                                 nextToReleaseControl = threadControl;
                             }
@@ -579,6 +583,16 @@ public class CachingRDFServiceExecutor<T> {
                         nextToReleaseControl.latch.countDown();
                     }
                 }
+            }
+        }
+
+        static class ThreadControl {
+            final long started;
+            final long expectedDuration;
+            final CountDownLatch latch = new CountDownLatch(1);
+            ThreadControl(long started, long expectedDuration) {
+                this.started = started;
+                this.expectedDuration = expectedDuration;
             }
         }
     }

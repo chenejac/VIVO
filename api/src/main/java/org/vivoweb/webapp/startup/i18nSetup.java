@@ -2,17 +2,17 @@
 
 package org.vivoweb.webapp.startup;
 
-import edu.cornell.mannlib.vitro.webapp.i18n.VitroResourceBundle;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import edu.cornell.mannlib.vitro.webapp.i18n.VitroResourceBundle;
+
 /**
-  * Configures VIVO to look for i18n properties files prefixed with 'vivo_'.
-  * This listener must be run before any other code that uses resource bundles.
-  * As this listener does not depend on any others, it should be run at or near
-  * the top of the list in startup_listeners.txt.
-  */
+ * Configures VIVO to look for i18n properties files prefixed with 'vivo_'.
+ * This listener must be run before any other code that uses resource bundles.
+ * As this listener does not depend on any others, it should be run at or near
+ * the top of the list in startup_listeners.txt.
+ */
 public class i18nSetup implements ServletContextListener {
 
     @Override

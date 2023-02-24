@@ -7,9 +7,10 @@ import java.util.Map;
 import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFService;
 import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFServiceException;
 import edu.cornell.mannlib.vitro.webapp.rdfservice.ResultSetConsumer;
+import edu.cornell.mannlib.vitro.webapp.visualization.constants.QueryConstants;
+import edu.cornell.mannlib.vitro.webapp.visualization.exceptions.MalformedQueryParametersException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -17,10 +18,6 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.Syntax;
-
-import edu.cornell.mannlib.vitro.webapp.visualization.constants.QueryConstants;
-import edu.cornell.mannlib.vitro.webapp.visualization.exceptions.MalformedQueryParametersException;
-
 
 
 /**
@@ -31,34 +28,34 @@ import edu.cornell.mannlib.vitro.webapp.visualization.exceptions.MalformedQueryP
  */
 public class GenericQueryRunner implements QueryRunner<ResultSet> {
 
-	protected static final Syntax SYNTAX = Syntax.syntaxARQ;
+    protected static final Syntax SYNTAX = Syntax.syntaxARQ;
 
-	private String whereClause;
-	private Dataset dataset;
+    private String whereClause;
+    private Dataset dataset;
 
-	private Map<String, String> fieldLabelToOutputFieldLabel;
+    private Map<String, String> fieldLabelToOutputFieldLabel;
 
-	private Log log = LogFactory.getLog(GenericQueryRunner.class.getName());
+    private Log log = LogFactory.getLog(GenericQueryRunner.class.getName());
 
-	private String groupOrderClause;
+    private String groupOrderClause;
 
-	private String aggregationRules;
+    private String aggregationRules;
 
-	public GenericQueryRunner(Map<String, String> fieldLabelToOutputFieldLabel,
-							   String aggregationRules,
-							   String whereClause,
-							   String groupOrderClause,
-							   Dataset dataset) {
+    public GenericQueryRunner(Map<String, String> fieldLabelToOutputFieldLabel,
+                              String aggregationRules,
+                              String whereClause,
+                              String groupOrderClause,
+                              Dataset dataset) {
 
-		this.fieldLabelToOutputFieldLabel = fieldLabelToOutputFieldLabel;
-		this.aggregationRules = aggregationRules;
-		this.whereClause = whereClause;
-		this.groupOrderClause = groupOrderClause;
-		this.dataset = dataset;
-	}
+        this.fieldLabelToOutputFieldLabel = fieldLabelToOutputFieldLabel;
+        this.aggregationRules = aggregationRules;
+        this.whereClause = whereClause;
+        this.groupOrderClause = groupOrderClause;
+        this.dataset = dataset;
+    }
 
-	private ResultSet executeQuery(String queryText,
-								   Dataset dataset) {
+    private ResultSet executeQuery(String queryText,
+                                   Dataset dataset) {
 
         QueryExecution queryExecution = null;
         Query query = QueryFactory.create(queryText, SYNTAX);
@@ -66,50 +63,53 @@ public class GenericQueryRunner implements QueryRunner<ResultSet> {
         return queryExecution.execSelect();
     }
 
-	private String generateGenericSparqlQuery() {
+    private String generateGenericSparqlQuery() {
 
-		StringBuilder sparqlQuery = new StringBuilder();
-		sparqlQuery.append(QueryConstants.getSparqlPrefixQuery());
+        StringBuilder sparqlQuery = new StringBuilder();
+        sparqlQuery.append(QueryConstants.getSparqlPrefixQuery());
 
-		sparqlQuery.append("SELECT\n");
+        sparqlQuery.append("SELECT\n");
 
-		for (Map.Entry<String, String> currentfieldLabelToOutputFieldLabel
-				: this.fieldLabelToOutputFieldLabel.entrySet()) {
+        for (Map.Entry<String, String> currentfieldLabelToOutputFieldLabel
+            : this.fieldLabelToOutputFieldLabel.entrySet()) {
 
-			sparqlQuery.append("\t(str(?").append(currentfieldLabelToOutputFieldLabel.getKey()).append(") as ?").append(currentfieldLabelToOutputFieldLabel.getValue()).append(")\n");
+            sparqlQuery.append("\t(str(?").append(currentfieldLabelToOutputFieldLabel.getKey())
+                .append(") as ?").append(currentfieldLabelToOutputFieldLabel.getValue())
+                .append(")\n");
 
-		}
+        }
 
-		sparqlQuery.append("\n").append(this.aggregationRules).append("\n");
+        sparqlQuery.append("\n").append(this.aggregationRules).append("\n");
 
-		sparqlQuery.append("WHERE {\n");
+        sparqlQuery.append("WHERE {\n");
 
-		sparqlQuery.append(this.whereClause);
+        sparqlQuery.append(this.whereClause);
 
-		sparqlQuery.append("}\n");
+        sparqlQuery.append("}\n");
 
-		sparqlQuery.append(this.groupOrderClause);
+        sparqlQuery.append(this.groupOrderClause);
 
-		log.debug("sparqlQuery = " + sparqlQuery.toString());
+        log.debug("sparqlQuery = " + sparqlQuery.toString());
 
-		return sparqlQuery.toString();
-	}
+        return sparqlQuery.toString();
+    }
 
-	public ResultSet getQueryResult()
-			throws MalformedQueryParametersException {
+    public ResultSet getQueryResult()
+        throws MalformedQueryParametersException {
 
-		ResultSet resultSet	= executeQuery(generateGenericSparqlQuery(),
-										   this.dataset);
+        ResultSet resultSet = executeQuery(generateGenericSparqlQuery(),
+            this.dataset);
 
-		return resultSet;
-	}
+        return resultSet;
+    }
 
-	public void sparqlSelectQuery(RDFService rdfService, ResultSetConsumer consumer) throws MalformedQueryParametersException {
-		try {
-			rdfService.sparqlSelectQuery(generateGenericSparqlQuery(), consumer);
-		} catch (RDFServiceException e) {
-			log.error("Unable to execute: [" + generateGenericSparqlQuery() + "]", e);
-			throw new MalformedQueryParametersException(e);
-		}
-	}
+    public void sparqlSelectQuery(RDFService rdfService, ResultSetConsumer consumer)
+        throws MalformedQueryParametersException {
+        try {
+            rdfService.sparqlSelectQuery(generateGenericSparqlQuery(), consumer);
+        } catch (RDFServiceException e) {
+            log.error("Unable to execute: [" + generateGenericSparqlQuery() + "]", e);
+            throw new MalformedQueryParametersException(e);
+        }
+    }
 }

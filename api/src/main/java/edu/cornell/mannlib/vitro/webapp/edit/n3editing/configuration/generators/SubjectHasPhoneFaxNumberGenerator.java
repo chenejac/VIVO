@@ -2,28 +2,53 @@
 
 package edu.cornell.mannlib.vitro.webapp.edit.n3editing.configuration.generators;
 
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.vocabulary.RDF;
 
 import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.EditConfigurationVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.fields.FieldVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.configuration.validators.AntiXssValidation;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.RDF;
 
 public class SubjectHasPhoneFaxNumberGenerator extends VivoBaseGenerator implements
-        EditConfigurationGenerator {
+    EditConfigurationGenerator {
+
+    final static String n3ForNewPhoneNumber =
+        "?subject <http://purl.obolibrary.org/obo/ARG_2000028>  ?individualVcard . \n" +
+            "?individualVcard a <http://www.w3.org/2006/vcard/ns#Individual> . \n" +
+            "?individualVcard <http://purl.obolibrary.org/obo/ARG_2000029> ?subject . \n" +
+            "?individualVcard <http://www.w3.org/2006/vcard/ns#hasTelephone> ?phone . \n" +
+            "?phone a <http://www.w3.org/2006/vcard/ns#Telephone> . ";
+
+    /* N3 assertions  */
+    final static String n3ForNewFaxNumber =
+        "?subject <http://purl.obolibrary.org/obo/ARG_2000028>  ?individualVcard . \n" +
+            "?individualVcard a <http://www.w3.org/2006/vcard/ns#Individual> . \n" +
+            "?individualVcard <http://purl.obolibrary.org/obo/ARG_2000029> ?subject . \n" +
+            "?individualVcard <http://www.w3.org/2006/vcard/ns#hasTelephone> ?phone . \n" +
+            "?phone a <http://www.w3.org/2006/vcard/ns#Telephone> . \n " +
+            "?phone a <http://www.w3.org/2006/vcard/ns#Fax> . ";
+    final static String telephoneNumberAssertion =
+        "?phone <http://www.w3.org/2006/vcard/ns#telephone> ?telephoneNumber .";
+    final static String individualVcardQuery =
+        "SELECT ?existingIndividualVcard WHERE { \n" +
+            "?subject <http://purl.obolibrary.org/obo/ARG_2000028>  ?existingIndividualVcard . \n" +
+            "}";
+
+    /* Queries for editing an existing entry */
+    final static String telephoneNumberQuery =
+        "SELECT ?existingTelephoneNumber WHERE {\n" +
+            "?phone <http://www.w3.org/2006/vcard/ns#telephone> ?existingTelephoneNumber . }";
 
     @Override
     public EditConfigurationVTwo getEditConfiguration(VitroRequest vreq,
-            HttpSession session) throws Exception {
+                                                      HttpSession session) throws Exception {
 
         EditConfigurationVTwo conf = new EditConfigurationVTwo();
         Model model = ModelFactory.createDefaultModel();
@@ -41,37 +66,36 @@ public class SubjectHasPhoneFaxNumberGenerator extends VivoBaseGenerator impleme
         conf.setVarNameForPredicate("predicate");
         conf.setVarNameForObject("individualVcard");
 
-        if ( rangeUri.equals("http://www.w3.org/2006/vcard/ns#Fax") ) {
-            conf.setN3Required( Arrays.asList( n3ForNewFaxNumber ) );
+        if (rangeUri.equals("http://www.w3.org/2006/vcard/ns#Fax")) {
+            conf.setN3Required(Arrays.asList(n3ForNewFaxNumber));
             numberType = model.createLiteral("fax");
-        }
-        else {
-            conf.setN3Required( Arrays.asList( n3ForNewPhoneNumber ) );
+        } else {
+            conf.setN3Required(Arrays.asList(n3ForNewPhoneNumber));
             numberType = model.createLiteral("phone");
         }
 
-        conf.setN3Optional( Arrays.asList( telephoneNumberAssertion ) );
+        conf.setN3Optional(Arrays.asList(telephoneNumberAssertion));
 
         conf.addNewResource("phone", DEFAULT_NS_FOR_NEW_RESOURCE);
         conf.addNewResource("individualVcard", DEFAULT_NS_FOR_NEW_RESOURCE);
 
-        conf.setLiteralsOnForm(Arrays.asList("telephoneNumber" ));
+        conf.setLiteralsOnForm(Arrays.asList("telephoneNumber"));
 
         conf.addSparqlForExistingLiteral("telephoneNumber", telephoneNumberQuery);
         conf.addSparqlForAdditionalUrisInScope("individualVcard", individualVcardQuery);
 
         conf.addLiteralInScope("numberType", numberType);
 
-        if ( conf.isUpdate() ) {
+        if (conf.isUpdate()) {
             HashMap<String, List<String>> urisInScope = new HashMap<String, List<String>>();
-            urisInScope.put("phone", Arrays.asList(new String[]{phoneUri}));
+            urisInScope.put("phone", Arrays.asList(new String[] {phoneUri}));
             conf.addUrisInScope(urisInScope);
         }
 
-        conf.addField( new FieldVTwo().
-                setName("telephoneNumber")
-                .setRangeDatatypeUri( RDF.dtLangString.getURI() ).
-                setValidators( list("nonempty") ));
+        conf.addField(new FieldVTwo().
+            setName("telephoneNumber")
+            .setRangeDatatypeUri(RDF.dtLangString.getURI()).
+                setValidators(list("nonempty")));
 
         conf.addValidator(new AntiXssValidation());
 
@@ -79,46 +103,16 @@ public class SubjectHasPhoneFaxNumberGenerator extends VivoBaseGenerator impleme
         return conf;
     }
 
-    /* N3 assertions  */
-
-    final static String n3ForNewPhoneNumber =
-        "?subject <http://purl.obolibrary.org/obo/ARG_2000028>  ?individualVcard . \n" +
-        "?individualVcard a <http://www.w3.org/2006/vcard/ns#Individual> . \n" +
-        "?individualVcard <http://purl.obolibrary.org/obo/ARG_2000029> ?subject . \n" +
-        "?individualVcard <http://www.w3.org/2006/vcard/ns#hasTelephone> ?phone . \n" +
-        "?phone a <http://www.w3.org/2006/vcard/ns#Telephone> . " ;
-
-    final static String n3ForNewFaxNumber =
-        "?subject <http://purl.obolibrary.org/obo/ARG_2000028>  ?individualVcard . \n" +
-        "?individualVcard a <http://www.w3.org/2006/vcard/ns#Individual> . \n" +
-        "?individualVcard <http://purl.obolibrary.org/obo/ARG_2000029> ?subject . \n" +
-        "?individualVcard <http://www.w3.org/2006/vcard/ns#hasTelephone> ?phone . \n" +
-        "?phone a <http://www.w3.org/2006/vcard/ns#Telephone> . \n " +
-        "?phone a <http://www.w3.org/2006/vcard/ns#Fax> . " ;
-
-    final static String telephoneNumberAssertion  =
-        "?phone <http://www.w3.org/2006/vcard/ns#telephone> ?telephoneNumber .";
-
-    /* Queries for editing an existing entry */
-
-    final static String individualVcardQuery =
-        "SELECT ?existingIndividualVcard WHERE { \n" +
-        "?subject <http://purl.obolibrary.org/obo/ARG_2000028>  ?existingIndividualVcard . \n" +
-        "}";
-
-    final static String telephoneNumberQuery  =
-        "SELECT ?existingTelephoneNumber WHERE {\n"+
-        "?phone <http://www.w3.org/2006/vcard/ns#telephone> ?existingTelephoneNumber . }";
-
-	private String getPhoneUri(VitroRequest vreq) {
+    private String getPhoneUri(VitroRequest vreq) {
         String phoneUri = vreq.getParameter("phoneUri");
 
-		return phoneUri;
-	}
-	private String getRangeUri(VitroRequest vreq) {
+        return phoneUri;
+    }
+
+    private String getRangeUri(VitroRequest vreq) {
         String rangeUri = vreq.getParameter("rangeUri");
 
-		return rangeUri;
-	}
+        return rangeUri;
+    }
 
 }

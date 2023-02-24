@@ -1,10 +1,10 @@
 package edu.cornell.mannlib.semservices.service.impl;
 
+import java.util.List;
+
 import edu.cornell.mannlib.semservices.bo.Concept;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 public class UMLSServiceTest {
     @Test

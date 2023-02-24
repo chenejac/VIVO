@@ -6,6 +6,6 @@ import edu.cornell.mannlib.vitro.webapp.visualization.exceptions.MalformedQueryP
 
 public interface QueryRunner<QueryResult> {
 
-	QueryResult getQueryResult() throws MalformedQueryParametersException;
+    QueryResult getQueryResult() throws MalformedQueryParametersException;
 
 }

@@ -2,12 +2,11 @@
 
 package edu.cornell.mannlib.vitro.webapp.visualization.visutils;
 
-import org.apache.jena.rdf.model.Model;
-
 import edu.cornell.mannlib.vitro.webapp.visualization.exceptions.MalformedQueryParametersException;
+import org.apache.jena.rdf.model.Model;
 
 public interface ModelConstructor {
 
-	Model getConstructedModel() throws MalformedQueryParametersException;
+    Model getConstructedModel() throws MalformedQueryParametersException;
 
 }

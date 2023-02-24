@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class CounterUtils {
-    public static final List<List<Integer>> getObjectCountByYear(Set<String> objects, Map<String, String> objectToYearMap) {
+    public static final List<List<Integer>> getObjectCountByYear(Set<String> objects,
+                                                                 Map<String, String> objectToYearMap) {
         List<List<Integer>> yearCounts = new ArrayList<>();
         if (objects != null) {
             int[] counts = new int[Calendar.getInstance().get(Calendar.YEAR) + 1000];

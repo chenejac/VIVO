@@ -4,18 +4,18 @@ package edu.cornell.mannlib.vitro.webapp.visualization.exceptions;
 
 public class DocumentFieldNotFoundException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public DocumentFieldNotFoundException(String message) {
-		super(message);
-	}
+    public DocumentFieldNotFoundException(String message) {
+        super(message);
+    }
 
-	public DocumentFieldNotFoundException(Exception cause) {
-		super(createMessage(cause), cause);
-	}
+    public DocumentFieldNotFoundException(Exception cause) {
+        super(createMessage(cause), cause);
+    }
 
-	private static String createMessage(Exception cause) {
-		return "Document Field is empty " + cause.getMessage();
-	}
+    private static String createMessage(Exception cause) {
+        return "Document Field is empty " + cause.getMessage();
+    }
 
 }

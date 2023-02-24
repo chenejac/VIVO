@@ -2,19 +2,13 @@
 
 package edu.cornell.mannlib.vitro.webapp.visualization.capabilitymap;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import edu.cornell.mannlib.vitro.webapp.auth.requestedAction.AuthorizationRequest;
 import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
 import edu.cornell.mannlib.vitro.webapp.controller.freemarker.responsevalues.ResponseValues;
@@ -29,12 +23,15 @@ import edu.cornell.mannlib.vitro.webapp.visualization.model.ConceptPeopleMap;
 import edu.cornell.mannlib.vitro.webapp.visualization.model.OrganizationPeopleMap;
 import edu.cornell.mannlib.vitro.webapp.visualization.utilities.VisualizationCaches;
 import edu.cornell.mannlib.vitro.webapp.visualization.visutils.VisualizationRequestHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 
 public class CapabilityMapRequestHandler implements VisualizationRequestHandler {
     @Override
@@ -43,27 +40,37 @@ public class CapabilityMapRequestHandler implements VisualizationRequestHandler 
     }
 
     @Override
-    public ResponseValues generateStandardVisualization(VitroRequest vitroRequest, Log log, Dataset dataSource) throws MalformedQueryParametersException {
+    public ResponseValues generateStandardVisualization(VitroRequest vitroRequest, Log log,
+                                                        Dataset dataSource)
+        throws MalformedQueryParametersException {
         return null;
     }
 
     @Override
-    public ResponseValues generateVisualizationForShortURLRequests(Map<String, String> parameters, VitroRequest vitroRequest, Log log, Dataset dataSource) throws MalformedQueryParametersException {
+    public ResponseValues generateVisualizationForShortURLRequests(Map<String, String> parameters,
+                                                                   VitroRequest vitroRequest,
+                                                                   Log log, Dataset dataSource)
+        throws MalformedQueryParametersException {
         return prepareMarkup(vitroRequest);
     }
 
     @Override
-    public Object generateAjaxVisualization(VitroRequest vitroRequest, Log log, Dataset dataSource) throws MalformedQueryParametersException, JsonProcessingException {
-    	RDFService rdfService = vitroRequest.getRDFService();
-    	rdfService.setVitroRequest(vitroRequest);
- //   	VisualizationCaches.rebuildAll(rdfService);
- //   	VisualizationCaches.conceptToLabel.build(rdfService);
+    public Object generateAjaxVisualization(VitroRequest vitroRequest, Log log, Dataset dataSource)
+        throws MalformedQueryParametersException, JsonProcessingException {
+        RDFService rdfService = vitroRequest.getRDFService();
+        rdfService.setVitroRequest(vitroRequest);
+        //   	VisualizationCaches.rebuildAll(rdfService);
+        //   	VisualizationCaches.conceptToLabel.build(rdfService);
 //        ConceptLabelMap       conceptLabelMap = VisualizationCaches.conceptToLabel.getNoWait(rdfService);
-    	// UQAM-Bug-Correction Refresh all memory models with appropriate liguistic labels
-        ConceptLabelMap       conceptLabelMap = VisualizationCaches.conceptToLabel.get(rdfService, true, true);
-        ConceptPeopleMap      conceptPeopleMap = VisualizationCaches.conceptToPeopleMap.getNoWait(rdfService);
-        OrganizationPeopleMap organizationPeopleMap = VisualizationCaches.organisationToPeopleMap.getNoWait(rdfService);
-        Map<String, String>   organizationLabels = VisualizationCaches.organizationLabels.getNoWait(rdfService);
+        // UQAM-Bug-Correction Refresh all memory models with appropriate liguistic labels
+        ConceptLabelMap conceptLabelMap =
+            VisualizationCaches.conceptToLabel.get(rdfService, true, true);
+        ConceptPeopleMap conceptPeopleMap =
+            VisualizationCaches.conceptToPeopleMap.getNoWait(rdfService);
+        OrganizationPeopleMap organizationPeopleMap =
+            VisualizationCaches.organisationToPeopleMap.getNoWait(rdfService);
+        Map<String, String> organizationLabels =
+            VisualizationCaches.organizationLabels.getNoWait(rdfService);
 
         String data = vitroRequest.getParameter("data");
         if (!StringUtils.isEmpty(data)) {
@@ -119,7 +126,8 @@ public class CapabilityMapRequestHandler implements VisualizationRequestHandler 
         if (!StringUtils.isEmpty(query)) {
             CapabilityMapResponse response = new CapabilityMapResponse();
 
-            Set<String> matchedConcepts = conceptLabelMap.lowerLabelToConcepts.get(query.toLowerCase());
+            Set<String> matchedConcepts =
+                conceptLabelMap.lowerLabelToConcepts.get(query.toLowerCase());
 
             Set<String> people = new HashSet<String>();
             if (matchedConcepts != null) {
@@ -172,7 +180,9 @@ public class CapabilityMapRequestHandler implements VisualizationRequestHandler 
     }
 
     @Override
-    public Map<String, String> generateDataVisualization(VitroRequest vitroRequest, Log log, Dataset dataset) throws MalformedQueryParametersException {
+    public Map<String, String> generateDataVisualization(VitroRequest vitroRequest, Log log,
+                                                         Dataset dataset)
+        throws MalformedQueryParametersException {
         return null;
     }
 
@@ -185,68 +195,69 @@ public class CapabilityMapRequestHandler implements VisualizationRequestHandler 
         return new TemplateResponseValues(standaloneTemplate, body);
     }
 
-    private void fillPersonDetails(final RDFService rdfService, final String personUri, final CapabilityMapResult result) {
+    private void fillPersonDetails(final RDFService rdfService, final String personUri,
+                                   final CapabilityMapResult result) {
         try {
             String construct = QueryConstants.getSparqlPrefixQuery() +
-                    "CONSTRUCT {\n" +
-                    "  <" + personUri + "> a foaf:Person .\n" +
-                    "  <" + personUri + "> foaf:lastName ?lastName .\n" +
-                    "  <" + personUri + "> foaf:firstName ?firstName .\n" +
-                    "  <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
-                    "  ?contactInfo vcard:hasName ?contactName .\n" +
-                    "  ?contactName vcard:familyName ?familyName .\n" +
-                    "  ?contactName vcard:givenName ?givenName .\n" +
-                    "  ?contactInfo vcard:hasTitle ?contactTitle .\n" +
-                    "  ?contactTitle vcard:title ?contactTitleLabel  .\n" +
-                    "  <" + personUri + "> public:thumbnailImage ?directDownloadUrl .\n" +
-                    "} WHERE {\n" +
-                    "  { \n" +
-                    "    <" + personUri + "> foaf:lastName ?lastName .\n" +
-                    "  } UNION { \n" +
-                    "    <" + personUri + "> foaf:firstName ?firstName .\n" +
-                    "  } UNION { \n" +
-                    "    <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
-                    "    ?contactInfo vcard:hasName ?contactName .\n" +
-                    "    ?contactName vcard:familyName ?familyName .\n" +
-                    "  } UNION { \n" +
-                    "    <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
-                    "    ?contactInfo vcard:hasName ?contactName .\n" +
-                    "    ?contactName vcard:givenName ?givenName .\n" +
-                    "  } UNION { \n" +
-                    "    <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
-                    "    ?contactInfo vcard:hasTitle ?contactTitle .\n" +
-                    "    ?contactTitle vcard:title ?contactTitleLabel .\n" +
-                    "  } UNION { \n" +
-                    "    <" + personUri + "> public:mainImage ?mainImage .\n" +
-                    "    ?mainImage public:thumbnailImage ?thumbnailImage .\n" +
-                    "    ?thumbnailImage public:downloadLocation ?downloadLocation .\n" +
-                    "    ?downloadLocation public:directDownloadUrl ?directDownloadUrl .\n" +
-                    "  } \n" +
-                    "}\n";
+                "CONSTRUCT {\n" +
+                "  <" + personUri + "> a foaf:Person .\n" +
+                "  <" + personUri + "> foaf:lastName ?lastName .\n" +
+                "  <" + personUri + "> foaf:firstName ?firstName .\n" +
+                "  <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
+                "  ?contactInfo vcard:hasName ?contactName .\n" +
+                "  ?contactName vcard:familyName ?familyName .\n" +
+                "  ?contactName vcard:givenName ?givenName .\n" +
+                "  ?contactInfo vcard:hasTitle ?contactTitle .\n" +
+                "  ?contactTitle vcard:title ?contactTitleLabel  .\n" +
+                "  <" + personUri + "> public:thumbnailImage ?directDownloadUrl .\n" +
+                "} WHERE {\n" +
+                "  { \n" +
+                "    <" + personUri + "> foaf:lastName ?lastName .\n" +
+                "  } UNION { \n" +
+                "    <" + personUri + "> foaf:firstName ?firstName .\n" +
+                "  } UNION { \n" +
+                "    <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
+                "    ?contactInfo vcard:hasName ?contactName .\n" +
+                "    ?contactName vcard:familyName ?familyName .\n" +
+                "  } UNION { \n" +
+                "    <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
+                "    ?contactInfo vcard:hasName ?contactName .\n" +
+                "    ?contactName vcard:givenName ?givenName .\n" +
+                "  } UNION { \n" +
+                "    <" + personUri + "> obo:ARG_2000028 ?contactInfo .\n" +
+                "    ?contactInfo vcard:hasTitle ?contactTitle .\n" +
+                "    ?contactTitle vcard:title ?contactTitleLabel .\n" +
+                "  } UNION { \n" +
+                "    <" + personUri + "> public:mainImage ?mainImage .\n" +
+                "    ?mainImage public:thumbnailImage ?thumbnailImage .\n" +
+                "    ?thumbnailImage public:downloadLocation ?downloadLocation .\n" +
+                "    ?downloadLocation public:directDownloadUrl ?directDownloadUrl .\n" +
+                "  } \n" +
+                "}\n";
 
             Model constructedModel = ModelFactory.createDefaultModel();
             rdfService.sparqlConstructQuery(construct, constructedModel);
 
             String nameQuery = QueryConstants.getSparqlPrefixQuery() +
-                    "SELECT ?familyName ?givenName ?lastName ?firstName ?title ?thumbnailUrl\n" +
-                    "WHERE\n" +
-                    "{\n" +
-                    "  <" + personUri + "> a foaf:Person .\n" + // ?person
-                    "  OPTIONAL {\n" +
-                    "    <" + personUri + ">  obo:ARG_2000028 ?contactInfo .\n" +
-                    "    ?contactInfo vcard:hasName ?contactName .\n" +
-                    "    OPTIONAL { ?contactName vcard:familyName ?familyName . }\n" +
-                    "    OPTIONAL { ?contactName vcard:givenName  ?givenName . }\n" +
-                    "  }\n" +
-                    "  OPTIONAL {\n" +
-                    "    <" + personUri + ">  obo:ARG_2000028 ?contactInfo .\n" +
-                    "    ?contactInfo vcard:hasTitle ?contactTitle .\n" +
-                    "    ?contactTitle vcard:title ?title .\n" +
-                    "  }\n" +
-                    "  OPTIONAL { <" + personUri + ">  foaf:lastName ?lastName . }\n" +
-                    "  OPTIONAL { <" + personUri + ">  foaf:firstName  ?firstName . }\n" +
-                    "  OPTIONAL { <" + personUri + ">  public:thumbnailImage ?thumbnailUrl . }\n" +
-                    "}\n";
+                "SELECT ?familyName ?givenName ?lastName ?firstName ?title ?thumbnailUrl\n" +
+                "WHERE\n" +
+                "{\n" +
+                "  <" + personUri + "> a foaf:Person .\n" + // ?person
+                "  OPTIONAL {\n" +
+                "    <" + personUri + ">  obo:ARG_2000028 ?contactInfo .\n" +
+                "    ?contactInfo vcard:hasName ?contactName .\n" +
+                "    OPTIONAL { ?contactName vcard:familyName ?familyName . }\n" +
+                "    OPTIONAL { ?contactName vcard:givenName  ?givenName . }\n" +
+                "  }\n" +
+                "  OPTIONAL {\n" +
+                "    <" + personUri + ">  obo:ARG_2000028 ?contactInfo .\n" +
+                "    ?contactInfo vcard:hasTitle ?contactTitle .\n" +
+                "    ?contactTitle vcard:title ?title .\n" +
+                "  }\n" +
+                "  OPTIONAL { <" + personUri + ">  foaf:lastName ?lastName . }\n" +
+                "  OPTIONAL { <" + personUri + ">  foaf:firstName  ?firstName . }\n" +
+                "  OPTIONAL { <" + personUri + ">  public:thumbnailImage ?thumbnailUrl . }\n" +
+                "}\n";
 
             QueryExecution qe = QueryExecutionFactory.create(nameQuery, constructedModel);
 
@@ -265,7 +276,8 @@ public class CapabilityMapRequestHandler implements VisualizationRequestHandler 
                             result.lastName = familyNameNode.getString();
                         } else {
                             Literal lastNameNode = qs.getLiteral("lastName");
-                            result.lastName = lastNameNode == null ? null : lastNameNode.getString();
+                            result.lastName =
+                                lastNameNode == null ? null : lastNameNode.getString();
                         }
 
                         Literal givenNameNode = qs.getLiteral("givenName");
@@ -273,11 +285,13 @@ public class CapabilityMapRequestHandler implements VisualizationRequestHandler 
                             result.firstName = givenNameNode.getString();
                         } else {
                             Literal firstNameNode = qs.getLiteral("firstName");
-                            result.firstName = firstNameNode == null ? null : firstNameNode.getString();
+                            result.firstName =
+                                firstNameNode == null ? null : firstNameNode.getString();
                         }
 
                         Literal thumbnailUrlNode = qs.getLiteral("thumbnailUrl");
-                        result.thumbNail = thumbnailUrlNode == null ? null : thumbnailUrlNode.getString();
+                        result.thumbNail =
+                            thumbnailUrlNode == null ? null : thumbnailUrlNode.getString();
 
                         Literal titleNode = qs.getLiteral("title");
                         result.preferredTitle = titleNode == null ? null : titleNode.getString();

@@ -2,25 +2,35 @@
 
 package edu.cornell.mannlib.vitro.webapp.edit.n3editing.configuration.generators;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Arrays;
 
 import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.EditConfigurationVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.VTwo.fields.FieldVTwo;
 import edu.cornell.mannlib.vitro.webapp.edit.n3editing.configuration.validators.AntiXssValidation;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class AddOrcidIdToPersonGenerator extends VivoBaseGenerator implements
-        EditConfigurationGenerator {
+    EditConfigurationGenerator {
+    final static String n3ForOrcidId =
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n" +
+            "?person <http://vivoweb.org/ontology/core#orcidId> ?orcidId . \n" +
+            "?orcidId a owl:Thing . ";
+    final static String orcidIdQuery =
+        "SELECT ?existingOrcidId WHERE { \n" +
+            "?person <http://vivoweb.org/ontology/core#orcidId> ?existingOrcidId . \n" +
+            "}";
+
+    /* N3 assertions  */
     private Log log = LogFactory.getLog(AddOrcidIdToPersonGenerator.class);
+
+    /* Queries for editing an existing entry */
 
     @Override
     public EditConfigurationVTwo getEditConfiguration(VitroRequest vreq,
-            HttpSession session) throws Exception {
+                                                      HttpSession session) throws Exception {
 
         EditConfigurationVTwo conf = new EditConfigurationVTwo();
 
@@ -34,34 +44,20 @@ public class AddOrcidIdToPersonGenerator extends VivoBaseGenerator implements
         conf.setVarNameForPredicate("predicate");
         conf.setVarNameForObject("orcidId");
 
-        conf.setN3Required( Arrays.asList( n3ForOrcidId ) );
+        conf.setN3Required(Arrays.asList(n3ForOrcidId));
 
         conf.setUrisOnform(Arrays.asList("orcidId"));
 
         conf.addSparqlForExistingUris("orcidId", orcidIdQuery);
 
-        conf.addField( new FieldVTwo().
-                setName("orcidId").
-                setValidators( list("nonempty") ));
+        conf.addField(new FieldVTwo().
+            setName("orcidId").
+            setValidators(list("nonempty")));
 
         conf.addValidator(new AntiXssValidation());
 
         prepare(vreq, conf);
         return conf;
     }
-
-    /* N3 assertions  */
-
-    final static String n3ForOrcidId =
-        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"+
-        "?person <http://vivoweb.org/ontology/core#orcidId> ?orcidId . \n" +
-        "?orcidId a owl:Thing . " ;
-
-    /* Queries for editing an existing entry */
-
-    final static String orcidIdQuery =
-        "SELECT ?existingOrcidId WHERE { \n" +
-        "?person <http://vivoweb.org/ontology/core#orcidId> ?existingOrcidId . \n" +
-        "}";
 
 }

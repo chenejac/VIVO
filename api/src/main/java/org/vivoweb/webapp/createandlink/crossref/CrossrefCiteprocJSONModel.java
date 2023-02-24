@@ -2,16 +2,15 @@
 
 package org.vivoweb.webapp.createandlink.crossref;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.vivoweb.webapp.createandlink.utils.StringArrayDeserializer;
 
-import java.util.Date;
-
 /**
  * Note that ISSN and ISBN are arrays in Crossref, whereas Citeproc defines them to be a single value.
- *
  */
 @JsonIgnoreProperties
 public class CrossrefCiteprocJSONModel {
@@ -26,7 +25,7 @@ public class CrossrefCiteprocJSONModel {
 //    public DateField deposited;
 //    public DateField indexed;
 
-//    public String member;
+    //    public String member;
     public String prefix;
 
     @JsonProperty("article-number")
@@ -38,7 +37,7 @@ public class CrossrefCiteprocJSONModel {
     @JsonProperty("published-print")
     public DateField publishedPrint;
 
-//    @JsonProperty("reference-count")
+    //    @JsonProperty("reference-count")
 //    public Integer referenceCount;
     public Double score;
     @JsonDeserialize(using = StringArrayDeserializer.class)
@@ -49,12 +48,12 @@ public class CrossrefCiteprocJSONModel {
 
     public String type;
     public String id; // Number?
-//    public String[] categories;
+    //    public String[] categories;
     public String language;
-//    public String journalAbbreviation;
+    //    public String journalAbbreviation;
 //    public String shortTitle;
     public NameField[] author;
-//    @JsonProperty("collection-editor")
+    //    @JsonProperty("collection-editor")
 //    public NameField[] collectionEditor;
 //    public NameField[] composer;
 //    @JsonProperty("container-author")
@@ -71,17 +70,17 @@ public class CrossrefCiteprocJSONModel {
 //    @JsonProperty("reviewed-author")
 //    public NameField[] reviewedAuthor;
     public NameField[] translator;
-//    public DateField accessed;
+    //    public DateField accessed;
     public DateField container;
-//    @JsonProperty("event-date")
+    //    @JsonProperty("event-date")
 //    public DateField eventDate;
     public DateField issued;
-//    @JsonProperty("original-date")
+    //    @JsonProperty("original-date")
 //    public DateField originalDate;
     public DateField submitted;
     @JsonProperty("abstract")
     public String abstractText;
-//    public String annote;
+    //    public String annote;
 //    public String archive;
 //    public String archive_location;
 //    public String authority;
@@ -97,25 +96,25 @@ public class CrossrefCiteprocJSONModel {
 //    public String collectionNumber;
     @JsonProperty("container-title")
     public String containerTitle;
-//    @JsonProperty("container-title-short")
+    //    @JsonProperty("container-title-short")
 //    public String containerTitleShort;
 //    public String dimensions;
     public String DOI;
-//    public String edition; // Integer?
+    //    public String edition; // Integer?
     public String event;
-//    @JsonProperty("event-place")
+    //    @JsonProperty("event-place")
 //    public String eventPlace;
 //    @JsonProperty("first-reference-note-number")
 //    public String firstReferenceNoteNumber;
 //    public String genre;
     public String issue; // Integer?
-//    public String jurisdiction;
+    //    public String jurisdiction;
 //    public String keyword;
 //    public String locator;
 //    public String medium;
     public String note;
     public String number; // Integer?
-//    @JsonProperty("number-of-pages")
+    //    @JsonProperty("number-of-pages")
 //    public String numberOfPages;
 //    @JsonProperty("number-of-volumes")
 //    public String numberOfVolumes; // Integer?
@@ -126,12 +125,12 @@ public class CrossrefCiteprocJSONModel {
 //    @JsonProperty("original-title")
 //    public String originalTitle;
     public String page;
-//    @JsonProperty("page-first")
+    //    @JsonProperty("page-first")
 //    public String pageFirst;
     public String PMCID;
     public String PMID;
     public String publisher;
-//    @JsonProperty("publisher-place")
+    //    @JsonProperty("publisher-place")
 //    public String publisherPlace;
 //    public String references;
 //    @JsonProperty("reviewed-title")
@@ -141,7 +140,7 @@ public class CrossrefCiteprocJSONModel {
     public String source;
     public String status;
     public String title;
-//    @JsonProperty("title-short")
+    //    @JsonProperty("title-short")
 //    public String titleShort;
     public String URL;
     public String version;
@@ -158,12 +157,12 @@ public class CrossrefCiteprocJSONModel {
 
         public String family;
         public String given;
-//        @JsonProperty("dropping-particle")
+        //        @JsonProperty("dropping-particle")
 //        public String droppingParticle;
 //        @JsonProperty("non-dropping-particle")
 //        public String nonDroppingParticle;
         public String suffix;
-//        @JsonProperty("comma-suffix")
+        //        @JsonProperty("comma-suffix")
 //        public String commaSuffix; // Number? Boolean?
 //        @JsonProperty("staticOrdering")
 //        public String staticOrdering; // Number? Boolean?
@@ -183,7 +182,7 @@ public class CrossrefCiteprocJSONModel {
 
         @JsonProperty("date-parts")
         public String[][] dateParts; // Number?
-//        public String season; // Number?
+        //        public String season; // Number?
 //        public String circa; // Number? Boolean?
         public String literal;
 //        public String raw;

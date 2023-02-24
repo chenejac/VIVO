@@ -146,10 +146,10 @@ images (like Google Maps).
                 // if the anchor is at the center of the pixel, expand the
                 // image by 1/2 pixel in each direction
                 if (series.images.anchor == "center") {
-                    tmp = 0.5 * (x2-x1) / (img.width - 1);
+                    tmp = 0.5 * (x2 - x1) / (img.width - 1);
                     x1 -= tmp;
                     x2 += tmp;
-                    tmp = 0.5 * (y2-y1) / (img.height - 1);
+                    tmp = 0.5 * (y2 - y1) / (img.height - 1);
                     y1 -= tmp;
                     y2 += tmp;
                 }
@@ -201,9 +201,9 @@ images (like Google Maps).
                 tmp = ctx.globalAlpha;
                 ctx.globalAlpha *= series.images.alpha;
                 ctx.drawImage(img,
-                              sx1, sy1, sx2 - sx1, sy2 - sy1,
-                              x1 + plotOffset.left, y1 + plotOffset.top,
-                              x2 - x1, y2 - y1);
+                    sx1, sy1, sx2 - sx1, sy2 - sy1,
+                    x1 + plotOffset.left, y1 + plotOffset.top,
+                    x2 - x1, y2 - y1);
                 ctx.globalAlpha = tmp;
             }
         });
@@ -215,11 +215,11 @@ images (like Google Maps).
 
         // format is Image, x1, y1, x2, y2 (opposite corners)
         datapoints.format = [
-            { required: true },
-            { x: true, number: true, required: true },
-            { y: true, number: true, required: true },
-            { x: true, number: true, required: true },
-            { y: true, number: true, required: true }
+            {required: true},
+            {x: true, number: true, required: true},
+            {y: true, number: true, required: true},
+            {x: true, number: true, required: true},
+            {y: true, number: true, required: true}
         ];
     }
 

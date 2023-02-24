@@ -1,26 +1,15 @@
 package edu.cornell.mannlib.vitro.webapp.controller.individual;
 
-import edu.cornell.mannlib.vitro.webapp.config.ConfigurationProperties;
-import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
-import org.vivoweb.webapp.controller.freemarker.CreateAndLinkResourceController;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.Map;
 
-public class VIVOIndividualResponseBuilderExtension implements IndividualResponseBuilder.ExtendedResponse {
-    public static class Setup implements ServletContextListener {
-        @Override
-        public void contextInitialized(ServletContextEvent sce) {
-            IndividualResponseBuilder.registerExtendedResponse(new VIVOIndividualResponseBuilderExtension());
-        }
+import edu.cornell.mannlib.vitro.webapp.config.ConfigurationProperties;
+import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
+import org.vivoweb.webapp.controller.freemarker.CreateAndLinkResourceController;
 
-        @Override
-        public void contextDestroyed(ServletContextEvent sce) {
-
-        }
-    }
-
+public class VIVOIndividualResponseBuilderExtension
+    implements IndividualResponseBuilder.ExtendedResponse {
     @Override
     public void addOptions(VitroRequest vreq, Map<String, Object> body) {
         addAltMetricOptions(vreq, body);
@@ -38,12 +27,14 @@ public class VIVOIndividualResponseBuilderExtension implements IndividualRespons
         ConfigurationProperties properties = ConfigurationProperties.getBean(vreq);
 
         if (properties != null) {
-            String enabled        = properties.getProperty("resource.altmetric", "enabled");
-            String displayTo      = properties.getProperty("resource.altmetric.displayto", "right");
-            String badgeType      = properties.getProperty("resource.altmetric.badge-type", "donut");
-            String badgeHideEmpty = properties.getProperty("resource.altmetric.hide-no-mentions", "true");
-            String badgePopover   = properties.getProperty("resource.altmetric.badge-popover", "right");
-            String badgeDetails   = properties.getProperty("resource.altmetric.badge-details");
+            String enabled = properties.getProperty("resource.altmetric", "enabled");
+            String displayTo = properties.getProperty("resource.altmetric.displayto", "right");
+            String badgeType = properties.getProperty("resource.altmetric.badge-type", "donut");
+            String badgeHideEmpty =
+                properties.getProperty("resource.altmetric.hide-no-mentions", "true");
+            String badgePopover =
+                properties.getProperty("resource.altmetric.badge-popover", "right");
+            String badgeDetails = properties.getProperty("resource.altmetric.badge-details");
 
             if (!"disabled".equalsIgnoreCase(enabled)) {
                 body.put("altmetricEnabled", true);
@@ -65,7 +56,8 @@ public class VIVOIndividualResponseBuilderExtension implements IndividualRespons
         if (properties != null) {
             String enabled = properties.getProperty("resource.plum-print", "enabled");
             String displayTo = properties.getProperty("resource.plum-print.displayto", "right");
-            String printHideEmpty = properties.getProperty("resource.plum-print.hide-when-empty", "true");
+            String printHideEmpty =
+                properties.getProperty("resource.plum-print.hide-when-empty", "true");
             String printPopover = properties.getProperty("resource.plum-print.popover", "right");
             String printSize = properties.getProperty("resource.plum-print.size", "medium");
 
@@ -73,10 +65,24 @@ public class VIVOIndividualResponseBuilderExtension implements IndividualRespons
                 body.put("plumPrintEnabled", true);
 
                 body.put("plumPrintDisplayTo", displayTo);
-                body.put("plumPrintHideEmpty", "true".equalsIgnoreCase(printHideEmpty) ? "true" : "false");
+                body.put("plumPrintHideEmpty",
+                    "true".equalsIgnoreCase(printHideEmpty) ? "true" : "false");
                 body.put("plumPrintPopover", printPopover);
                 body.put("plumPrintSize", printSize);
             }
+        }
+    }
+
+    public static class Setup implements ServletContextListener {
+        @Override
+        public void contextInitialized(ServletContextEvent sce) {
+            IndividualResponseBuilder
+                .registerExtendedResponse(new VIVOIndividualResponseBuilderExtension());
+        }
+
+        @Override
+        public void contextDestroyed(ServletContextEvent sce) {
+
         }
     }
 }

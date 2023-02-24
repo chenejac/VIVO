@@ -1,13 +1,5 @@
 package edu.cornell.mannlib.vitro.webapp.search.controller;
 
-import edu.cornell.mannlib.vitro.webapp.beans.ApplicationBean;
-import edu.cornell.mannlib.vitro.webapp.config.ConfigurationProperties;
-import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
-import edu.cornell.mannlib.vitro.webapp.controller.freemarker.responsevalues.ResponseValues;
-import edu.cornell.mannlib.vitro.webapp.dao.ApplicationDao;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-@WebServlet(name = "FedSearchController", urlPatterns = {"/FS.xml","/ctsasearch"} ) // fedsearch
+import edu.cornell.mannlib.vitro.webapp.beans.ApplicationBean;
+import edu.cornell.mannlib.vitro.webapp.config.ConfigurationProperties;
+import edu.cornell.mannlib.vitro.webapp.controller.VitroRequest;
+import edu.cornell.mannlib.vitro.webapp.controller.freemarker.responsevalues.ResponseValues;
+import edu.cornell.mannlib.vitro.webapp.dao.ApplicationDao;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+@WebServlet(name = "FedSearchController", urlPatterns = {"/FS.xml", "/ctsasearch"}) // fedsearch
 public class FedSearchController extends PagedSearchController {
     private static final Log log = LogFactory.getLog(FedSearchController.class);
 
@@ -29,8 +29,10 @@ public class FedSearchController extends PagedSearchController {
 
     private String getClassgroup(HttpServletRequest req) {
         if (classgroup == null) {
-            ConfigurationProperties configuration = ConfigurationProperties.getBean(req.getSession().getServletContext());
-            classgroup = configuration.getProperty("ctsa.classgroup", "http://vivoweb.org/ontology#vitroClassGrouppeople");
+            ConfigurationProperties configuration =
+                ConfigurationProperties.getBean(req.getSession().getServletContext());
+            classgroup = configuration.getProperty("ctsa.classgroup",
+                "http://vivoweb.org/ontology#vitroClassGrouppeople");
         }
 
         return classgroup;
@@ -38,15 +40,18 @@ public class FedSearchController extends PagedSearchController {
 
     private String getPopulationType(HttpServletRequest req) {
         if (populationType == null) {
-            ConfigurationProperties configuration = ConfigurationProperties.getBean(req.getSession().getServletContext());
-            populationType = configuration.getProperty("ctsa.classgroup.type", "faculty,staff,students");
+            ConfigurationProperties configuration =
+                ConfigurationProperties.getBean(req.getSession().getServletContext());
+            populationType =
+                configuration.getProperty("ctsa.classgroup.type", "faculty,staff,students");
         }
 
         return populationType;
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         StringBuffer url = request.getRequestURL();
         String uri = request.getRequestURI();
         String serverBase = url.substring(0, url.indexOf(uri));
@@ -75,7 +80,7 @@ public class FedSearchController extends PagedSearchController {
 
                 String classgroup = getClassgroup(request);
 
-                additionalParams.put("classgroup", new String[] { classgroup });
+                additionalParams.put("classgroup", new String[] {classgroup});
 
                 VitroRequest vreq = new VitroRequest(new RequestWrapper(request, additionalParams));
                 ResponseValues rvalues = processRequest(vreq);
@@ -103,7 +108,8 @@ public class FedSearchController extends PagedSearchController {
     private class RequestWrapper extends HttpServletRequestWrapper {
         private Map<String, String[]> allParameters = null;
 
-        public RequestWrapper(HttpServletRequest request, final Map<String, String[]> additionalParams) {
+        public RequestWrapper(HttpServletRequest request,
+                              final Map<String, String[]> additionalParams) {
             super(request);
             allParameters = new TreeMap<String, String[]>();
             allParameters.putAll(super.getParameterMap());

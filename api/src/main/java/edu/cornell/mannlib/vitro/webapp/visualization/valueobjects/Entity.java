@@ -11,47 +11,47 @@ import java.util.Set;
  */
 public class Entity extends Individual {
 
-	private Set<Individual> parents = new LinkedHashSet<Individual>();
-	private Set<SubEntity> children = new LinkedHashSet<SubEntity>();
+    private Set<Individual> parents = new LinkedHashSet<Individual>();
+    private Set<SubEntity> children = new LinkedHashSet<SubEntity>();
 
-	public Entity(String entityURI, String entityLabel) {
-		super(entityURI, entityLabel);
-	}
+    public Entity(String entityURI, String entityLabel) {
+        super(entityURI, entityLabel);
+    }
 
-	public Entity(String entityURI) {
-		super(entityURI);
-	}
+    public Entity(String entityURI) {
+        super(entityURI);
+    }
 
-	public String getEntityURI() {
-		return this.getIndividualURI();
-	}
+    public String getEntityURI() {
+        return this.getIndividualURI();
+    }
 
-	public String getEntityLabel() {
-		return this.getIndividualLabel();
-	}
+    public String getEntityLabel() {
+        return this.getIndividualLabel();
+    }
 
-	public void setEntityLabel(String label) {
-		this.setIndividualLabel(label);
-	}
+    public void setEntityLabel(String label) {
+        this.setIndividualLabel(label);
+    }
 
-	public Set<SubEntity> getSubEntities() {
-		return children;
-	}
+    public Set<SubEntity> getSubEntities() {
+        return children;
+    }
 
-	public Set<Individual> getParents() {
-		return parents;
-	}
+    public Set<Individual> getParents() {
+        return parents;
+    }
 
-	public void addSubEntity(SubEntity subEntity) {
-		this.children.add(subEntity);
-	}
+    public void addSubEntity(SubEntity subEntity) {
+        this.children.add(subEntity);
+    }
 
-	public void addSubEntitities(Collection<SubEntity> subEntities) {
-		this.children.addAll(subEntities);
-	}
+    public void addSubEntitities(Collection<SubEntity> subEntities) {
+        this.children.addAll(subEntities);
+    }
 
-	public void addParents(Collection<Individual> parents) {
-		this.parents.addAll(parents);
-	}
+    public void addParents(Collection<Individual> parents) {
+        this.parents.addAll(parents);
+    }
 
 }

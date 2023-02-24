@@ -2,17 +2,17 @@
 
 package edu.cornell.mannlib.vitro.webapp.visualization.setup;
 
-import edu.cornell.mannlib.vitro.webapp.modelaccess.ModelAccess;
-import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFService;
-import edu.cornell.mannlib.vitro.webapp.visualization.utilities.CachingRDFServiceExecutor;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import edu.cornell.mannlib.vitro.webapp.modelaccess.ModelAccess;
+import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFService;
+import edu.cornell.mannlib.vitro.webapp.visualization.utilities.CachingRDFServiceExecutor;
+
 /**
  * Setup class for Visualizations, in order to record a context-referenced RDFService
- *
+ * <p>
  * If this class is missing, caches can not be refreshed in the background
  */
 public class VisualizationSetup implements ServletContextListener {

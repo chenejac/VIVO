@@ -19,9 +19,9 @@ var loadingScreenTimeout;
 function setupLoadingScreen() {
 
     $.blockUI.defaults.overlayCSS = {
-            backgroundColor: '#fff',
-            opacity: 1.0
-        };
+        backgroundColor: '#fff',
+        opacity: 1.0
+    };
 
     $.blockUI.defaults.css.width = '500px';
     $.blockUI.defaults.css.height = '100px';
@@ -29,67 +29,67 @@ function setupLoadingScreen() {
 
     $("#" + responseContainerID).block({
         message: '<div id="loading-data-container"><h3><img id="data-loading-icon" src="' + loadingImageLink
-        			+ '" />&nbsp;' + i18nStrings.loadingDataFor + ' <i>'
-        			+ entityLabel
-        			+ '</i></h3></div>'
+            + '" />&nbsp;' + i18nStrings.loadingDataFor + ' <i>'
+            + entityLabel
+            + '</i></h3></div>'
     });
 
     clearTimeout(loadingScreenTimeout);
 
-    loadingScreenTimeout = setTimeout(function() {
-    	$("#loading-data-container")
-    		.html('<h3><img id="refresh-page-icon" src="'
-    				+ refreshPageImageLink
-	    			+ '" />&nbsp;Data for <i>' + entityLabel
-	    			+ '</i> ' + i18nStrings.mapBeingRefreshed + '</h3>')
-	    	.css({'cursor': 'pointer'});
+    loadingScreenTimeout = setTimeout(function () {
+        $("#loading-data-container")
+            .html('<h3><img id="refresh-page-icon" src="'
+                + refreshPageImageLink
+                + '" />&nbsp;Data for <i>' + entityLabel
+                + '</i> ' + i18nStrings.mapBeingRefreshed + '</h3>')
+            .css({'cursor': 'pointer'});
     }, 10 * 1000);
 }
 
 function initMap() {
-	var gMap = google.maps;
-	var centerLatLng = new google.maps.LatLng(55, -10);
+    var gMap = google.maps;
+    var centerLatLng = new google.maps.LatLng(55, -10);
 
-	var mapOptions = {
-		center: centerLatLng,
-		zoom: 1,
-		streetViewControl: false,
-		mapTypeControlOptions: {
-		  mapTypeIds: []
-		}
-	};
+    var mapOptions = {
+        center: centerLatLng,
+        zoom: 1,
+        streetViewControl: false,
+        mapTypeControlOptions: {
+            mapTypeIds: []
+        }
+    };
 
-	var mapAreaId = $("#map_area");
-	map = new gMap.Map(mapAreaId[0], mapOptions);
+    var mapAreaId = $("#map_area");
+    map = new gMap.Map(mapAreaId[0], mapOptions);
 
-	var mapName = 'Scimap';
-	createScimapType(map, mapName);
-	map.setMapTypeId(mapName);
+    var mapName = 'Scimap';
+    createScimapType(map, mapName);
+    map.setMapTypeId(mapName);
 
-	downloader = new DownloadManager();
+    downloader = new DownloadManager();
 
 }
 
 function initVisModeController() {
-	var controller = getVisModeController(ENTITY_VIS_MODE);
-	switchVisMode(controller.visMode);
-	initVisModeTypeButton();
-	initGlobalToolTips();
-	currentController.loadData(scienceMapDataURL, false);
+    var controller = getVisModeController(ENTITY_VIS_MODE);
+    switchVisMode(controller.visMode);
+    initVisModeTypeButton();
+    initGlobalToolTips();
+    currentController.loadData(scienceMapDataURL, false);
 }
 
 function helper() {
-	/* override helper function to avoid reload script */
+    /* override helper function to avoid reload script */
 }
 
 /* Using .load instead of .ready due to issue with IE and Google Maps API */
-$(window).bind("load",function() {
+$(window).bind("load", function () {
 
-	ERROR_DISPLAY_WIDGET = new ErrorDisplayWidget({
-		containerID: 'error-container'
-	});
+    ERROR_DISPLAY_WIDGET = new ErrorDisplayWidget({
+        containerID: 'error-container'
+    });
 
-	setupLoadingScreen();
-	initMap();
-	initVisModeController();
+    setupLoadingScreen();
+    initMap();
+    initVisModeController();
 });

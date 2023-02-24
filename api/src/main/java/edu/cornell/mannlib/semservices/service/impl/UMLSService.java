@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import edu.cornell.mannlib.semservices.bo.Concept;
+import edu.cornell.mannlib.semservices.exceptions.ConceptsNotFoundException;
+import edu.cornell.mannlib.semservices.service.ExternalConceptService;
+import edu.cornell.mannlib.vitro.webapp.utils.json.JacksonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,21 +23,12 @@ import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import edu.cornell.mannlib.semservices.bo.Concept;
-import edu.cornell.mannlib.semservices.exceptions.ConceptsNotFoundException;
-import edu.cornell.mannlib.semservices.service.ExternalConceptService;
-import edu.cornell.mannlib.vitro.webapp.utils.json.JacksonUtils;
-
 /**
  * @author jaf30
- *
  */
 public class UMLSService implements ExternalConceptService {
-    protected final Log logger = LogFactory.getLog(getClass());
-
+    private static final String UMLS_PROPERTIES = "/umls.properties";
+    private static final Log log = LogFactory.getLog(UMLSService.class);
     private static String UTS_REST_API_URL = "https://uts-ws.nlm.nih.gov/rest";
     private static String SEARCH_PATH = "/search/current";
     private static String SEARCH_PARAMETER = "string";
@@ -41,22 +38,16 @@ public class UMLSService implements ExternalConceptService {
     private static String RETURN_TYPE_PARAMETER = "returnIdType";
     private static String RETURN_TYPE = "concept";
     private static String TICKET_PARAMETER = "ticket";
-
     private static String ticketGrantingTicketURL = null;
-
     private static long lastUpdate = -1;
-
     private static String username = null;
     private static String password = null;
     private static String apikey = null;
-
     private static String pageSize = "50";
-
     private static String UMLS_AUTH_USER_URL = "https://utslogin.nlm.nih.gov/cas/v1/tickets";
     private static String UMLS_AUTH_KEY_URL = "https://utslogin.nlm.nih.gov/cas/v1/api-key";
-    private static String UTS_SERVICE_URL   = "http://umlsks.nlm.nih.gov";
-    private static final String UMLS_PROPERTIES =  "/umls.properties";
-    private static final Log log = LogFactory.getLog(UMLSService.class);
+    private static String UTS_SERVICE_URL = "http://umlsks.nlm.nih.gov";
+    protected final Log logger = LogFactory.getLog(getClass());
 
     {
         if (username == null || apikey == null) {
@@ -65,7 +56,7 @@ public class UMLSService implements ExternalConceptService {
                 properties.load(stream);
                 username = properties.getProperty("username");
                 password = properties.getProperty("password");
-                apikey   = properties.getProperty("apikey");
+                apikey = properties.getProperty("apikey");
 
                 String exPageSize = properties.getProperty("pagesize");
                 try {
@@ -83,10 +74,10 @@ public class UMLSService implements ExternalConceptService {
             }
         }
     }
-    
+
     public static boolean configurationFileExists() {
         URL config = UMLSService.class.getResource(UMLS_PROPERTIES);
-        return (config != null);        
+        return (config != null);
     }
 
     public boolean isConfigured() {
@@ -110,9 +101,9 @@ public class UMLSService implements ExternalConceptService {
             b.addParameter(TICKET_PARAMETER, ticket);
 
             results = Request.Get(b.build())
-                    .connectTimeout(3000)
-                    .socketTimeout(3000)
-                    .execute().returnContent().asString();
+                .connectTimeout(3000)
+                .socketTimeout(3000)
+                .execute().returnContent().asString();
 
             conceptList = processOutput(results);
             return conceptList;
@@ -206,16 +197,20 @@ public class UMLSService implements ExternalConceptService {
             throw new IllegalStateException("Unable to read umls.properties");
         }
 
-        if (ticketGrantingTicketURL == null || lastUpdate + 28700000L < System.currentTimeMillis()) {
+        if (ticketGrantingTicketURL == null ||
+            lastUpdate + 28700000L < System.currentTimeMillis()) {
             try {
                 if (!StringUtils.isEmpty(apikey)) {
-                    ticketGrantingTicketURL = Request.Post(UMLS_AUTH_KEY_URL).useExpectContinue().version(HttpVersion.HTTP_1_1)
-                            .bodyForm(Form.form().add("apikey", apikey).build())
-                            .execute().returnResponse().getFirstHeader("location").getValue();
+                    ticketGrantingTicketURL = Request.Post(UMLS_AUTH_KEY_URL).useExpectContinue()
+                        .version(HttpVersion.HTTP_1_1)
+                        .bodyForm(Form.form().add("apikey", apikey).build())
+                        .execute().returnResponse().getFirstHeader("location").getValue();
                 } else {
-                    ticketGrantingTicketURL = Request.Post(UMLS_AUTH_USER_URL).useExpectContinue().version(HttpVersion.HTTP_1_1)
-                            .bodyForm(Form.form().add("username", username).add("password", password).build())
-                            .execute().returnResponse().getFirstHeader("location").getValue();
+                    ticketGrantingTicketURL = Request.Post(UMLS_AUTH_USER_URL).useExpectContinue()
+                        .version(HttpVersion.HTTP_1_1)
+                        .bodyForm(
+                            Form.form().add("username", username).add("password", password).build())
+                        .execute().returnResponse().getFirstHeader("location").getValue();
                 }
             } catch (IOException e) {
                 throw new IllegalStateException("Unable to get ticket granting ticket.");
@@ -228,9 +223,10 @@ public class UMLSService implements ExternalConceptService {
         getTicketGrantingTicket();
         String ticket = "";
         try {
-            ticket = Request.Post(ticketGrantingTicketURL).useExpectContinue().version(HttpVersion.HTTP_1_1)
-                    .bodyForm(Form.form().add("service", UTS_SERVICE_URL).build())
-                    .execute().returnContent().asString();
+            ticket = Request.Post(ticketGrantingTicketURL).useExpectContinue()
+                .version(HttpVersion.HTTP_1_1)
+                .bodyForm(Form.form().add("service", UTS_SERVICE_URL).build())
+                .execute().returnContent().asString();
         } catch (IOException e) {
             throw new IllegalStateException("Unable to get ticket.");
         }

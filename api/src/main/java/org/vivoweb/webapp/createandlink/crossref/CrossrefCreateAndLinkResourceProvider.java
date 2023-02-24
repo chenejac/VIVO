@@ -106,7 +106,7 @@ public class CrossrefCreateAndLinkResourceProvider implements CreateAndLinkResou
         // Otherwise, try the native API format to create the model
         if (resourceModel == null) {
             CrossrefNativeAPI nativeAPI = new CrossrefNativeAPI();
-            resourceModel =  nativeAPI.makeResourceModel(externalResource);
+            resourceModel = nativeAPI.makeResourceModel(externalResource);
         }
 
         // Return the created resource model
