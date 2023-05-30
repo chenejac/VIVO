@@ -1,0 +1,15 @@
+@prefix rdfs:  			<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dynapi: 		<https://vivoweb.org/ontology/vitro-dynamic-api#> .
+
+
+
+<https://vivoweb.org/resourceAPI/resource/country>
+        a                                   dynapi:ResourceAPI ;
+        rdfs:label                          "country resource API 1"@en-US ;
+        dynapi:name                         "country" ;
+        dynapi:minAPIVersion                "0.1.0" ;
+        dynapi:onPost 						<https://vivoweb.org/procedure/create_country> ;
+        dynapi:onGetAll 					<https://vivoweb.org/procedure/read_countries> ;
+        dynapi:onGet 						<https://vivoweb.org/procedure/read_country> ;
+        dynapi:onPut 						<https://vivoweb.org/procedure/update_country> ;
+        dynapi:onDelete 					<https://vivoweb.org/procedure/delete_country> .
