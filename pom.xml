@@ -7,7 +7,7 @@
     <version>1.13.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>VIVO</name>
+    <name>VIVO123</name>
     <description>VIVO project</description>
     <url>http://vivoweb.org/</url>
 
@@ -40,15 +40,7 @@
         </developer>
     </developers>
 
-    <!-- The SCM repository location is used by Continuum to update against 
-        when changes have occurred. This spawns a new build cycle and releases snapshots 
-        into the snapshot repository below. -->
-    <scm>
-        <connection>scm:git:git@github.com:vivo-project/VIVO.git</connection>
-        <developerConnection>scm:git:git@github.com:vivo-project/VIVO.git</developerConnection>
-        <url>git@github.com:vivo-project/VIVO.git</url>
-        <tag>HEAD</tag>
-    </scm>
+
 
     <properties>
         <vitro-version>${project.version}</vitro-version>
