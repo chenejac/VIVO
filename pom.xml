@@ -40,9 +40,6 @@
         </developer>
     </developers>
 
-<scm>
-        <url>git@github.com:chenejac/VIVO.git</url>
-    </scm>
 
     <properties>
         <basedir>.</basedir>
