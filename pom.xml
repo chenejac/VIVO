@@ -41,7 +41,10 @@
     </developers>
 
 <scm>
-        <url>git@github.com:chenejac/VIVO.git</url>
+        <connection>scm:git:git@github.com:vivo-project/VIVO.git</connection>
+        <developerConnection>scm:git:git@github.com:vivo-project/VIVO.git</developerConnection>
+        <url>git@github.com:vivo-project/VIVO.git</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
