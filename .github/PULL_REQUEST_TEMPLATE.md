@@ -1,4 +1,4 @@
-**Thank you for submitting a pull request! Title this pull request with a brief description of what the pull request fixes/improves/changes. Please describe the pull request in detail using the template below. Please, check whether the PR is aligned with [contribution guideline](https://github.com/vivo-project/VIVO/wiki/Development-Processes#process-for-suggesting-contribution)**
+**Thank you for submitting a pull request! Title this pull request with a brief description of what the pull request fixes/improves/changes. Please describe the pull request in detail using the template below. Please, check whether the PR is aligned with [contribution guideline](https://github.com/vivo-project/VIVO/blob/main/CONTRIBUTING.md)**
 * * *
 
 **[VIVO GitHub issue](https://github.com/vivo-project/VIVO/issues)**: (please link to issue)
@@ -35,13 +35,22 @@ Example:
 Tag (@ mention) interested parties or, if unsure, @VIVO-project/vivo-committers
 
 # Reviewers' expertise
-(please update the following text with needed expertises for reviewing your PR)
+(please add any new expertise in the list which might be needed for reviewing your PR or remove any of the listed if it is not needed)
 Candidates for reviewing this PR should have some of the following expertises:
 1. Java
 1. HTML, CSS, JavaScript
+1. FreeMarker
 1. SPARQL
 1. Ontologies
 1. Docker
+1. Natural language knowledge
+   1. English
+   2. German
+   3. Spanish
+   4. French
+   5. Portuguese
+   6. Russian
+   7. Serbian
  
 # Reviewers' report template
 (please update the following template which should be used by reviewers)
