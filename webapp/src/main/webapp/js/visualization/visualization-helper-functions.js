@@ -53,7 +53,7 @@ function extendedEncodeDataForChartURL(arrVals, maxVal) {
  * see http://code.google.com/apis/chart/docs/chart_params.html FOR chart parameters
  * see http://code.google.com/apis/chart/docs/data_formats.html FOR how to encode data
  *
- * sample constructed URL - https://chart.googleapis.com/chart?cht=ls&chs=148x58&chdlp=r&chco=3399CC&chd=e%3AW2ttpJbb..ttgAbbNtAA
+ * sample constructed URL - https://quickchart.io/chart?cht=ls&chs=148x58&chdlp=r&chco=3399CC&chd=e%3AW2ttpJbb..ttgAbbNtAA
  */
 function constructVisualizationURLForSparkline(dataString, visualizationOptions) {
 
@@ -64,7 +64,7 @@ function constructVisualizationURLForSparkline(dataString, visualizationOptions)
     //var parameterDifferentiator = "&amp;";
     var parameterDifferentiator = "&";
 
-    var rootGoogleChartAPI_URL = "https://chart.googleapis.com/chart?";
+    var rootGoogleChartAPI_URL = "https://quickchart.io/chart?";
 
     /*
      * cht=ls indicates chart of type "line chart sparklines".
