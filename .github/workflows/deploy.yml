@@ -35,6 +35,27 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
+      - name: Configure Maven publishing credentials
+        # Maven binds credentials to repository origins as well as server IDs.
+        # Keep the Portal host explicit because 'central' also names Maven Central.
+        run: |
+          cat > "$HOME/.m2/settings.xml" <<'EOF'
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.3.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.3.0 https://maven.apache.org/xsd/settings-1.3.0.xsd">
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${env.MAVEN_USERNAME}</username>
+                <password>${env.MAVEN_PASSWORD}</password>
+                <repositoryOrigins>
+                  <repositoryOrigin>https://central.sonatype.com</repositoryOrigin>
+                </repositoryOrigins>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
       - name: Maven Deploy
         run: |
           cd ../VIVO
