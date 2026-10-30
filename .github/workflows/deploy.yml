@@ -38,7 +38,7 @@ jobs:
       - name: Maven Deploy
         run: |
           cd ../VIVO
-          mvn --batch-mode deploy -Pskip
+          mvn --batch-mode deploy -Pskip -Dmaven.repository.credentialScope=id
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
